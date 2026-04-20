@@ -185,6 +185,7 @@
     }
   </style>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
+  <script src="config.js"></script>
 </head>
 
 <body>
@@ -351,7 +352,7 @@
       btn.textContent = 'Sending...';
       btn.disabled = true;
 
-      const BREVO_API_KEY = 'YOUR_BREVO_API_KEY_HERE';
+      const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || 'YOUR_BREVO_API_KEY_HERE';
       const DESTINATION_EMAIL = 'trimzy.co.in@gmail.com';
 
       try {

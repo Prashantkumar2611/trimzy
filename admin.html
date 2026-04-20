@@ -741,6 +741,7 @@
     }
   </style>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
+  <script src="config.js"></script>
 </head>
 
 <body>
@@ -911,12 +912,12 @@
     import { auth, db, doc, getDoc, getDocs, collection, query, where, updateDoc, deleteDoc, addDoc, setDoc, serverTimestamp, orderBy } from './firebase.js';
     import { onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    const BREVO_API_KEY = 'YOUR_BREVO_API_KEY_HERE';
+    const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || 'YOUR_BREVO_API_KEY_HERE';
 
     window.firebaseAuth = auth;
 
     // ── Password Check ──
-    const ADMIN_PASSWORD = 'YOUR_ADMIN_PASSWORD_HERE';
+    const ADMIN_PASSWORD = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.ADMIN_PASSWORD) || 'YOUR_ADMIN_PASSWORD_HERE';
     window.checkAdminPw = () => {
       const val = document.getElementById('admin-pw-input').value;
       if (val === ADMIN_PASSWORD) {
