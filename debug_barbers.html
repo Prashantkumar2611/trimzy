@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Barber Debugger</title>
+</head>
+<body>
+    <h1>Barber Database Audit</h1>
+    <div id="output">Loading...</div>
+
+    <script type="module">
+    import { db, collection, getDocs } from './firebase.js';
+
+    async function audit() {
+        const output = document.getElementById('output');
+        try {
+            const snap = await getDocs(collection(db, "barbers"));
+            let html = `<table border="1">
+                <tr>
+                    <th>Doc ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>UID Field</th>
+                    <th>Status</th>
+                    <th>Match?</th>
+                </tr>`;
+            
+            snap.forEach(doc => {
+                const data = doc.data();
+                const match = doc.id === data.uid;
+                html += `
+                <tr>
+                    <td>${doc.id}</td>
+                    <td>${data.name}</td>
+                    <td>${data.email}</td>
+                    <td>${data.uid || 'MISSING'}</td>
+                    <td>${data.status}</td>
+                    <td style="color:${match ? 'green' : 'red'}">${match ? 'YES' : 'NO'}</td>
+                </tr>`;
+            });
+            html += "</table>";
+            output.innerHTML = html;
+        } catch (e) {
+            output.innerHTML = "Error: " + e.message;
+        }
+    }
+    audit();
+    </script>
+</body>
+</html>

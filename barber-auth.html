@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join as a Barber — Trimzy</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    body {
+      background: var(--navy);
+      min-height: 100vh
+    }
+
+    .auth-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr
+    }
+
+    /* LEFT PANEL */
+    .auth-left {
+      background: var(--navy);
+      padding: 80px 7%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .al-bg1 {
+      position: absolute;
+      top: -80px;
+      left: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(232, 164, 74, .12) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .al-bg2 {
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(46, 204, 142, .08) 0%, transparent 70%);
+      pointer-events: none
+    }
+
+    .al-logo {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      text-decoration: none;
+      display: block
+    }
+
+    .al-logo span {
+      color: var(--gold)
+    }
+
+    .al-logo small {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--green);
+      background: rgba(46, 204, 142, .12);
+      padding: 2px 8px;
+      border-radius: 100px;
+      margin-left: 6px;
+      vertical-align: middle
+    }
+
+    .al-headline {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 40px 0 16px
+    }
+
+    .al-headline span {
+      color: var(--gold)
+    }
+
+    .al-sub {
+      font-size: 15px;
+      color: rgba(255, 255, 255, .5);
+      line-height: 1.8;
+      max-width: 380px;
+      margin-bottom: 40px
+    }
+
+    .al-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 14px
+    }
+
+    .al-perk {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .al-perk-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(232, 164, 74, .1);
+      border: 1px solid rgba(232, 164, 74, .2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0
+    }
+
+    .al-perk-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .65);
+      font-weight: 500
+    }
+
+    .al-stats {
+      display: flex;
+      gap: 28px;
+      margin-top: 48px;
+      padding-top: 36px;
+      border-top: 1px solid rgba(255, 255, 255, .1)
+    }
+
+    .al-stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff
+    }
+
+    .al-stat-num span {
+      color: var(--gold)
+    }
+
+    .al-stat-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .4);
+      margin-top: 2px
+    }
+
+    /* RIGHT PANEL */
+    .auth-right {
+      background: #fff;
+      padding: 60px 8%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto
+    }
+
+    .auth-card {
+      max-width: 460px;
+      width: 100%;
+      margin: 0 auto
+    }
+
+    /* TABS */
+    .auth-tabs {
+      display: flex;
+      background: #F4F3F0;
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 32px
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 11px 8px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gray);
+      background: transparent;
+      cursor: pointer;
+      transition: all .25s
+    }
+
+    .auth-tab.active {
+      background: #fff;
+      color: var(--navy);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08)
+    }
+
+    /* ALERT */
+    .auth-alert {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      align-items: center;
+      gap: 10px
+    }
+
+    .auth-alert.show {
+      display: flex
+    }
+
+    .auth-alert.success {
+      background: rgba(46, 204, 142, .1);
+      border: 1px solid rgba(46, 204, 142, .3);
+      color: #1a8a5a
+    }
+
+    .auth-alert.error {
+      background: rgba(232, 85, 85, .08);
+      border: 1px solid rgba(232, 85, 85, .25);
+      color: #b83030
+    }
+
+    .auth-alert.info {
+      background: rgba(232, 164, 74, .1);
+      border: 1px solid rgba(232, 164, 74, .3);
+      color: #9a6010
+    }
+
+    /* FORM */
+    .auth-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+      letter-spacing: -.5px
+    }
+
+    .auth-subtitle {
+      font-size: 14px;
+      color: var(--gray);
+      margin-bottom: 28px;
+      line-height: 1.6
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px
+    }
+
+    .form-group.full {
+      grid-column: 1/-1
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .form-input {
+      padding: 13px 16px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--navy);
+      background: #fff;
+      transition: all .2s;
+      outline: none;
+      width: 100%
+    }
+
+    .form-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 164, 74, .1)
+    }
+
+    .form-input.error {
+      border-color: var(--red)
+    }
+
+    .form-error {
+      font-size: 11px;
+      color: var(--red);
+      margin-top: 2px;
+      display: none
+    }
+
+    .form-error.show {
+      display: block
+    }
+
+    .phone-wrap {
+      display: flex
+    }
+
+    .phone-prefix {
+      padding: 13px 14px;
+      border-radius: 12px 0 0 12px;
+      border: 1.5px solid var(--border);
+      border-right: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      background: #f9f9f9;
+      white-space: nowrap;
+      flex-shrink: 0
+    }
+
+    .phone-wrap .form-input {
+      border-radius: 0 12px 12px 0
+    }
+
+    .input-wrap {
+      position: relative
+    }
+
+    .input-wrap .form-input {
+      padding-right: 48px
+    }
+
+    .pw-toggle {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--gray)
+    }
+
+    .pw-strength {
+      margin-top: 6px
+    }
+
+    .pw-strength-bar {
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      overflow: hidden;
+      margin-bottom: 3px
+    }
+
+    .pw-strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: all .3s;
+      width: 0
+    }
+
+    .pw-strength-text {
+      font-size: 11px;
+      color: var(--gray)
+    }
+
+    .forgot-link {
+      font-size: 12px;
+      color: var(--gray);
+      text-align: right;
+      display: block;
+      margin-top: -10px;
+      margin-bottom: 14px
+    }
+
+    .forgot-link a {
+      color: var(--gold);
+      font-weight: 600;
+      text-decoration: none
+    }
+
+    .form-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .form-check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+      flex-shrink: 0;
+      margin-top: 2px;
+      cursor: pointer
+    }
+
+    .form-check label {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.5;
+      cursor: pointer
+    }
+
+    .form-check label a {
+      color: var(--navy);
+      font-weight: 600;
+      text-decoration: underline
+    }
+
+    /* STEP INDICATOR */
+    .step-indicator {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 28px
+    }
+
+    .step-dot {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background .3s
+    }
+
+    .step-dot.done {
+      background: var(--gold)
+    }
+
+    .auth-step {
+      display: none
+    }
+
+    .auth-step.active {
+      display: block
+    }
+
+    /* BUTTONS */
+    .btn-primary {
+      width: 100%;
+      padding: 15px;
+      border-radius: 13px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      background: var(--gold);
+      transition: all .25s;
+      margin-top: 4px;
+      cursor: pointer;
+      position: relative
+    }
+
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(232, 164, 74, .3)
+    }
+
+    .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none
+    }
+
+    .btn-loader {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(14, 14, 26, .3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto
+    }
+
+    .btn-primary.loading .btn-text {
+      display: none
+    }
+
+    .btn-primary.loading .btn-loader {
+      display: block
+    }
+
+    .auth-footer-text {
+      font-size: 13px;
+      color: var(--gray);
+      text-align: center;
+      margin-top: 20px
+    }
+
+    .auth-footer-text button {
+      color: var(--navy);
+      font-weight: 700;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: underline
+    }
+
+    .auth-footer-text a {
+      color: var(--navy);
+      font-weight: 700;
+      text-decoration: none
+    }
+
+    /* PENDING / SUCCESS SCREENS */
+    .status-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0
+    }
+
+    .status-screen.show {
+      display: block
+    }
+
+    .status-icon {
+      font-size: 64px;
+      margin-bottom: 20px
+    }
+
+    .status-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 12px;
+      letter-spacing: -.5px
+    }
+
+    .status-desc {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 380px;
+      margin: 0 auto 28px
+    }
+
+    .status-card {
+      background: var(--bg);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      text-align: left
+    }
+
+    .sc-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px
+    }
+
+    .sc-row:last-child {
+      border-bottom: none
+    }
+
+    .sc-label {
+      color: var(--gray)
+    }
+
+    .sc-value {
+      font-weight: 600;
+      color: var(--navy)
+    }
+
+    .btn-dashboard {
+      width: 100%;
+      padding: 15px;
+      border-radius: 13px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      background: var(--gold);
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .btn-dashboard:hover {
+      background: var(--gold-light)
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      border-radius: 13px;
+      border: 1.5px solid var(--border);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray);
+      background: transparent;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all .2s
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--navy);
+      color: var(--navy)
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @media(max-width:768px) {
+      .auth-page {
+        grid-template-columns: 1fr
+      }
+
+      .auth-left {
+        display: none
+      }
+
+      .auth-right {
+        padding: 60px 7%;
+        min-height: 100vh
+      }
+
+      .form-row {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+</head>
+
+<body>
+  <div class="auth-page">
+
+    <!-- LEFT -->
+    <div class="auth-left">
+      <div class="al-bg1"></div>
+      <div class="al-bg2"></div>
+      <a href="index.html" class="al-logo">Trim<span>zy</span> <small>FOR BARBERS</small></a>
+      <h1 class="al-headline">Grow your income<br /><span>Your way</span></h1>
+      <p class="al-sub">Join 50+ barbers already earning more with Trimzy Zero commission Direct UPI payments Your
+        schedule</p>
+      <div class="al-perks">
+        <div class="al-perk">
+          <div class="al-perk-icon">💰</div>
+          <div class="al-perk-text">Direct UPI payments — zero commission</div>
+        </div>
+        <div class="al-perk">
+          <div class="al-perk-icon">📅</div>
+          <div class="al-perk-text">Manage bookings from your dashboard</div>
+        </div>
+        <div class="al-perk">
+          <div class="al-perk-icon">🏠</div>
+          <div class="al-perk-text">Enable home visits and earn more</div>
+        </div>
+        <div class="al-perk">
+          <div class="al-perk-icon">📊</div>
+          <div class="al-perk-text">Track earnings & grow your customer base</div>
+        </div>
+      </div>
+      <div class="al-stats">
+        <div>
+          <div class="al-stat-num">₹<span>42K</span>+</div>
+          <div class="al-stat-label">Avg monthly earnings</div>
+        </div>
+        <div>
+          <div class="al-stat-num"><span>50</span>+</div>
+          <div class="al-stat-label">Active barbers</div>
+        </div>
+        <div>
+          <div class="al-stat-num"><span>48h</span></div>
+          <div class="al-stat-label">Approval time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="auth-right">
+      <div class="auth-card">
+
+        <!-- TABS -->
+        <div class="auth-tabs" id="main-tabs">
+          <button class="auth-tab active" id="tab-signup" onclick="switchTab('signup')">Create Account</button>
+          <button class="auth-tab" id="tab-login" onclick="switchTab('login')">Log In</button>
+        </div>
+
+        <!-- ALERT -->
+        <div class="auth-alert" id="auth-alert"></div>
+
+        <!-- ══ SIGNUP FLOW ══ -->
+        <div id="signup-section">
+          <div class="step-indicator">
+            <div class="step-dot done" id="sdot-1"></div>
+            <div class="step-dot" id="sdot-2"></div>
+            <div class="step-dot" id="sdot-3"></div>
+          </div>
+
+          <!-- STEP 1: Account details -->
+          <div class="auth-step active" id="su-step-1">
+            <div class="auth-title">Create your account</div>
+            <div class="auth-subtitle">Step 1 of 3 — Basic details</div>
+            <form onsubmit="suStep1(event)" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name *</label>
+                  <input class="form-input" id="su-name" type="text" placeholder="Rajan Sharma" />
+                  <div class="form-error" id="su-name-err">Enter your full name</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone *</label>
+                  <div class="phone-wrap">
+                    <div class="phone-prefix">🇮🇳 +91</div>
+                    <input class="form-input" id="su-phone" type="tel" placeholder="98765 43210" maxlength="10" />
+                  </div>
+                  <div class="form-error" id="su-phone-err">Enter valid 10-digit number</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address *</label>
+                <input class="form-input" id="su-email" type="email" placeholder="rajan@example.com" />
+                <div class="form-error" id="su-email-err">Enter a valid email</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Create Password *</label>
+                <div class="input-wrap">
+                  <input class="form-input" id="su-password" type="password" placeholder="At least 8 characters"
+                    oninput="checkPwStrength(this.value)" />
+                  <button type="button" class="pw-toggle" onclick="togglePw('su-password',this)">👁</button>
+                </div>
+                <div class="pw-strength">
+                  <div class="pw-strength-bar">
+                    <div class="pw-strength-fill" id="pw-fill"></div>
+                  </div>
+                  <div class="pw-strength-text" id="pw-text">Enter a password</div>
+                </div>
+                <div class="form-error" id="su-pw-err">Password must be at least 8 characters</div>
+              </div>
+              <button type="submit" class="btn-primary" id="su-btn-1">
+                <span class="btn-text">Continue →</span>
+                <div class="btn-loader"></div>
+              </button>
+            </form>
+            <div class="auth-footer-text">Already have an account? <button onclick="switchTab('login')">Log in</button>
+            </div>
+          </div>
+
+          <!-- STEP 2: Shop details -->
+          <div class="auth-step" id="su-step-2">
+            <div class="auth-title">Your shop details</div>
+            <div class="auth-subtitle">Step 2 of 3 — Tell us about your work</div>
+            <form onsubmit="suStep2(event)" novalidate>
+              <div class="form-group">
+                <label class="form-label">Shop Name *</label>
+                <input class="form-input" id="su-shop" type="text" placeholder="Rajan's Cuts (or 'Home Visit Only')" />
+                <div class="form-error" id="su-shop-err">Enter your shop name</div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Your Area *</label>
+                  <select class="form-input" id="su-area" style="appearance:none">
+                    <option value="">Select area</option>
+                    <option>Saheed Nagar</option>
+                    <option>Bapuji Nagar</option>
+                    <option>IRC Village</option>
+                    <option>Patia</option>
+                    <option>Nayapalli</option>
+                    <option>Kharvel Nagar</option>
+                    <option>Janpath</option>
+                    <option>Bomikhal</option>
+                    <option>Other</option>
+                  </select>
+                  <div class="form-error" id="su-area-err">Select your area</div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Experience</label>
+                  <select class="form-input" id="su-exp" style="appearance:none">
+                    <option>Less than 1 year</option>
+                    <option>1–3 years</option>
+                    <option>3–5 years</option>
+                    <option>5–10 years</option>
+                    <option>10+ years</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">UPI ID *</label>
+                <input class="form-input" id="su-upi" type="text" placeholder="yourname@paytm or @gpay" />
+                <div class="form-error" id="su-upi-err">Enter your UPI ID</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Services Offered</label>
+                <select class="form-input" id="su-services" style="appearance:none">
+                  <option>Haircut only</option>
+                  <option>Haircut + Beard</option>
+                  <option>Full grooming</option>
+                  <option>Hair + Beard + Skin care</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Do you offer home visits?</label>
+                <select class="form-input" id="su-homevisit" style="appearance:none">
+                  <option>Yes I can visit customers at home</option>
+                  <option>No Shop visits only</option>
+                  <option>Maybe I'd like to discuss this</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:10px">
+                <button type="button" class="btn-secondary" style="margin-top:4px" onclick="suGoTo(1)">← Back</button>
+                <button type="submit" class="btn-primary" id="su-btn-2">
+                  <span class="btn-text">Continue →</span>
+                  <div class="btn-loader"></div>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- STEP 3: Terms + Submit -->
+          <div class="auth-step" id="su-step-3">
+            <div class="auth-title">Almost done! 🎉</div>
+            <div class="auth-subtitle">Step 3 of 3 — Review and submit</div>
+            <div class="status-card" id="review-card" style="margin-bottom:20px"></div>
+            <div class="form-group">
+              <label class="form-label">Anything else? (optional)</label>
+              <textarea class="form-input" id="su-about" rows="3"
+                placeholder="Specialties, certifications, years of experience with specific styles..."
+                style="resize:vertical"></textarea>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="su-terms" />
+              <label for="su-terms">I agree to Trimzy's <a href="#">Terms of Service</a> and <a href="#">Privacy
+                  Policy</a></label>
+            </div>
+            <div class="form-error" id="su-terms-err">Please accept the terms to continue</div>
+            <div style="display:flex;gap:10px">
+              <button type="button" class="btn-secondary" style="margin-top:4px" onclick="suGoTo(2)">← Back</button>
+              <button type="button" class="btn-primary" id="su-btn-3" onclick="suFinish()">
+                <span class="btn-text">Submit Application →</span>
+                <div class="btn-loader"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ PENDING SCREEN ══ -->
+        <div class="status-screen" id="pending-screen">
+          <div class="status-icon">⏳</div>
+          <div class="status-title">Application submitted!</div>
+          <div class="status-desc">We're reviewing your profile This usually takes 24–48 hours We'll notify you once
+            approved</div>
+          <div class="status-card" id="pending-card"></div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Your dashboard is ready it will show your
+            bookings once approved</p>
+          <button class="btn-dashboard" onclick="location.href='barber-dashboard.html'">Go to My Dashboard →</button>
+          <button class="btn-secondary" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+
+        <!-- ══ APPROVED SCREEN ══ -->
+        <div class="status-screen" id="approved-screen">
+          <div class="status-icon">🎉</div>
+          <div class="status-title">You're live on Trimzy!</div>
+          <div class="status-desc">Your profile is approved and visible to customers Start managing your bookings from
+            your dashboard</div>
+          <button class="btn-dashboard" onclick="location.href='barber-dashboard.html'">Open My Dashboard →</button>
+          <button class="btn-secondary" onclick="location.href='index.html'">Back to Home</button>
+        </div>
+
+        <!-- ══ LOGIN FORM ══ -->
+        <div id="login-section" style="display:none">
+          <div class="auth-title">Welcome back</div>
+          <div class="auth-subtitle">Log in to your barber dashboard</div>
+          <form onsubmit="doLogin(event)" novalidate>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input class="form-input" id="login-email" type="email" placeholder="your@email.com"
+                autocomplete="email" />
+              <div class="form-error" id="login-email-err">Enter a valid email</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <div class="input-wrap">
+                <input class="form-input" id="login-password" type="password" placeholder="Your password"
+                  autocomplete="current-password" />
+                <button type="button" class="pw-toggle" onclick="togglePw('login-password',this)">👁</button>
+              </div>
+              <div class="form-error" id="login-pw-err">Enter your password</div>
+            </div>
+            <span class="forgot-link"><a href="#" onclick="showForgot();return false">Forgot password?</a></span>
+            <button type="submit" class="btn-primary" id="login-btn">
+              <span class="btn-text">Log In to Dashboard</span>
+              <div class="btn-loader"></div>
+            </button>
+          </form>
+          <div class="auth-footer-text">New barber? <button onclick="switchTab('signup')">Create account →</button>
+          </div>
+          <div class="auth-footer-text" style="margin-top:8px"><a href="index.html">← Back to main site</a></div>
+        </div>
+
+        <!-- ══ FORGOT PASSWORD ══ -->
+        <div id="forgot-section" style="display:none">
+          <div class="auth-title">Reset password</div>
+          <div class="auth-subtitle">Enter your email and we'll send a reset link.</div>
+          <form onsubmit="submitForgot(event)" novalidate>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input class="form-input" id="forgot-email" type="email" placeholder="you@example.com" />
+              <div class="form-error" id="forgot-email-err">Please enter a valid email.</div>
+            </div>
+            <button type="submit" class="btn-primary" id="forgot-btn">
+              <span class="btn-text">Send Reset Link</span>
+              <div class="btn-loader"></div>
+            </button>
+          </form>
+          <div class="auth-footer-text" style="margin-top:20px"><button onclick="showLogin()">← Back to login</button></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, doc, updateDoc, collection, addDoc, query, where, getDocs } from './firebase.js';
+    import {
+      createUserWithEmailAndPassword, signInWithEmailAndPassword,
+      onAuthStateChanged, sendPasswordResetEmail, updateProfile
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // ── Check if already logged in as barber ──
+    onAuthStateChanged(auth, async user => {
+      if (!user) return;
+      try {
+        // 🚨 V10.0: MASTER ACCOUNT FORCE-APPROVAL (Always let them in)
+        if (user.email === "aalimhakim@gmail.com" || user.email === "singhkrsanjay0911@gmail.com") {
+          showApproved(); return;
+        }
+
+        let q = query(collection(db, "barbers"), where("uid", "==", user.uid));
+        let snap = await getDocs(q);
+        
+        // Fallback for legacy barbers missing UID but having matching Email
+        if (snap.empty && user.email) {
+          q = query(collection(db, "barbers"), where("email", "==", user.email));
+          snap = await getDocs(q);
+          
+          if (!snap.empty) {
+            const legacyDoc = snap.docs[0];
+            await updateDoc(doc(db, "barbers", legacyDoc.id), { uid: user.uid });
+          }
+        }
+
+        if (!snap.empty) {
+          const barber = snap.docs[0].data();
+          if (barber.status === 'approved') showApproved();
+          else showPending(barber);
+        } else {
+          // Check applications
+          const aq = query(collection(db, "barber_applications"), where("email", "==", user.email));
+          const asnap = await getDocs(aq);
+          if (!asnap.empty) showPending(asnap.docs[0].data());
+        }
+      } catch(e) { console.error('Auth state check error:', e); }
+    });
+
+    // ── Tab param ──
+    if (new URLSearchParams(location.search).get('tab') === 'login') switchTab('login');
+
+    // ══ TAB SWITCHING ══
+    window.switchTab = (tab) => {
+      clearAlert();
+      document.getElementById('signup-section').style.display = tab === 'signup' ? 'block' : 'none';
+      document.getElementById('login-section').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('forgot-section').style.display = 'none';
+      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('pending-screen').classList.remove('show');
+      document.getElementById('approved-screen').classList.remove('show');
+      document.getElementById('main-tabs').style.display = 'flex';
+      if (tab === 'signup') suGoTo(1);
+    };
+
+    window.showForgot = () => {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('forgot-section').style.display = 'block';
+      document.getElementById('main-tabs').style.display = 'none';
+    };
+
+    window.showLogin = () => switchTab('login');
+
+    // ══ SIGNUP DATA ══
+    let suData = {};
+
+    window.suGoTo = (n) => {
+      [1, 2, 3].forEach(i => {
+        document.getElementById(`su-step-${i}`).classList.toggle('active', i === n);
+        document.getElementById(`sdot-${i}`).classList.toggle('done', i <= n);
+      });
+    };
+
+    window.suStep1 = (e) => {
+      e.preventDefault(); clearAlert(); let valid = true;
+      const name = document.getElementById('su-name').value.trim();
+      const phone = document.getElementById('su-phone').value.trim().replace(/\s/g, '');
+      const email = document.getElementById('su-email').value.trim();
+      const pw = document.getElementById('su-password').value;
+      if (name.length < 2) { showFE('su-name', 'su-name-err'); valid = false; } else clearFE('su-name', 'su-name-err');
+      if (!/^\d{10}$/.test(phone)) { showFE('su-phone', 'su-phone-err'); valid = false; } else clearFE('su-phone', 'su-phone-err');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFE('su-email', 'su-email-err'); valid = false; } else clearFE('su-email', 'su-email-err');
+      if (pw.length < 8) { showFE('su-password', 'su-pw-err'); valid = false; } else clearFE('su-password', 'su-pw-err');
+      if (!valid) return;
+      suData = { name, phone, email, password: pw };
+      suGoTo(2);
+    };
+
+    window.suStep2 = (e) => {
+      e.preventDefault(); clearAlert(); let valid = true;
+      const shop = document.getElementById('su-shop').value.trim();
+      const area = document.getElementById('su-area').value;
+      const upi = document.getElementById('su-upi').value.trim();
+      if (!shop) { showFE('su-shop', 'su-shop-err'); valid = false; } else clearFE('su-shop', 'su-shop-err');
+      if (!area) { showFE('su-area', 'su-area-err'); valid = false; } else clearFE('su-area', 'su-area-err');
+      if (!upi) { showFE('su-upi', 'su-upi-err'); valid = false; } else clearFE('su-upi', 'su-upi-err');
+      if (!valid) return;
+      suData.shopName = shop;
+      suData.area = area;
+      suData.experience = document.getElementById('su-exp').value;
+      suData.upiId = upi;
+      suData.services = document.getElementById('su-services').value;
+      suData.homeVisit = document.getElementById('su-homevisit').value;
+      // Fill review card
+      document.getElementById('review-card').innerHTML = `
+    <div class="sc-row"><span class="sc-label">Name</span><span class="sc-value">${suData.name}</span></div>
+    <div class="sc-row"><span class="sc-label">Shop</span><span class="sc-value">${suData.shopName}</span></div>
+    <div class="sc-row"><span class="sc-label">Area</span><span class="sc-value">${suData.area}</span></div>
+    <div class="sc-row"><span class="sc-label">Services</span><span class="sc-value">${suData.services}</span></div>
+    <div class="sc-row"><span class="sc-label">Home Visits</span><span class="sc-value">${suData.homeVisit.includes('Yes') ? '✅ Yes' : '❌ No'}</span></div>
+    <div class="sc-row"><span class="sc-label">UPI</span><span class="sc-value">${suData.upiId}</span></div>`;
+      suGoTo(3);
+    };
+
+    window.suFinish = async () => {
+      clearAlert();
+      const terms = document.getElementById('su-terms').checked;
+      if (!terms) { document.getElementById('su-terms-err').style.display = 'block'; return; }
+      document.getElementById('su-terms-err').style.display = 'none';
+      const about = document.getElementById('su-about').value.trim();
+      setLoading('su-btn-3', true);
+      try {
+        // 1. Create Firebase Auth account (Identity)
+        const cred = await createUserWithEmailAndPassword(auth, suData.email, suData.password);
+        await updateProfile(cred.user, { displayName: suData.name });
+
+        // 2. Register Application in Firestore
+        const barberData = {
+          uid: cred.user.uid,
+          name: suData.name,
+          shopName: suData.shopName,
+          email: suData.email,
+          phone: suData.phone,
+          area: suData.area,
+          upiId: suData.upiId,
+          services: suData.services,
+          homeVisit: suData.homeVisit === 'Yes',
+          experience: suData.experience,
+          about: about,
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        };
+        
+        await addDoc(collection(db, "barber_applications"), barberData);
+
+        // 3. Show pending screen
+        showPending({ ...barberData });
+        showAlert('Application submitted! We\'ll review it within 24–48 hours.', 'success');
+      } catch (err) {
+        setLoading('su-btn-3', false);
+        const msgs = {
+          'auth/email-already-in-use': 'This email is already registered. Please log in instead.',
+          'auth/weak-password': 'Password too weak. Use at least 8 characters.',
+          'auth/invalid-email': 'Please enter a valid email address.',
+        };
+        showAlert(msgs[err.code] || 'Sign up failed: ' + err.message, 'error');
+      }
+    };
+
+    // ══ LOGIN ══
+    window.doLogin = async (e) => {
+      e.preventDefault(); clearAlert(); let valid = true;
+      const email = document.getElementById('login-email').value.trim();
+      const pw = document.getElementById('login-password').value;
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFE('login-email', 'login-email-err'); valid = false; } else clearFE('login-email', 'login-email-err');
+      if (!pw) { showFE('login-password', 'login-pw-err'); valid = false; } else clearFE('login-password', 'login-pw-err');
+      if (!valid) return;
+      setLoading('login-btn', true);
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pw);
+        let q = query(collection(db, "barbers"), where("uid", "==", cred.user.uid));
+        let snap = await getDocs(q);
+        
+        if (snap.empty) {
+          q = query(collection(db, "barbers"), where("email", "==", email));
+          snap = await getDocs(q);
+        }
+        
+        if (snap.empty) {
+          const aq = query(collection(db, "barber_applications"), where("email", "==", email));
+          const asnap = await getDocs(aq);
+          if (asnap.empty) {
+            await auth.signOut();
+            showAlert('No barber account found. Please create an account first.', 'error');
+            setLoading('login-btn', false); return;
+          }
+          showPending(asnap.docs[0].data());
+          setLoading('login-btn', false); return;
+        }
+
+        const barber = snap.docs[0].data();
+        // 🚨 V10.0: MASTER ACCOUNT FORCE-APPROVAL
+        const isMaster = (email === "aalimhakim@gmail.com" || email === "singhkrsanjay0911@gmail.com");
+
+        if (barber.status === 'approved' || isMaster) {
+          showAlert('Login successful! Redirecting to dashboard...', 'success');
+          setTimeout(() => location.href = 'barber-dashboard.html', 800);
+        } else {
+          showPending(barber);
+          showAlert('Your application is still under review. We\'ll notify you soon!', 'info');
+        }
+      } catch (err) {
+        setLoading('login-btn', false);
+        const msgs = {
+          'auth/user-not-found': 'No account found with this email.',
+          'auth/wrong-password': 'Incorrect password.',
+          'auth/invalid-credential': 'Incorrect email or password.',
+          'auth/too-many-requests': 'Too many attempts. Please try again later.',
+        };
+        showAlert(msgs[err.code] || 'Login failed. Please try again.', 'error');
+      }
+    };
+
+    window.submitForgot = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgot-email').value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFE('forgot-email', 'forgot-email-err'); return;
+      }
+      clearFE('forgot-email', 'forgot-email-err');
+      setLoading('forgot-btn', true);
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showAlert('✅ Password reset link sent! Please check your email inbox.', 'success');
+        setTimeout(() => {
+          setLoading('forgot-btn', false);
+          showLogin();
+        }, 3000);
+      } catch (err) {
+        setLoading('forgot-btn', false);
+        const msgs = {
+          'auth/user-not-found': 'No barber account found with this email.',
+          'auth/invalid-email': 'Please enter a valid email address.',
+          'auth/too-many-requests': 'Too many attempts. Please try again later.'
+        };
+        showAlert('⚠️ ' + (msgs[err.code] || 'Could not send reset email. Please try again.'), 'error');
+      }
+    };
+
+    // ══ STATUS SCREENS ══
+    function showPending(barber) {
+      document.getElementById('main-tabs').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('approved-screen').classList.remove('show');
+      document.getElementById('pending-card').innerHTML = `
+    <div class="sc-row"><span class="sc-label">Name</span><span class="sc-value">${barber.name || '—'}</span></div>
+    <div class="sc-row"><span class="sc-label">Shop</span><span class="sc-value">${barber.shopName || '—'}</span></div>
+    <div class="sc-row"><span class="sc-label">Area</span><span class="sc-value">${barber.area || '—'}</span></div>
+    <div class="sc-row"><span class="sc-label">Status</span><span class="sc-value" style="color:var(--gold)">⏳ Under Review</span></div>`;
+      document.getElementById('pending-screen').classList.add('show');
+    }
+
+    function showApproved() {
+      document.getElementById('main-tabs').style.display = 'none';
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('pending-screen').classList.remove('show');
+      document.getElementById('approved-screen').classList.add('show');
+      // Auto redirect to dashboard after 2s
+      setTimeout(() => location.href = 'barber-dashboard.html', 2000);
+    }
+
+    // ══ HELPERS ══
+    function showAlert(msg, type = 'error') {
+      const el = document.getElementById('auth-alert');
+      const icons = { error: '⚠️', success: '✅', info: '💡' };
+      el.textContent = (icons[type] || '') + ' ' + msg;
+      el.className = `auth-alert show ${type}`;
+    }
+    function clearAlert() { document.getElementById('auth-alert').className = 'auth-alert'; }
+    function setLoading(id, on) { const b = document.getElementById(id); b.disabled = on; b.classList.toggle('loading', on); }
+    function showFE(inp, err) { document.getElementById(inp)?.classList.add('error'); document.getElementById(err).style.display = 'block'; }
+    function clearFE(inp, err) { document.getElementById(inp)?.classList.remove('error'); document.getElementById(err).style.display = 'none'; }
+    window.togglePw = (id, btn) => { const i = document.getElementById(id); i.type = i.type === 'password' ? 'text' : 'password'; btn.textContent = i.type === 'password' ? '👁' : '🙈'; };
+    window.checkPwStrength = (val) => {
+      let s = 0; if (val.length >= 8) s++; if (/[A-Z]/.test(val)) s++; if (/[0-9]/.test(val)) s++; if (/[^A-Za-z0-9]/.test(val)) s++;
+      const w = ['0%', '25%', '50%', '75%', '100%'], c = ['', '#E85555', '#F5A623', '#4AAFE8', '#2ECC8E'], l = ['Enter a password', 'Weak', 'Fair', 'Good', 'Strong 💪'];
+      document.getElementById('pw-fill').style.width = w[s]; document.getElementById('pw-fill').style.background = c[s]; document.getElementById('pw-text').textContent = l[s];
+    };
+  </script>
+</body>
+
+</html>

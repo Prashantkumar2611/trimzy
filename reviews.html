@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Reviews — Trimzy</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --navy: #0B0B18;
+      --amber: #E8A44A;
+      --bg: #F8F9FA;
+      --white: #fff;
+      --gray: #64748B;
+      --border: #E2E8F0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--navy);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* ---- NAV ---- */
+    .nav {
+      background: var(--navy);
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--amber);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ---- HEADER ---- */
+    .page-header {
+      padding: 60px 6% 40px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .page-sub {
+      color: var(--gray);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ---- MASONRY GRID ---- */
+    .reviews-masonry {
+      padding: 0 6% 40px;
+      column-count: 1;
+      column-gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 640px) { .reviews-masonry { column-count: 2; } }
+    @media (min-width: 1024px) { .reviews-masonry { column-count: 3; } }
+    @media (min-width: 1440px) { .reviews-masonry { column-count: 4; } }
+
+    .review-card {
+      break-inside: avoid;
+      background: #ffffff;
+      padding: 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      margin-bottom: 20px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .review-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+      border-color: var(--amber);
+    }
+
+    .rc-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .rc-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy), #2A2A4A);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .rc-details {
+      flex-grow: 1;
+    }
+
+    .rc-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .rc-meta {
+      font-size: 12px;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .rc-stars {
+      color: var(--amber);
+      font-size: 12px;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .rc-text {
+      font-size: 15px;
+      color: #4A4A68;
+      line-height: 1.6;
+      font-weight: 450;
+      margin-bottom: 12px;
+    }
+
+    .rc-date {
+      font-size: 11px;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    /* ---- LOADING/EMPTY ---- */
+    .loading-state, .empty-state {
+      text-align: center;
+      padding: 100px 20px;
+      color: var(--gray);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-top-color: var(--amber);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">Trim<span>zy</span></a>
+    <a href="#" id="back-profile" class="btn-back">
+      <span>←</span> Back to Profile
+    </a>
+  </nav>
+
+  <header class="page-header">
+    <h1 class="page-title">Loved by the <span style="color:var(--amber)">Community</span></h1>
+    <p id="barber-name-sub" class="page-sub">Loading reviews for your favorite barber...</p>
+  </header>
+
+  <div id="reviews-grid" class="reviews-masonry">
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Fetching community feedback...</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db, collection, query, where, getDocs, doc, getDoc } from './firebase.js';
+
+    async function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const barberId = urlParams.get('id');
+
+      if (!barberId) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Update back button
+      document.getElementById('back-profile').href = `barber-profile.html?id=${barberId}`;
+
+      try {
+        // 1. Fetch Barber Name & collect all possible IDs
+        const possibleIds = new Set([barberId]);
+        const bSnap = await getDoc(doc(db, "barbers", barberId));
+        if (bSnap.exists()) {
+          const bData = bSnap.data();
+          document.getElementById('barber-name-sub').innerText = `What people are saying about ${bData.name || 'this shop'}`;
+          if (bData.uid) possibleIds.add(bData.uid);
+          if (bSnap.id !== barberId) possibleIds.add(bSnap.id);
+        }
+
+        console.log('[REVIEWS] Querying reviews for all possible barberIds:', [...possibleIds]);
+
+        // 2. Fetch Reviews using all possible barber IDs
+        const reviewMap = new Map();
+        for (const id of possibleIds) {
+          const q = query(collection(db, "reviews"), where("barberId", "==", id));
+          const snap = await getDocs(q);
+          snap.docs.forEach(d => {
+            if (!reviewMap.has(d.id)) reviewMap.set(d.id, { id: d.id, ...d.data() });
+          });
+        }
+
+        const grid = document.getElementById('reviews-grid');
+
+        if (reviewMap.size === 0) {
+          grid.innerHTML = `
+            <div class="empty-state">
+              <p style="font-size: 24px; margin-bottom: 8px;">No reviews yet</p>
+              <p>Be the first to share your experience after your appointment!</p>
+            </div>`;
+          return;
+        }
+
+        // Sort manually by createdAt (descending)
+        const allReviews = [...reviewMap.values()].sort((a, b) => {
+          const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0);
+          const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0);
+          return tB - tA;
+        });
+
+        grid.innerHTML = allReviews.map(r => {
+          const rawName = (r.customerName && r.customerName !== 'Customer') ? r.customerName : 'Verified Guest';
+          const initials = rawName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+          
+          let dateStr = 'Recently';
+          if (r.createdAt) {
+            const date = r.createdAt.toDate ? r.createdAt.toDate() : new Date(r.createdAt.seconds * 1000);
+            dateStr = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+          }
+
+          return `
+            <div class="review-card">
+              <div class="rc-header">
+                <div class="rc-avatar">${initials}</div>
+                <div class="rc-details">
+                  <div class="rc-name">${rawName}</div>
+                  <div class="rc-meta">Verified Customer</div>
+                  <div class="rc-stars">${'★'.repeat(Math.min(5, Math.max(1, r.rating || 5)))}</div>
+                </div>
+              </div>
+              <div class="rc-text">${r.comment || 'Outstanding service, highly recommended!'}</div>
+              <div class="rc-date">${dateStr}</div>
+            </div>`;
+        }).join('');
+
+      } catch (err) {
+        console.error('Error:', err);
+        document.getElementById('reviews-grid').innerHTML = '<p class="loading-state">Failed to load reviews. Please try again later.</p>';
+      }
+    }
+
+    init();
+  </script>
+
+</body>
+</html>

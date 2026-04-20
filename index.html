@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trimzy — Book Your Barber in 60 Seconds</title>
+  <meta name="description"
+    content="Skip the queue, book your barber in 60 seconds. Trimzy connects you with the best barbers in Bhubaneswar — shop visits or right at your doorstep." />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <script type="module" src="auth-modal.js"></script>
+  <style>
+    /* ═══ HERO ═══ */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 180px 5% 72px;
+      overflow: hidden;
+    }
+
+    .hero-video-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .hero-video-bg.loaded {
+      opacity: 1;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 11, 24, 0.30);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-logo-type {
+      font-family: 'Sora', sans-serif;
+      font-size: 42px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    .hero-logo-type span {
+      color: #E8A44A;
+    }
+
+    .hero-headline {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(36px, 7vw, 62px);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+
+    .hero-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(16px, 2.5vw, 22px);
+      color: rgba(255, 255, 255, 0.95);
+      max-width: 650px;
+      line-height: 1.5;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary,
+    .btn-hero-secondary {
+      padding: 16px 36px;
+      border-radius: 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 220px;
+      cursor: pointer;
+    }
+
+    .btn-hero-primary {
+      border: none;
+      color: #0B0B18;
+      background: #FFFFFF;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      background: #f8f8f8;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-hero-secondary {
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-hero-secondary:hover {
+      border-color: #E8A44A;
+      background: rgba(232, 164, 74, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* ═══ HOW IT WORKS ═══ */
+    .how {
+      background: #FFFFFF;
+      color: var(--navy);
+      position: relative;
+      overflow: visible;
+      padding: 100px 5%;
+      text-align: center;
+    }
+
+    .how .section-title {
+      color: var(--navy);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .how .section-sub {
+      color: var(--gray);
+      max-width: 600px;
+      margin: 0 auto 80px;
+      text-align: center;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: visible;
+    }
+
+    .swiggy-card {
+      background: #fff;
+      border: 1px solid #F2F2F2;
+      border-radius: 32px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      position: relative;
+      overflow: visible;
+    }
+
+    .swiggy-card:hover {
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+      border-color: var(--gold);
+    }
+
+    .swiggy-img-box {
+      width: 100%;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 10;
+      overflow: visible;
+    }
+
+    .swiggy-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: transform 0.6s cubic-bezier(0.34, 1.75, 0.64, 1);
+      will-change: transform;
+    }
+
+    .swiggy-card:hover .swiggy-img {
+      transform: scale(1.45) translateY(-10px);
+    }
+
+    .swiggy-pill {
+      color: var(--navy);
+      padding: 4px 12px;
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .swiggy-card:hover .swiggy-pill {
+      color: var(--navy);
+    }
+
+
+
+    .step-icon-box {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(232, 164, 74, 0.1), rgba(232, 164, 74, 0.02));
+      border: 1px solid rgba(232, 164, 74, 0.2);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+      color: var(--gold);
+      transform: translateZ(30px);
+      transition: all 0.4s;
+    }
+
+    .step-card:hover .step-icon-box {
+      transform: translateZ(50px) scale(1.1);
+      background: linear-gradient(135deg, rgba(232, 164, 74, 0.2), rgba(232, 164, 74, 0.05));
+      box-shadow: 0 10px 25px rgba(232, 164, 74, 0.15);
+    }
+
+    .step-badge {
+      position: absolute;
+      top: 32px;
+      right: 32px;
+      font-family: 'Sora', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.03);
+      line-height: 1;
+      transition: all 0.4s;
+      pointer-events: none;
+    }
+
+    .step-card:hover .step-badge {
+      color: rgba(232, 164, 74, 0.06);
+      transform: translateZ(10px) scale(1.1);
+    }
+
+    .step-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      transform: translateZ(25px);
+    }
+
+    .step-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.5);
+      transform: translateZ(20px);
+    }
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .42);
+      line-height: 1.7;
+    }
+
+    /* ═══ FEATURES ═══ */
+    .features {
+      background: var(--bg);
+      position: relative;
+    }
+
+    .features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 350px;
+      background: linear-gradient(to bottom, var(--navy) 0%, rgba(14, 14, 26, 0.8) 30%, rgba(14, 14, 26, 0) 100%);
+      pointer-events: none;
+    }
+
+    .features>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .features .section-title {
+      color: #fff;
+    }
+
+    .features .section-sub {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 64px;
+    }
+
+    .feat-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .feat-card:hover::after {
+      transform: scaleX(1);
+      background: linear-gradient(90deg, var(--gold), var(--purple));
+    }
+
+    .feat-card:hover {
+      background: linear-gradient(135deg, var(--navy), var(--navy2));
+      border-color: rgba(232, 164, 74, .25);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-4px);
+    }
+
+    .feat-card:hover .feat-title {
+      color: #fff !important;
+    }
+
+    .feat-card:hover .feat-desc {
+      color: rgba(255, 255, 255, .45);
+    }
+
+    .feat-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 22px;
+      transition: transform .3s;
+    }
+
+    .feat-card:hover .feat-icon-wrap {
+      transform: scale(1.1) rotate(4deg);
+    }
+
+    .feat-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .feat-desc {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.7;
+    }
+
+    .feat-tag {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .3px;
+    }
+
+    /* ═══ BARBER SECTION ═══ */
+    .barber-section {
+      background: var(--white);
+      padding-bottom: 40px; /* Reduced bottom gap */
+    }
+
+    .barber-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      margin-top: 64px;
+    }
+
+    .barber-visual {
+      background: linear-gradient(135deg, var(--navy), var(--navy2));
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .25);
+    }
+
+    .barber-visual-bg {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(232, 164, 74, .15) 0%, transparent 70%);
+    }
+
+    .earnings-card {
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-bottom: 16px;
+      transition: all .3s;
+      backdrop-filter: blur(8px);
+    }
+
+    .earnings-card:hover {
+      background: rgba(255, 255, 255, .07);
+      border-color: rgba(232, 164, 74, .2);
+    }
+
+    .earnings-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .4);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .earnings-value {
+      font-family: 'Sora', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .earnings-value span {
+      color: var(--gold);
+    }
+
+    .earnings-change {
+      font-size: 12px;
+      color: var(--green);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .barber-perks {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    .perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .perk-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(232, 164, 74, .08);
+      border: 1px solid rgba(232, 164, 74, .15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all .3s;
+    }
+
+    .perk:hover .perk-icon {
+      background: rgba(232, 164, 74, .15);
+      border-color: rgba(232, 164, 74, .3);
+      transform: scale(1.08);
+    }
+
+    .perk-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .perk-desc {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* ═══ PRICING ═══ */
+    .pricing {
+      background: var(--navy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pricing::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(to top, rgba(232, 164, 74, .03), transparent);
+      pointer-events: none;
+    }
+
+    .pricing .section-title {
+      color: #fff;
+    }
+
+    .pricing .section-sub {
+      color: rgba(255, 255, 255, .42);
+    }
+
+    .pricing .section-label::before {
+      background: var(--gold);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 64px;
+    }
+
+    .price-card {
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+    }
+
+    .price-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .3);
+    }
+
+    .price-card.popular {
+      background: linear-gradient(135deg, var(--gold), #F0B860);
+      border-color: transparent;
+      box-shadow: 0 24px 64px var(--gold-glow);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy);
+      color: var(--gold);
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 18px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      border: 1px solid rgba(232, 164, 74, .25);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .3);
+    }
+
+    .price-plan {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .42);
+      margin-bottom: 14px;
+    }
+
+    .price-card.popular .price-plan {
+      color: rgba(14, 14, 26, .5);
+    }
+
+    .price-amount {
+      font-family: 'Sora', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .price-card.popular .price-amount {
+      color: var(--navy);
+    }
+
+    .price-amount sup {
+      font-size: 24px;
+      font-weight: 600;
+      vertical-align: top;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    .price-period {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .35);
+      margin-bottom: 28px;
+    }
+
+    .price-card.popular .price-period {
+      color: rgba(14, 14, 26, .45);
+    }
+
+    .price-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+
+    .price-features li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, .65);
+    }
+
+    .price-card.popular .price-features li {
+      color: rgba(14, 14, 26, .75);
+    }
+
+    .price-features li::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(52, 211, 153, .12);
+      border: 1px solid rgba(52, 211, 153, .25);
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%2334D399' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    .btn-price-primary {
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      background: var(--navy);
+      color: var(--gold);
+      transition: all .3s;
+    }
+
+    .btn-price-primary:hover {
+      background: var(--navy2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+    }
+
+    .btn-price-outline {
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, .12);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      background: transparent;
+      color: #fff;
+      transition: all .3s;
+    }
+
+    .btn-price-outline:hover {
+      border-color: rgba(255, 255, 255, .35);
+      background: rgba(255, 255, 255, .05);
+    }
+
+    /* ═══ TESTIMONIALS ═══ */
+    .testimonials {
+      background: var(--white);
+      padding-top: 40px; /* Reduced top gap */
+    }
+
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 64px;
+    }
+
+    .testi-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+    }
+
+    .testi-card::before {
+      content: '"';
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      font-family: Georgia, serif;
+      font-size: 80px;
+      color: rgba(232, 164, 74, .08);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .testi-card:hover {
+      background: var(--white);
+      box-shadow: var(--card-shadow-hover);
+      transform: translateY(-4px);
+      border-color: rgba(232, 164, 74, .15);
+    }
+
+    .testi-stars {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 18px;
+    }
+
+    .star {
+      width: 18px;
+      height: 18px;
+      background: var(--gold);
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+
+    .testi-text {
+      font-size: 15px;
+      color: var(--navy);
+      line-height: 1.8;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .testi-author {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .testi-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+    }
+
+    .testi-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .testi-role {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    /* ═══ CITIES ═══ */
+    .cities-section {
+      background: var(--navy);
+      padding: 72px 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cities-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(232, 164, 74, .2), transparent);
+    }
+
+    /* ═══ RESPONSIVE ═══ */
+    @media(max-width:900px) {
+      .hero-visual {
+        display: none;
+      }
+
+      .barber-split {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media(max-width:600px) {
+      .hero-stats {
+        gap: 28px;
+      }
+
+      .hero-headline {
+        letter-spacing: -1.5px;
+      }
+    }
+
+    /* ── LOCATION TOAST ── */
+    #loc-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 9999;
+      opacity: 0;
+      transition: all .4s cubic-bezier(.22, 1, .36, 1);
+      width: calc(100% - 40px);
+      max-width: 480px;
+      pointer-events: all
+    }
+
+    .lt-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #fff;
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, .18);
+      border: 1px solid #F0EFEC
+    }
+
+    .lt-icon {
+      font-size: 24px;
+      flex-shrink: 0
+    }
+
+    .lt-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px
+    }
+
+    .lt-text strong {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0E0E1A
+    }
+
+    .lt-text span {
+      font-size: 12px;
+      color: #888
+    }
+
+    .lt-allow {
+      padding: 9px 18px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'Sora', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0E0E1A;
+      background: linear-gradient(135deg, #E8A44A, #F5C97A);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .2s;
+      flex-shrink: 0
+    }
+
+    .lt-allow:hover {
+      transform: scale(1.04)
+    }
+
+    .lt-skip {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: #F4F3F0;
+      color: #888;
+      font-size: 13px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all .2s
+    }
+
+    .lt-skip:hover {
+      background: #E8E8E8;
+      color: #444
+    }
+    /* ── TRANSFORMED TESTIMONIALS CAROUSEL ── */
+    .testimonial-section {
+      padding: 60px 0 100px;
+      background: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .testimonial-header {
+      text-align: center;
+      margin-bottom: 56px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .testimonial-header .section-title {
+      font-size: clamp(40px, 6vw, 68px);
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-header .section-sub {
+      font-size: 18px;
+      color: var(--gray);
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      height: 750px;
+      position: relative;
+      /* Using mask-image for a true fade-out effect as seen in screenshots */
+      -webkit-mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 20%,
+        black 80%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        black 20%,
+        black 80%,
+        transparent 100%
+      );
+    }
+
+    .testimonial-column {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: scrollUp var(--duration) linear infinite;
+    }
+
+    .testimonial-column:hover {
+      animation-play-state: paused;
+    }
+
+    .testimonial-card {
+      background: #fff;
+      border: 1px solid #F0EFEC;
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .testimonial-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 20px 40px rgba(232, 164, 74, 0.06);
+      transform: translateY(-4px);
+    }
+
+    .tc-stars {
+      color: var(--gold);
+      font-size: 14px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    .tc-content {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #4A4A68;
+      font-weight: 450;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .tc-footer {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-top: 18px;
+    }
+
+    .tc-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%; /* Circle avatars look cleaner in this UI */
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+
+    .tc-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tc-name {
+      font-family: 'Sora', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .tc-role {
+      font-size: 11.5px;
+      color: #7b7b8e;
+      font-weight: 400;
+    }
+
+    @keyframes scrollUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+
+    @media (max-width: 1024px) {
+      .testimonial-grid { grid-template-columns: repeat(2, 1fr); height: 600px; }
+      .col-hide-tablet { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .testimonial-grid { grid-template-columns: 1fr; height: 500px; }
+      .col-hide-mobile { display: none; }
+    }
+  </style>
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Trim<span>zy</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="how-it-works.html">How It Works</a>
+      <a href="for-barbers.html">For Barbers</a>
+      <a href="about.html">About</a>
+      <div class="nav-highlighter"></div>
+    </div>
+    <div class="nav-cta">
+      <button class="btn-outline" onclick="location.href='for-barbers.html#barber-signup'">List Your Shop</button>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html" class="active">Home</a>
+    <a href="how-it-works.html">How It Works</a>
+    <a href="for-barbers.html">For Barbers</a>
+
+    <a href="about.html">About</a>
+    <div class="mobile-menu-btns">
+      <button class="btn-outline" onclick="location.href='for-barbers.html#barber-signup'">List Your Shop</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <!-- PLACE YOUR VIDEO FILE HERE -->
+    <video class="hero-video-bg" id="hero-video" poster="assets/hero-poster.png" preload="auto" autoplay loop muted playsinline>
+      <source src="assets/hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-logo-type fade-up">trimzy</div>
+      <h1 class="hero-headline fade-up-d1">
+        India's #1<br>barber booking app
+      </h1>
+      <p class="hero-sub fade-up-d2">Experience fast and hassle free salon booking with Trimzy app</p>
+      <div class="hero-actions fade-up-d3">
+        <button class="btn-hero-primary" onclick="location.href='app.html'">
+          Book a Barber
+        </button>
+        <button class="btn-hero-secondary" onclick="location.href='for-barbers.html#barber-signup'">
+          Join as Barber
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <div class="ticker-item">Book in 60 seconds</div>
+      <div class="ticker-item">No waiting in line</div>
+      <div class="ticker-item">Home visits available</div>
+      <div class="ticker-item">UPI payments</div>
+      <div class="ticker-item">ID-verified barbers</div>
+      <div class="ticker-item">Real-time slots</div>
+      <div class="ticker-item">Bhubaneswar's #1</div>
+      <div class="ticker-item">Book in 60 seconds</div>
+      <div class="ticker-item">No waiting in line</div>
+      <div class="ticker-item">Home visits available</div>
+      <div class="ticker-item">UPI payments</div>
+      <div class="ticker-item">ID-verified barbers</div>
+      <div class="ticker-item">Real-time slots</div>
+      <div class="ticker-item">Bhubaneswar's #1</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <h2 class="section-title">Book your barber in <span class="accent">4 simple steps</span></h2>
+    <p class="section-sub">A premium, hassle-free experience designed for modern life. No queues, no phone calls, just great hair.</p>
+    
+    <div class="steps-grid">
+      <!-- STEP 1 -->
+      <div class="swiggy-card" data-aos="fade-up">
+        <div class="swiggy-img-box">
+          <img src="assets/img/guide/step1.png" class="swiggy-img" alt="Search">
+        </div>
+        <div class="swiggy-pill">Find nearby barbers</div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="swiggy-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="swiggy-img-box">
+          <img src="assets/img/guide/step3.png" class="swiggy-img" alt="Booking">
+        </div>
+        <div class="swiggy-pill">Pick your slot</div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="swiggy-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="swiggy-img-box">
+          <img src="assets/img/guide/step4.png" class="swiggy-img" alt="Service">
+        </div>
+        <div class="swiggy-pill">Visit or Stay Home</div>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="swiggy-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="swiggy-img-box">
+          <img src="assets/img/guide/step5.png" class="swiggy-img" alt="Quality">
+        </div>
+        <div class="swiggy-pill">Verified Quality</div>
+      </div>
+    </div>
+
+    <div style="margin-top:80px; text-align:center;">
+      <button class="btn-gold" onclick="location.href='how-it-works.html'"
+        style="padding:18px 48px;font-size:16px;border-radius:100px;font-weight:700;box-shadow:0 10px 30px var(--gold-glow)">Explore The Experience →</button>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+
+    <h2 class="section-title">Everything you need for a <span class="accent">great haircut</span></h2>
+    <p class="section-sub">We built Trimzy because waiting at barbershops shouldn't be your problem anymore</p>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-title">Real-time slot booking</div>
+        <div class="feat-desc">See live availability and book a slot instantly No double bookings no surprises</div>
+        <div class="feat-tag" style="background:rgba(232,164,74,.08);color:var(--gold)">Core Feature</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Home visit booking</div>
+        <div class="feat-desc">Book a verified barber to come to your door Perfect for busy days or special occasions
+        </div>
+        <div class="feat-tag" style="background:rgba(232,164,74,.12);color:var(--gold)">Popular</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">ID-verified barbers</div>
+        <div class="feat-desc">Every barber on Trimzy is identity verified and background-checked Safe, always</div>
+        <div class="feat-tag" style="background:rgba(52,211,153,.08);color:var(--green)">Trust & Safety</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">UPI payments</div>
+        <div class="feat-desc">Pay seamlessly via UPI after your cut No cash hassles, instant digital receipts</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Honest ratings</div>
+        <div class="feat-desc">Real reviews from real customers Find the best barbers based on verified feedback</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-title">Smart reminders</div>
+        <div class="feat-desc">Get reminders before your appointment so you never miss your slot</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOR BARBERS TEASER -->
+  <section class="barber-section">
+
+    <h2 class="section-title">Grow your income with <span class="accent">Trimzy</span></h2>
+    <p class="section-sub">Join 50+ barbers already growing their business on our platform Your chair, your schedule,
+      your terms</p>
+    <div class="barber-split">
+      <div class="barber-visual">
+        <div class="barber-visual-bg"></div>
+        <div class="earnings-card">
+          <div class="earnings-label">Monthly Earnings</div>
+          <div class="earnings-value">₹<span>42,500</span></div>
+          <div class="earnings-change">↑ +28% vs last month</div>
+        </div>
+        <div class="earnings-card">
+          <div class="earnings-label">Bookings This Month</div>
+          <div class="earnings-value"><span>186</span></div>
+          <div class="earnings-change">↑ 9 bookings today</div>
+        </div>
+      </div>
+      <div class="barber-perks">
+        <div class="perk">
+          <div class="perk-icon">📅</div>
+          <div>
+            <div class="perk-title">Manage your schedule</div>
+            <div class="perk-desc">Set your own hours Block days off Accept or decline bookings You're in control
+            </div>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">💰</div>
+          <div>
+            <div class="perk-title">Direct UPI payouts</div>
+            <div class="perk-desc">Payments go straight to your UPI ID No waiting, no middlemen</div>
+          </div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">📊</div>
+          <div>
+            <div class="perk-title">Growth analytics</div>
+            <div class="perk-desc">Track your bookings, earnings and ratings from a simple dashboard</div>
+          </div>
+        </div>
+        <button class="btn-gold" onclick="location.href='for-barbers.html#barber-signup'"
+          style="margin-top:28px;padding:16px 32px;font-size:15px;border-radius:var(--radius-md);width:fit-content">Join as a Barber →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="testimonial-section">
+    <div class="testimonial-header">
+      <h2 class="section-title">What our users say</h2>
+      <p class="section-sub">Discover how thousands of users streamline their grooming appointments with our platform.</p>
+    </div>
+
+    <div class="testimonial-grid">
+      <!-- Column 1 -->
+      <div class="testimonial-column" style="--duration: 40s;">
+        <!-- Original 7 -->
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Finally no more waiting at the barbershop for 45 minutes I book my slot the night before and just walk in. Game changer!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#E8A44A,#E87766)">AM</div>
+            <div class="tc-info">
+              <div class="tc-name">Arjun Mohanty</div>
+              <div class="tc-role">Saheed Nagar</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The ID verification made my family feel safe. Home visit feature is incredible. Highly professional!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">SP</div>
+            <div class="tc-info">
+              <div class="tc-name">Suresh Patra</div>
+              <div class="tc-role">IRC Village</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"My bookings tripled after joining Trimzy. The dashboard is simple and payments come directly to my UPI."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#2dd4bf)">RS</div>
+            <div class="tc-info">
+              <div class="tc-name">Rajan Sharma</div>
+              <div class="tc-role">Master Barber</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Superb zero-wait experience. I can fit a haircut into my lunch break without worrying about delays."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#6366f1,#a855f7)">RK</div>
+            <div class="tc-info">
+              <div class="tc-name">Rahul Kumar</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Elite barbers right at my living room. Home service is a lifesaver for busy weekends."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">VM</div>
+            <div class="tc-info">
+              <div class="tc-name">Vikram Mishra</div>
+              <div class="tc-role">IT Park</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"ID checks and rating system give me peace of mind. Every barber I've met has been professional."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">NS</div>
+            <div class="tc-info">
+              <div class="tc-name">Nikita Singh</div>
+              <div class="tc-role">Lawyer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Income has tripled in 3 months. The app handles scheduling so I can focus on my art."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">PP</div>
+            <div class="tc-info">
+              <div class="tc-name">Prakash Panda</div>
+              <div class="tc-role">Shop Owner</div>
+            </div>
+          </div>
+        </div>
+        <!-- Clones for loop -->
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Finally no more waiting at the barbershop for 45 minutes I book my slot the night before and just walk in. Game changer!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#E8A44A,#E87766)">AM</div>
+            <div class="tc-info">
+              <div class="tc-name">Arjun Mohanty</div>
+              <div class="tc-role">Saheed Nagar</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The ID verification made my family feel safe. Home visit feature is incredible. Highly professional!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9)">SP</div>
+            <div class="tc-info">
+              <div class="tc-name">Suresh Patra</div>
+              <div class="tc-role">IRC Village</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"My bookings tripled after joining Trimzy. The dashboard is simple and payments come directly to my UPI."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#2dd4bf)">RS</div>
+            <div class="tc-info">
+              <div class="tc-name">Rajan Sharma</div>
+              <div class="tc-role">Master Barber</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Superb zero-wait experience. I can fit a haircut into my lunch break without worrying about delays."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#6366f1,#a855f7)">RK</div>
+            <div class="tc-info">
+              <div class="tc-name">Rahul Kumar</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Elite barbers right at my living room. Home service is a lifesaver for busy weekends."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">VM</div>
+            <div class="tc-info">
+              <div class="tc-name">Vikram Mishra</div>
+              <div class="tc-role">IT Park</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"ID checks and rating system give me peace of mind. Every barber I've met has been professional."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">NS</div>
+            <div class="tc-info">
+              <div class="tc-name">Nikita Singh</div>
+              <div class="tc-role">Lawyer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Income has tripled in 3 months. The app handles scheduling so I can focus on my art."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">PP</div>
+            <div class="tc-info">
+              <div class="tc-name">Prakash Panda</div>
+              <div class="tc-role">Shop Owner</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div class="testimonial-column col-hide-mobile" style="--duration: 55s;">
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Used to wait for 1 hour at my shop. Now I go when my slot starts. Trimzy is very reliable!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">AS</div>
+            <div class="tc-info">
+              <div class="tc-name">Ankit Sahu</div>
+              <div class="tc-role">Patia</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Reliable slot system. No double bookings. The app is much better than calling the barber."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">MD</div>
+            <div class="tc-info">
+              <div class="tc-name">Manas Dash</div>
+              <div class="tc-role">Unit 9</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Payment via UPI is seamless. No cash hassle at the shop. The UI is very smooth."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed)">BD</div>
+            <div class="tc-info">
+              <div class="tc-name">Biswajit Das</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"I handle 15-20 clients easily now. No chaos at the shop. My customers love the speed."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">SM</div>
+            <div class="tc-info">
+              <div class="tc-name">Sanjay Malik</div>
+              <div class="tc-role">Barber Pro</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The UI feels premium. Finding a barber in Bhubaneswar was never this easy. Kudos!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">PR</div>
+            <div class="tc-info">
+              <div class="tc-name">Priyanka Roy</div>
+              <div class="tc-role">Regular User</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"My business grew 40% after joining the platform. The feedback system really helps."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">HA</div>
+            <div class="tc-info">
+              <div class="tc-name">Hitesh Agarwal</div>
+              <div class="tc-role">Shop Owner</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Clean slots, clean experience. Best booking app for men's grooming in India."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#6b7280,#4b5563)">KD</div>
+            <div class="tc-info">
+              <div class="tc-name">Kartik Dev</div>
+              <div class="tc-role">Customer</div>
+            </div>
+          </div>
+        </div>
+        <!-- Clones -->
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Used to wait for 1 hour at my shop. Now I go when my slot starts. Trimzy is very reliable!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">AS</div>
+            <div class="tc-info">
+              <div class="tc-name">Ankit Sahu</div>
+              <div class="tc-role">Patia</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Reliable slot system. No double bookings. The app is much better than calling the barber."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">MD</div>
+            <div class="tc-info">
+              <div class="tc-name">Manas Dash</div>
+              <div class="tc-role">Unit 9</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Payment via UPI is seamless. No cash hassle at the shop. The UI is very smooth."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed)">BD</div>
+            <div class="tc-info">
+              <div class="tc-name">Biswajit Das</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"I handle 15-20 clients easily now. No chaos at the shop. My customers love the speed."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ec4899,#db2777)">SM</div>
+            <div class="tc-info">
+              <div class="tc-name">Sanjay Malik</div>
+              <div class="tc-role">Barber Pro</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The UI feels premium. Finding a barber in Bhubaneswar was never this easy. Kudos!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">PR</div>
+            <div class="tc-info">
+              <div class="tc-name">Priyanka Roy</div>
+              <div class="tc-role">Regular User</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"My business grew 40% after joining the platform. The feedback system really helps."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">HA</div>
+            <div class="tc-info">
+              <div class="tc-name">Hitesh Agarwal</div>
+              <div class="tc-role">Shop Owner</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Clean slots, clean experience. Best booking app for men's grooming in India."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#6b7280,#4b5563)">KD</div>
+            <div class="tc-info">
+              <div class="tc-name">Kartik Dev</div>
+              <div class="tc-role">Customer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 3 -->
+      <div class="testimonial-column col-hide-tablet" style="--duration: 45s;">
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The app is so fast. I booked my haircut in literally 60 seconds."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ef4444)">JD</div>
+            <div class="tc-info">
+              <div class="tc-name">John Doe</div>
+              <div class="tc-role">Developer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Every barber is ID-verified. That's a huge plus for home services."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">SH</div>
+            <div class="tc-info">
+              <div class="tc-name">Sonal Hota</div>
+              <div class="tc-role">Puri</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"No more awkward phone calls to barbers. Just pick a slot and go."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#E8A44A,#10b981)">AV</div>
+            <div class="tc-info">
+              <div class="tc-name">Amit Verma</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Finally someone solved the barber queue problem. Incredible execution."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ef4444,#e8a44a)">RT</div>
+            <div class="tc-info">
+              <div class="tc-name">Rajesh Tripathy</div>
+              <div class="tc-role">Infosys</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Love the UI. It's so clean and easy to use on my iPhone. Highly recommended."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">RS</div>
+            <div class="tc-info">
+              <div class="tc-name">Rohan Sen</div>
+              <div class="tc-role">Master Barber</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The best barber booking app in Bhubaneswar. Keep growing guys!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#d97706)">MK</div>
+            <div class="tc-info">
+              <div class="tc-name">Manoj Kar</div>
+              <div class="tc-role">Regular User</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The reviews are honest. I found my signature barber through Trimzy."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#d97706,#3b82f6)">NK</div>
+            <div class="tc-info">
+              <div class="tc-name">Naveen Kumar</div>
+              <div class="tc-role">Saheed Nagar</div>
+            </div>
+          </div>
+        </div>
+        <!-- Clones -->
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The app is so fast. I booked my haircut in literally 60 seconds."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#8b5cf6,#ef4444)">JD</div>
+            <div class="tc-info">
+              <div class="tc-name">John Doe</div>
+              <div class="tc-role">Developer</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Every barber is ID-verified. That's a huge plus for home services."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#3b82f6)">SH</div>
+            <div class="tc-info">
+              <div class="tc-name">Sonal Hota</div>
+              <div class="tc-role">Puri</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"No more awkward phone calls to barbers. Just pick a slot and go."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#E8A44A,#10b981)">AV</div>
+            <div class="tc-info">
+              <div class="tc-name">Amit Verma</div>
+              <div class="tc-role">Student</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Finally someone solved the barber queue problem. Incredible execution."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#ef4444,#e8a44a)">RT</div>
+            <div class="tc-info">
+              <div class="tc-name">Rajesh Tripathy</div>
+              <div class="tc-role">Infosys</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"Love the UI. It's so clean and easy to use on my iPhone. Highly recommended."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#3b82f6,#8b5cf6)">RS</div>
+            <div class="tc-info">
+              <div class="tc-name">Rohan Sen</div>
+              <div class="tc-role">Master Barber</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The best barber booking app in Bhubaneswar. Keep growing guys!"</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#10b981,#d97706)">MK</div>
+            <div class="tc-info">
+              <div class="tc-name">Manoj Kar</div>
+              <div class="tc-role">Regular User</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="tc-stars">★★★★★</div>
+          <div class="tc-content">"The reviews are honest. I found my signature barber through Trimzy."</div>
+          <div class="tc-footer">
+            <div class="tc-avatar" style="background:linear-gradient(135deg,#d97706,#3b82f6)">NK</div>
+            <div class="tc-info">
+              <div class="tc-name">Naveen Kumar</div>
+              <div class="tc-role">Saheed Nagar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- CITIES -->
+  <section class="cities-section">
+
+    <h2 class="section-title" style="color:#fff;text-align:center">Live in <span
+        class="accent">Bhubaneswar</span><br />Coming to your city next</h2>
+    <div class="cities" style="justify-content:center;margin-top:28px">
+      <div class="city-badge active"> Bhubaneswar</div>
+      <div class="city-badge">Cuttack</div>
+      <div class="city-badge">Puri</div>
+      <div class="city-badge">Rourkela</div>
+      <div class="city-badge">Sambalpur</div>
+      <div class="city-badge">Berhampur</div>
+      <div class="city-badge">+ More Soon</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-bg"></div>
+    <div class="section-label" style="color:rgba(14,14,26,.4);text-align:center;justify-content:center">Get Started
+    </div>
+    <h2 class="cta-title">Ready for your best<br />haircut experience?</h2>
+    <p class="cta-sub">Join thousands of customers and barbers already on Trimzy Free to use, always</p>
+    <div class="cta-actions">
+      <button class="btn-cta-dark" onclick="location.href='app.html'">Book a Barber Now</button>
+      <button class="btn-cta-outline" onclick="location.href='for-barbers.html#barber-signup'">Join as a Barber</button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-logo">Trim<span>zy</span></div>
+        <div class="footer-brand-desc">India's smartest barber booking platform Skip the queue, book your slot, and get
+          the cut you deserve</div>
+        <div class="footer-social" style="gap:16px; margin-top:20px;">
+          <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg></a>
+          <a href="#" class="social-btn" aria-label="Twitter"><svg viewBox="0 0 24 24">
+              <path
+                d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+            </svg></a>
+          <a href="https://www.instagram.com/trimzy.co.in?igsh=MXc3bzVzaW14amFwMA==" target="_blank" class="social-btn"
+            aria-label="Instagram"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><svg viewBox="0 0 24 24">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Product</div>
+        <ul class="footer-links">
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="for-barbers.html">For Barbers</a></li>
+
+          <li><a href="app.html">Book Now</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 <span>Trimzy</span>. Made with ♥ in Bhubaneswar, India.</div>
+      <div class="footer-legal"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a></div>
+    </div>
+  </footer>
+
+  <script src="shared.js"></script>
+  <script>
+    // Hero particles
+    (function () {
+      const container = document.getElementById('hero-particles');
+      if (!container || window.innerWidth < 768) return;
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+        container.appendChild(p);
+      }
+    })();
+
+    // Animated counter for hero stats
+    (function () {
+      const counters = document.querySelectorAll('[data-count]');
+      counters.forEach(el => {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const target = parseInt(el.dataset.count);
+              const suffix = el.dataset.suffix || '';
+              const prefix = el.dataset.prefix || '';
+              const duration = 2200;
+              const start = performance.now();
+
+              function animate(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                let current = Math.round(target * eased);
+                if (target >= 1000) {
+                  el.textContent = prefix + (current / 1000).toFixed(current >= target ? 0 : 0) + 'K' + suffix;
+                } else {
+                  el.textContent = prefix + current + suffix;
+                }
+                if (progress < 1) requestAnimationFrame(animate);
+              }
+              requestAnimationFrame(animate);
+              observer.unobserve(el);
+            }
+          });
+        }, { threshold: 0.3 });
+        observer.observe(el);
+      });
+    })();
+
+    // ── HOMEPAGE LOCATION DETECTION ──
+    (function () {
+      // Reverse geocode using Nominatim — city level only
+      async function getCity(lat, lng) {
+        try {
+          const r = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=en`);
+          const d = await r.json();
+          const a = d.address || {};
+          return a.city || a.town || a.county || 'Bhubaneswar';
+        } catch { return 'Bhubaneswar'; }
+      }
+
+      function applyCity(city) {
+        const badge = document.getElementById('hero-city');
+        const phone = document.getElementById('phone-city');
+        if (badge) badge.textContent = city;
+        if (phone) phone.textContent = city;
+        // Hide toast
+        const toast = document.getElementById('loc-toast');
+        if (toast) { toast.style.opacity = '0'; toast.style.transform = 'translateY(20px)'; setTimeout(() => toast.remove(), 400); }
+      }
+
+      function detect() {
+        if (!navigator.geolocation) return;
+        navigator.geolocation.getCurrentPosition(
+          async pos => { const city = await getCity(pos.coords.latitude, pos.coords.longitude); applyCity(city); },
+          () => { applyCity('Bhubaneswar'); },
+          { timeout: 8000 }
+        );
+      }
+
+      function showToast() {
+        // Don't show if already dismissed
+        if (sessionStorage.getItem('loc_asked')) { detect(); return; }
+        const toast = document.createElement('div');
+        toast.id = 'loc-toast';
+        toast.innerHTML = `
+      <div class="lt-inner">
+        <div class="lt-icon">📍</div>
+        <div class="lt-text">
+          <strong>Find barbers near you</strong>
+          <span>Allow location access to show your city</span>
+        </div>
+        <button class="lt-allow" onclick="window._locAllow()">Allow</button>
+        <button class="lt-skip" onclick="window._locSkip()">✕</button>
+      </div>`;
+        document.body.appendChild(toast);
+        // Animate in (Preserving translateX for centering)
+        requestAnimationFrame(() => { 
+          toast.style.opacity = '1'; 
+          toast.style.transform = 'translateX(-50%) translateY(0)'; 
+        });
+        sessionStorage.setItem('loc_asked', '1');
+      }
+
+      window._locAllow = function () { detect(); };
+      window._locSkip = function () { applyCity('Bhubaneswar'); };
+
+      // Check permission state first
+      // ── HERO VIDEO OPTIMIZATION ──
+      (function () {
+        const video = document.getElementById('hero-video');
+        if (!video) return;
+        
+        // When video is ready to play, add the loaded class for smooth fade in
+        video.addEventListener('canplaythrough', () => {
+          video.classList.add('loaded');
+        });
+
+        // Safety fallback: if it doesn't trigger in 2s, force show
+        setTimeout(() => {
+          if(!video.classList.contains('loaded')) video.classList.add('loaded');
+        }, 3000);
+      })();
+
+      if (navigator.permissions) {
+        navigator.permissions.query({ name: 'geolocation' }).then(p => {
+          if (p.state === 'granted') { detect(); }
+          else if (p.state === 'denied') { /* do nothing */ }
+          else { setTimeout(showToast, 1800); }
+        });
+      } else { setTimeout(showToast, 1800); }
+    })();
+
+      // ── TESTIMONIALS CAROUSEL LOGIC REMOVED (Replaced by Vertical Marquee) ──
+  </script>
+</body>
+
+</html>
