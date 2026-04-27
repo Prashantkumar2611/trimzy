@@ -73,14 +73,6 @@
 
 ---
 
-## Visuals
-
-| Home Page | Booking App | Barber Dashboard |
-|-----------|-------------|------------------|
-| ![Home](assets/img/guide/guide1.png) | ![App](assets/img/guide/guide4.png) | ![Dashboard](assets/img/guide/step5.png) |
-
----
-
 ##  Contributing
 
 We welcome contributions! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests
