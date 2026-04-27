@@ -73,7 +73,7 @@
 
 ---
 
-## 📸 Visuals
+## Visuals
 
 | Home Page | Booking App | Barber Dashboard |
 |-----------|-------------|------------------|
@@ -85,7 +85,7 @@
 
 We welcome contributions! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the LICENSE file for details
 
