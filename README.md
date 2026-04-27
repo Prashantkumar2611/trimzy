@@ -1,4 +1,4 @@
-# Trimzy — India's Smartest Barber Booking Platform ✂️
+# Trimzy India's Smartest Barber Booking Platform 
 
 [![Firebase](https://img.shields.io/badge/Firebase-039BE5?style=for-the-badge&logo=Firebase&logoColor=white)](https://firebase.google.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
