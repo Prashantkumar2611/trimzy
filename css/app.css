@@ -32,7 +32,7 @@
     /* ── STICKY APP HEADER ── */
     .app-header {
       background: #fff;
-      padding: 16px 6%;
+      padding: 12px 20px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -2212,13 +2212,28 @@
       background: rgba(248, 113, 113, .06)
     }
 
-    @media(max-width:640px) {
-      .bp-steps .bp-step {
-        font-size: 10px;
-        padding: 8px 4px
-      }
+    @media (max-width: 768px) {
+      .app-header-row { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; display: flex !important; }
+      .app-search-row { flex-direction: column !important; width: 100% !important; display: flex !important; }
+      .app-search-wrap { width: 100% !important; min-width: 100% !important; }
+      .app-filter-select { width: 100% !important; }
+      
+      .barber-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+      .barber-card { margin-bottom: 0 !important; }
+      
+      .loc-banner-inner { padding: 24px 20px !important; border-radius: 20px !important; }
+      .pincode-modal { padding: 24px 20px !important; border-radius: 20px !important; }
+      
+      .bp-steps .bp-step { font-size: 10px !important; padding: 8px 4px !important; }
+      .cf-row { grid-template-columns: 1fr !important; }
+    }
 
-      .cf-row {
-        grid-template-columns: 1fr
-      }
+    @media (max-width: 480px) {
+      .app-header { padding: 12px 16px; }
+      .app-title { font-size: 18px; }
+      .city-btn .city-name { max-width: 100px; }
+      
+      .ticket-card { padding: 24px 16px; border-radius: 24px; }
+      .ticket-title { font-size: 22px; }
+      .ticket-pin-value { font-size: 32px; letter-spacing: 4px; }
     }

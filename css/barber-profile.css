@@ -251,41 +251,62 @@
 
     @media (max-width: 768px) {
       .hero {
-        min-height: 520px;
-        justify-content: center;
-        padding-top: 80px;
+        min-height: auto !important;
+        justify-content: center !important;
+        padding-top: 80px !important;
       }
       .hero-inner {
         flex-direction: column !important;
         text-align: center !important;
         padding: 40px 5% !important;
         gap: 20px !important;
+        display: flex !important; /* Ensure it's still flex but column */
       }
-      #hero-avatar {
+      .hero-profile-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 16px !important;
+      }
+      .hero-avatar {
         width: 100px !important;
         height: 100px !important;
-        margin: 0 auto;
+        margin: 0 auto !important;
         font-size: 36px !important;
       }
-      #hero-name {
-        font-size: 26px !important;
-        margin-top: 10px;
+      .hero-top-meta {
+        align-items: center !important;
       }
-      #hero-loc {
+      .hero-badges-row {
         justify-content: center !important;
+      }
+      .hero-name {
+        font-size: 26px !important;
+        margin-top: 10px !important;
+      }
+      .hero-loc {
+        justify-content: center !important;
+        display: flex !important;
       }
       .hero-stats {
         justify-content: center !important;
-        gap: 32px !important;
-        margin-top: 8px;
+        gap: 24px !important;
+        margin-top: 8px !important;
+        width: 100% !important;
+        display: flex !important;
       }
-      .hero-stat div:first-child {
-        font-size: 20px !important;
+      .hero-stat {
+        text-align: center !important;
+        padding: 0 !important;
+      }
+      .hero-stat-val {
+        font-size: 18px !important;
       }
       .hero-tags {
         justify-content: center !important;
         padding: 0 5% 32px !important;
         gap: 8px !important;
+        display: flex !important;
       }
       .hero-tag {
         font-size: 11px !important;
@@ -642,6 +663,11 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px
+    }
+
+    @media (max-width: 600px) {
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .rating-overview { flex-direction: column; text-align: center; }
     }
 
     .gallery-item {

@@ -7,7 +7,7 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 180px 5% 72px;
+      padding: 120px 20px 72px;
       overflow: hidden;
     }
 
@@ -1093,6 +1093,12 @@
     }
 
     @media (max-width: 768px) {
+      .hero { padding: 100px 20px 60px; }
+      .hero-logo-type { font-size: 32px; }
+      .hero-headline { margin-bottom: 16px; }
+      .hero-sub { margin-bottom: 32px; }
+      .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; padding: 14px 24px; font-size: 15px; }
+      
       .testimonial-grid {
         grid-template-columns: 1fr;
         height: 500px;
@@ -1101,4 +1107,19 @@
       .col-hide-mobile {
         display: none;
       }
+      
+      /* Swiggy-style guide responsiveness */
+      .swiggy-guide-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .swiggy-card {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-headline { font-size: 32px; }
+      .hero-sub { font-size: 14px; }
     }
