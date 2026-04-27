@@ -102,7 +102,7 @@ window.injectAuthNav();
   // Always load auth-modal.js to handle persistent login & listeners
   const script = document.createElement('script');
   script.type = 'module';
-  script.src = 'auth-modal.js';
+  script.src = 'js/auth-modal.js';
   document.head.appendChild(script);
 })();
 
