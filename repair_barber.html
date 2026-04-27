@@ -4,20 +4,7 @@
     <meta charset="UTF-8">
     <title>Barber Account Repair Tool — Trimzy</title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        :root { --navy: #0E0E1A; --gold: #E8A44A; --bg: #F4F3F0; --white: #fff; --gray: #8A8A9A; --green: #2ECC8E; --red: #E85555; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .card { background: var(--white); padding: 40px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 450px; width: 100%; text-align: center; }
-        h1 { font-family: 'Sora', sans-serif; font-size: 24px; color: var(--navy); margin-bottom: 8px; }
-        p { color: var(--gray); font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
-        input { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid #eee; margin-bottom: 16px; font-size: 15px; outline: none; box-sizing: border-box; }
-        button { width: 100%; padding: 16px; border-radius: 12px; border: none; background: var(--gold); color: var(--navy); font-weight: 700; cursor: pointer; transition: 0.2s; font-family: 'Sora', sans-serif; }
-        button:hover { background: #F5C97A; transform: translateY(-2px); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-        #status { margin-top: 20px; padding: 12px; border-radius: 10px; font-size: 14px; display: none; }
-        .success { background: rgba(46, 204, 142, 0.1); color: var(--green); display: block !important; }
-        .error { background: rgba(232, 85, 85, 0.1); color: var(--red); display: block !important; }
-    </style>
+    <link rel="stylesheet" href="css/repair_barber.css">
 </head>
 <body>
 
@@ -31,74 +18,7 @@
     <div id="status"></div>
 </div>
 
-<script type="module">
-    import { db, auth, collection, query, where, getDocs, setDoc, doc, deleteDoc } from './firebase.js';
-    import { signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-    window.startRepair = async () => {
-        const email = document.getElementById('email').value.trim();
-        const btn = document.getElementById('repair-btn');
-        const status = document.getElementById('status');
-        
-        if (!email) {
-            showStatus("Please enter an email address.", "error");
-            return;
-        }
-
-        btn.disabled = true;
-        btn.textContent = "Processing...";
-        showStatus("Analyzing database...", "");
-
-        try {
-            // 1. Find the barber document by email
-            const q = query(collection(db, "barbers"), where("email", "==", email));
-            const snap = await getDocs(q);
-
-            if (snap.empty) {
-                showStatus("No barber profile found with this email in Firestore.", "error");
-                btn.disabled = false;
-                btn.textContent = "Repair Account Now";
-                return;
-            }
-
-            const barberDoc = snap.docs[0];
-            const barberData = barberDoc.data();
-            const currentDocId = barberDoc.id;
-            const uidInField = barberData.uid;
-
-            if (!uidInField) {
-                showStatus("This profile is missing a UID field. Please log in as this barber first to generate a UID, or fix it in the Admin panel.", "error");
-                btn.disabled = false;
-                btn.textContent = "Repair Account Now";
-                return;
-            }
-
-            // 2. Migration: Move the data to a new document with ID = UID
-            await setDoc(doc(db, "barbers", uidInField), barberData);
-            console.log("Moved data to UID-based document:", uidInField);
-
-            // 3. Delete the old random-id document
-            if (currentDocId !== uidInField) {
-                await deleteDoc(doc(db, "barbers", currentDocId));
-                console.log("Deleted old legacy document:", currentDocId);
-            }
-
-            showStatus("✅ Success! Account repaired. The barber can now log in normally.", "success");
-            btn.textContent = "Fixed! Try logging in now.";
-        } catch (err) {
-            console.error(err);
-            showStatus("Error: " + err.message, "error");
-            btn.disabled = false;
-            btn.textContent = "Repair Account Now";
-        }
-    };
-
-    function showStatus(msg, type) {
-        const el = document.getElementById('status');
-        el.textContent = msg;
-        el.className = type;
-    }
-</script>
+<script type="module" src="js/repair_barber.js"></script>
 
 </body>
 </html>

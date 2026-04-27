@@ -70,3 +70,5 @@ node_modules/
 
 # Personal configuration and secrets
 config.js
+.DS_Store
+.npm_local_cache/

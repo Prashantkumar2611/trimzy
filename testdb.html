@@ -1,31 +1,4 @@
 <!DOCTYPE html>
 <html><body>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  const app = initializeApp({
-    apiKey: "AIzaSyDciX44koaTNnC26NNUaEXVy_nL-e0c4xo",
-    authDomain: "snipslot-2629.firebaseapp.com",
-    projectId: "snipslot-2629",
-    storageBucket: "snipslot-2629.appspot.com",
-    messagingSenderId: "330621998514",
-    appId: "1:330621998514:web:e2b0de05e46359006480ab"
-  });
-  const db = getFirestore(app);
-  async function test() {
-    try {
-      const snap = await getDoc(doc(db, "barbers", "O0b4PlOxChhYDeYrluk5"));
-      console.log("EXISTS: ", snap.exists());
-      if(!snap.exists()){
-        const q = await getDocs(collection(db, "barbers"));
-        let ids = [];
-        q.forEach(d => ids.push(d.id));
-        console.log("Actual IDs: ", ids);
-      }
-    } catch(e) {
-      console.error(e);
-    }
-  }
-  test();
-</script>
+<script type="module" src="js/testdb.js"></script>
 </body></html>

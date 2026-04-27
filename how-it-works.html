@@ -9,332 +9,7 @@
     href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="shared.css" />
-  <style>
-    .page-hero {
-      background: var(--navy);
-      padding: 140px 5% 80px;
-      position: relative;
-      overflow: hidden
-    }
-
-    .page-hero-bg {
-      position: absolute;
-      top: -100px;
-      right: -100px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(232, 164, 74, .12) 0%, transparent 70%);
-      pointer-events: none
-    }
-
-    .page-hero h1 {
-      font-family: 'Sora', sans-serif;
-      font-size: clamp(40px, 6vw, 72px);
-      font-weight: 800;
-      color: #fff;
-      line-height: 1.05;
-      letter-spacing: -2px;
-      margin-bottom: 20px
-    }
-
-    .page-hero p {
-      font-size: 18px;
-      color: rgba(255, 255, 255, .55);
-      max-width: 560px;
-      line-height: 1.7
-    }
-
-    .process-section {
-      background: #FFFFFF; /* Match image backgrounds to make them 'transparent' */
-      padding: 100px 5%;
-    }
-
-    .steps-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr); /* Force 5 columns for Swiggy alignment */
-      gap: 24px;
-      max-width: 1400px;
-      margin: 0 auto;
-      overflow: visible;
-    }
-
-    @media (max-width: 1200px) {
-      .steps-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      }
-    }
-
-    @media (max-width: 768px) {
-      .steps-grid {
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 40px;
-        scroll-snap-type: x mandatory;
-        gap: 20px;
-      }
-      .swiggy-card {
-        min-width: 280px;
-        scroll-snap-align: center;
-      }
-    }
-
-    .swiggy-card {
-      background: #fff;
-      border: 1px solid #F2F2F2;
-      border-radius: 32px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: all 0.4s cubic-bezier(0.2, 1, 0.3, 1);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* Soft shadow to define card on white BG */
-      position: relative;
-      overflow: visible; /* CRITICAL: Allows icons to pop outside the card */
-    }
-
-    .swiggy-card:hover {
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08); /* Stronger hover shadow */
-      border-color: var(--gold);
-    }
-
-    .swiggy-img-box {
-      width: 100%;
-      aspect-ratio: 1/1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      position: relative;
-      z-index: 10; /* Bring icons to the very front */
-      overflow: visible;
-    }
-
-    .swiggy-img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      mix-blend-mode: multiply;
-      transition: transform 0.6s cubic-bezier(0.34, 1.75, 0.64, 1); /* More bouncy spring */
-      will-change: transform;
-    }
-
-    .swiggy-card:hover .swiggy-img {
-      transform: scale(1.45) translateY(-10px); /* Massive pop-out while breaking the top edge */
-    }
-
-    .swiggy-pill {
-      color: var(--navy);
-      padding: 4px 12px;
-      font-family: 'Sora', sans-serif;
-      font-size: 15px; /* Slightly larger for readability as plain text */
-      font-weight: 800;
-      text-align: center;
-      transition: all 0.3s;
-    }
-
-    .swiggy-card:hover .swiggy-pill {
-      color: var(--navy); /* Remain dark blue even on hover */
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .section-label {
-      text-align: center;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
-
-    .faq-section {
-      background: var(--bg)
-    }
-
-    .faq-list {
-      margin-top: 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 760px
-    }
-
-    .faq-item {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden
-    }
-
-    .faq-q {
-      padding: 20px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-family: 'Sora', sans-serif;
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--navy);
-      transition: background .2s
-    }
-
-    .faq-q:hover {
-      background: #fafafa
-    }
-
-    .faq-icon {
-      font-size: 20px;
-      color: var(--gold);
-      transition: transform .3s;
-      flex-shrink: 0
-    }
-
-    .faq-item.open .faq-icon {
-      transform: rotate(45deg)
-    }
-
-    .faq-a {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height .35s ease, padding .3s
-    }
-
-    .faq-item.open .faq-a {
-      max-height: 200px;
-      padding: 0 24px 20px
-    }
-
-    .faq-a p {
-      font-size: 15px;
-      color: var(--gray);
-      line-height: 1.7
-    }
-
-    .types-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-top: 48px
-    }
-
-    .type-card {
-      border-radius: 20px;
-      padding: 36px;
-      position: relative;
-      overflow: hidden
-    }
-
-    .type-card.shop {
-      background: var(--navy);
-      color: #fff
-    }
-
-    .type-card.home {
-      background: var(--gold)
-    }
-
-    .type-badge {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 20px
-    }
-
-    .type-card.shop .type-badge {
-      background: rgba(232, 164, 74, .15);
-      color: var(--gold)
-    }
-
-    .type-card.home .type-badge {
-      background: rgba(14, 14, 26, .15);
-      color: var(--navy)
-    }
-
-    .type-title {
-      font-family: 'Sora', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 12px
-    }
-
-    .type-card.shop .type-title {
-      color: #fff
-    }
-
-    .type-card.home .type-title {
-      color: var(--navy)
-    }
-
-    .type-desc {
-      font-size: 15px;
-      line-height: 1.7;
-      margin-bottom: 24px
-    }
-
-    .type-card.shop .type-desc {
-      color: rgba(255, 255, 255, .55)
-    }
-
-    .type-card.home .type-desc {
-      color: rgba(14, 14, 26, .6)
-    }
-
-    .type-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px
-    }
-
-    .type-list li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px
-    }
-
-    .type-card.shop .type-list li {
-      color: rgba(255, 255, 255, .7)
-    }
-
-    .type-card.home .type-list li {
-      color: rgba(14, 14, 26, .75)
-    }
-
-    .type-list li::before {
-      content: '✓';
-      font-weight: 700;
-      flex-shrink: 0
-    }
-
-    .type-card.shop .type-list li::before {
-      color: var(--gold)
-    }
-
-    .type-card.home .type-list li::before {
-      color: var(--navy)
-    }
-
-    @media(max-width:768px) {
-      .types-grid {
-        grid-template-columns: 1fr
-      }
-
-      .process-step {
-        grid-template-columns: 1fr;
-        gap: 16px
-      }
-
-      .ps-num {
-        font-size: 48px
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/how-it-works.css">
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
 </head>
 
@@ -412,7 +87,7 @@
       <!-- STEP 1 -->
       <div class="swiggy-card" data-aos="fade-up">
         <div class="swiggy-img-box">
-          <img src="assets/img/guide/step1.png" class="swiggy-img" alt="App & Location">
+          <img src="assets/img/guide/guide1.png" class="swiggy-img" alt="App & Location">
         </div>
         <div class="swiggy-pill">Open app & set location</div>
       </div>
@@ -420,7 +95,7 @@
       <!-- STEP 2 -->
       <div class="swiggy-card" data-aos="fade-up" data-aos-delay="100">
         <div class="swiggy-img-box">
-          <img src="assets/img/guide/step2.png" class="swiggy-img" alt="Choose Barber">
+          <img src="assets/img/guide/guide2.png" class="swiggy-img" alt="Choose Barber">
         </div>
         <div class="swiggy-pill">Browse & choose barber</div>
       </div>
@@ -428,7 +103,7 @@
       <!-- STEP 3 -->
       <div class="swiggy-card" data-aos="fade-up" data-aos-delay="200">
         <div class="swiggy-img-box">
-          <img src="assets/img/guide/step3.png" class="swiggy-img" alt="Time Slot">
+          <img src="assets/img/guide/guide3.png" class="swiggy-img" alt="Time Slot">
         </div>
         <div class="swiggy-pill">Pick date & time slot</div>
       </div>
@@ -436,7 +111,7 @@
       <!-- STEP 4 -->
       <div class="swiggy-card" data-aos="fade-up" data-aos-delay="300">
         <div class="swiggy-img-box">
-          <img src="assets/img/guide/step4.png" class="swiggy-img" alt="Haircut">
+          <img src="assets/img/guide/guide4.png" class="swiggy-img" alt="Haircut">
         </div>
         <div class="swiggy-pill">Get your haircut</div>
       </div>
@@ -444,7 +119,7 @@
       <!-- STEP 5 -->
       <div class="swiggy-card" data-aos="fade-up" data-aos-delay="400">
         <div class="swiggy-img-box">
-          <img src="assets/img/guide/step5.png" class="swiggy-img" alt="Pay UPI">
+          <img src="assets/img/guide/guide5.png" class="swiggy-img" alt="Pay UPI">
         </div>
         <div class="swiggy-pill">Pay via UPI & Review</div>
       </div>
@@ -518,10 +193,23 @@
         <div class="footer-brand-logo">Trim<span>zy</span></div>
         <div class="footer-brand-desc">India's smartest barber booking platform</div>
         <div class="footer-social" style="gap:16px; margin-top:20px;">
-          <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-          <a href="#" class="social-btn" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a>
-          <a href="https://www.instagram.com/trimzy.co.in?igsh=MXc3bzVzaW14amFwMA==" target="_blank" class="social-btn" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-          <a href="#" class="social-btn" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+          <a href="#" class="social-btn" aria-label="LinkedIn"><svg viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg></a>
+          <a href="#" class="social-btn" aria-label="Twitter"><svg viewBox="0 0 24 24">
+              <path
+                d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z" />
+            </svg></a>
+          <a href="https://www.instagram.com/trimzy.co.in?igsh=MXc3bzVzaW14amFwMA==" target="_blank" class="social-btn"
+            aria-label="Instagram"><svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+            </svg></a>
+          <a href="#" class="social-btn" aria-label="YouTube"><svg viewBox="0 0 24 24">
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.5 12 3.5 12 3.5s-7.505 0-9.377.55a3.016 3.016 0 0 0-2.122 2.136C0 8.07 0 12 0 12s0 3.93.501 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.55 9.377.55 9.377.55s7.505 0 9.377-.55a3.016 3.016 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg></a>
         </div>
       </div>
       <div>
@@ -556,17 +244,7 @@
   </footer>
 
   <script src="shared.js"></script>
-  <script>
-    // FAQ accordion
-    document.querySelectorAll('.faq-q').forEach(q => {
-      q.addEventListener('click', () => {
-        const item = q.parentElement;
-        const wasOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-        if (!wasOpen) item.classList.add('open');
-      });
-    });
-  </script>
+  <script src="js/how-it-works.js"></script>
 </body>
 
 </html>

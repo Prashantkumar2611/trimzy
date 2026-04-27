@@ -45,10 +45,18 @@ window.injectAuthNav = function() {
   const navCta = document.querySelector('.nav-cta');
   if (navCta) {
     if (user) {
+      const randomId = Math.floor(Math.random() * 5) + 1;
+      const avatarSrc = user.profilePic || user.photoURL || `https://images.shadcnspace.com/assets/profiles/user-${randomId}.jpg`;
+      
       navCta.innerHTML = `
         <div class="nav-user" id="nav-user">
-          <div class="nav-user-avatar" id="nav-avatar-btn" title="${user.name}">
-            ${user.initials || user.name.slice(0, 2).toUpperCase()}
+          <div style="position:relative; width:fit-content; margin:0 auto;">
+            <div class="nav-user-avatar" id="nav-avatar-btn" title="${user.name}" style="overflow:hidden; border:none; padding:0; background:none;">
+              <img src="${avatarSrc}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+            </div>
+            <span style="position:absolute; right:-2px; bottom:-2px; display:flex; width:16px; height:16px; align-items:center; justify-content:center; border-radius:50%; background:white; pointer-events:none;">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%;"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
           </div>
           <div class="nav-user-menu" id="nav-user-menu">
             <div class="num-header">
