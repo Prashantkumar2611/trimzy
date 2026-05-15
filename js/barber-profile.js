@@ -36,7 +36,7 @@
               <div style="width:60px; height:60px; background:rgba(232,164,74,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; color:var(--gold);">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               </div>
-              <h3 style="font-family:'Sora',sans-serif; font-size:18px; color:var(--navy); margin-bottom:8px;">Shop Preview</h3>
+              <h3 style="font-family:'Inter',sans-serif; font-size:18px; color:var(--navy); margin-bottom:8px;">Shop Preview</h3>
               <p style="font-size:13px; color:var(--gray); line-height:1.6; margin-bottom:0;">This is how your profile appears to customers. Booking is disabled in preview mode.</p>
             </div>
           `;
@@ -104,6 +104,10 @@
       const heroName = document.getElementById('hero-name'); if (heroName) heroName.textContent = shopName;
       const locName = document.getElementById('loc-name'); if (locName) locName.textContent = shopName;
       
+      // Dynamic booking card title
+      const bookTitle = document.getElementById('book-card-title');
+      if (bookTitle) bookTitle.textContent = 'Book at ' + shopName;
+      
       // Update Avatar
       const avatar = document.getElementById('hero-avatar');
       if (avatar) {
@@ -143,7 +147,14 @@
       const homeTag = document.getElementById('hero-home-tag'); if (homeTag) homeTag.style.display = b.homeVisit ? 'inline-flex' : 'none';
       const locDetail = document.getElementById('hero-loc-detail');
       if (locDetail) locDetail.textContent = b.area || b.address || 'Bhubaneswar';
-      const locAddr = document.getElementById('loc-addr'); if (locAddr && b.address) locAddr.textContent = b.address;
+      const locAddr = document.getElementById('loc-addr'); 
+      if (locAddr) locAddr.textContent = b.address || b.area || 'Bhubaneswar';
+
+      const mapIframe = document.getElementById('gmap-iframe');
+      if (mapIframe) {
+        const query = encodeURIComponent((b.shopName || b.name || '') + " " + (b.address || b.area || 'Bhubaneswar'));
+        mapIframe.src = `https://maps.google.com/maps?q=${query}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+      }
 
       let _services = [];
       if (Array.isArray(b.services) && b.services.length > 0) {
@@ -470,7 +481,12 @@
           if (seeAllWrap) seeAllWrap.style.display = 'block';
           if (seeAllBtn) {
             seeAllBtn.onclick = () => {
-              window.location.href = `reviews.html?id=${barberId}`;
+              let url = `reviews.html?id=${barberId}`;
+              // Also pass uid if it's different — reviews may be stored under either
+              if (BARBER && BARBER.uid && BARBER.uid !== barberId) {
+                url += `&uid=${BARBER.uid}`;
+              }
+              window.location.href = url;
             };
           }
         } else {
@@ -488,6 +504,12 @@
     loadBarber();
 
     // ── Exported helpers ──
+    window.openMaps = () => {
+      const b = BARBER || {};
+      const query = encodeURIComponent((b.shopName || b.name || 'Barber') + " " + (b.address || b.area || 'Bhubaneswar'));
+      window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+    };
+
     window.scrollToBook = () => {
       const el = document.getElementById('step-service');
       if (el) el.scrollIntoView({ behavior: 'smooth' });

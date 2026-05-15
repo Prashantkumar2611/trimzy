@@ -82,7 +82,7 @@ window.injectAuthNav = function() {
   if (mobileMenuBtns) {
     if (user) {
       mobileMenuBtns.innerHTML = `
-        <div style="text-align:center;padding:8px 0;font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${user.name}</div>
+        <div style="text-align:center;padding:8px 0;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${user.name}</div>
         <button class="btn-gold" onclick="location.href='app.html'">Book a Barber</button>
         <button class="btn-outline" onclick="AUTH.logout()">Log Out</button>
       `;
@@ -99,11 +99,23 @@ window.injectAuthNav();
 
 // ── Auth Modal Logic ──
 (function () {
-  // Always load auth-modal.js to handle persistent login & listeners
-  const script = document.createElement('script');
-  script.type = 'module';
-  script.src = 'js/auth-modal.js';
-  document.head.appendChild(script);
+  const loadAuthModal = () => {
+    // Always load auth-modal.js to handle persistent login & listeners
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = 'js/auth-modal.js';
+    document.head.appendChild(script);
+  };
+
+  if (typeof window.TRIMZY_CONFIG === 'undefined') {
+    const configScript = document.createElement('script');
+    configScript.src = 'config.js';
+    configScript.onload = loadAuthModal;
+    configScript.onerror = loadAuthModal; // Fallback if config is missing
+    document.head.appendChild(configScript);
+  } else {
+    loadAuthModal();
+  }
 })();
 
 function toggleUserMenu() {
@@ -332,3 +344,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   animateGlow();
 });
+
+// ══════════════════════════════════════════════
+// GLOBAL BLUEPRINT LOADER
+// ══════════════════════════════════════════════
+window.hideGlobalLoader = function() {
+  const loader = document.getElementById('global-loader');
+  if (loader) {
+    loader.classList.add('hidden');
+    // Remove from DOM after transition
+    setTimeout(() => {
+      if (loader.parentNode) {
+        loader.parentNode.removeChild(loader);
+      }
+    }, 600);
+  }
+};
+
+// Default behavior: hide on full page load
+window.addEventListener('load', () => {
+  // Add a tiny delay to ensure a smooth transition
+  setTimeout(window.hideGlobalLoader, 150);
+});
+

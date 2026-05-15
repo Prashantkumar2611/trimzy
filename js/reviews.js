@@ -1,4 +1,5 @@
-    import { db, collection, query, where, getDocs, doc, getDoc } from './firebase.js';
+    import { db, auth, collection, query, where, getDocs, doc, getDoc } from './firebase.js';
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     async function init() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -13,27 +14,54 @@
       document.getElementById('back-profile').href = `barber-profile.html?id=${barberId}`;
 
       try {
-        // 1. Fetch Barber Name & collect all possible IDs
+        // 1. Collect ALL possible IDs for review lookup
         const possibleIds = new Set([barberId]);
-        const bSnap = await getDoc(doc(db, "barbers", barberId));
-        if (bSnap.exists()) {
-          const bData = bSnap.data();
-          document.getElementById('barber-name-sub').innerText = `What people are saying about ${bData.name || 'this shop'}`;
-          if (bData.uid) possibleIds.add(bData.uid);
-          if (bSnap.id !== barberId) possibleIds.add(bSnap.id);
+        
+        // CRITICAL: Also pick up the uid from the URL (passed by barber-profile)
+        const uidParam = urlParams.get('uid');
+        if (uidParam) {
+          possibleIds.add(uidParam);
+          console.log('[REVIEWS] uid from URL param:', uidParam);
         }
 
-        console.log('[REVIEWS] Querying reviews for all possible barberIds:', [...possibleIds]);
+        // 2. Try to fetch barber doc for the name + any extra uid
+        let barberName = 'this shop';
+        try {
+          const bSnap = await getDoc(doc(db, "barbers", barberId));
+          if (bSnap.exists()) {
+            const bData = bSnap.data();
+            barberName = bData.shopName || bData.name || 'this shop';
+            console.log('[REVIEWS] Barber doc found. Fields:', Object.keys(bData).join(', '));
+            console.log('[REVIEWS] bData.uid =', bData.uid);
+            if (bData.uid) possibleIds.add(bData.uid);
+          } else {
+            console.warn('[REVIEWS] Barber doc NOT found for:', barberId);
+          }
+        } catch (docErr) {
+          console.warn('[REVIEWS] Could not read barber doc (may need auth):', docErr.message || docErr);
+          // Continue anyway — we still have the URL params
+        }
 
-        // 2. Fetch Reviews using all possible barber IDs
+        document.getElementById('barber-name-sub').innerText = `What people are saying about ${barberName}`;
+
+        console.log('[REVIEWS] Querying reviews for IDs:', [...possibleIds]);
+
+        // 3. Fetch Reviews using ALL possible barber IDs
         const reviewMap = new Map();
         for (const id of possibleIds) {
-          const q = query(collection(db, "reviews"), where("barberId", "==", id));
-          const snap = await getDocs(q);
-          snap.docs.forEach(d => {
-            if (!reviewMap.has(d.id)) reviewMap.set(d.id, { id: d.id, ...d.data() });
-          });
+          try {
+            const q = query(collection(db, "reviews"), where("barberId", "==", id));
+            const snap = await getDocs(q);
+            console.log(`[REVIEWS] ID "${id}" → ${snap.docs.length} results`);
+            snap.docs.forEach(d => {
+              if (!reviewMap.has(d.id)) reviewMap.set(d.id, { id: d.id, ...d.data() });
+            });
+          } catch (qErr) {
+            console.error(`[REVIEWS] Query error for "${id}":`, qErr.message || qErr);
+          }
         }
+
+        console.log('[REVIEWS] Total unique reviews:', reviewMap.size);
 
         const grid = document.getElementById('reviews-grid');
 
@@ -42,12 +70,12 @@
             <div class="empty-state">
               <p style="font-size: 24px; margin-bottom: 8px;">No reviews yet</p>
               <p>Be the first to share your experience after your appointment!</p>
-              <p style="font-size: 11px; opacity: 0.5; margin-top: 20px;">(Debug: Searched IDs: ${[...possibleIds].join(', ')})</p>
+              <p style="font-size: 11px; opacity: 0.5; margin-top: 20px;">(Searched: ${[...possibleIds].join(', ')})</p>
             </div>`;
           return;
         }
 
-        // Sort manually by createdAt (descending)
+        // Sort by createdAt (descending)
         const allReviews = [...reviewMap.values()].sort((a, b) => {
           const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0);
           const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0);
@@ -80,9 +108,28 @@
         }).join('');
 
       } catch (err) {
-        console.error('Error:', err);
+        console.error('[REVIEWS] Fatal error:', err);
         document.getElementById('reviews-grid').innerHTML = '<p class="loading-state">Failed to load reviews. Please try again later.</p>';
       }
     }
 
-    init();
+    // Run init after auth resolves (or on timeout)
+    let started = false;
+    function go() {
+      if (started) return;
+      started = true;
+      init();
+    }
+
+    onAuthStateChanged(auth, (user) => {
+      console.log('[REVIEWS] Auth:', user ? user.email : 'anonymous');
+      go();
+    });
+
+    // Fallback if auth never resolves
+    setTimeout(() => {
+      if (!started) {
+        console.log('[REVIEWS] Timeout — starting without auth');
+        go();
+      }
+    }, 2000);

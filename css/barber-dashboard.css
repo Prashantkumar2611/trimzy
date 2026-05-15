@@ -6,8 +6,8 @@
     h1,
     h2,
     h3,
-    .font-jakarta {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+    .font-jakarta { font-weight: 800;
+      font-family: 'Inter', sans-serif;
     }
 
     .sidebar-active {
@@ -90,7 +90,7 @@
 
     .v-label-badge {
       font-size: 9px;
-      font-weight: 800;
+      font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       background: #E8A44A15;

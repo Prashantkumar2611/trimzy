@@ -14,7 +14,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--navy);
       min-height: 100vh;
@@ -22,7 +22,7 @@
     }
 
     /* ---- NAV ---- */
-    .nav {
+    .nav { font-weight: 500;
       background: var(--navy);
       padding: 0 6%;
       display: flex;
@@ -35,14 +35,14 @@
     }
 
     .nav-logo {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: #fff;
       text-decoration: none;
     }
 
-    .nav-logo span {
+    .nav-logo span { font-weight: 700;
       color: var(--amber);
     }
 
@@ -55,12 +55,12 @@
       background: rgba(255, 255, 255, 0.1);
       color: #fff;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       text-decoration: none;
       transition: background 0.2s;
     }
 
-    .btn-back:hover {
+    .btn-back:hover { font-weight: 500;
       background: rgba(255, 255, 255, 0.2);
     }
 
@@ -73,14 +73,14 @@
     }
 
     .page-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 32px;
-      font-weight: 800;
+      font-weight: 700;
       margin-bottom: 12px;
       letter-spacing: -0.5px;
     }
 
-    .page-sub {
+    .page-sub { font-weight: 600;
       color: var(--gray);
       font-size: 16px;
       line-height: 1.6;
@@ -139,12 +139,12 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .rc-details {
+    .rc-details { font-weight: 600;
       flex-grow: 1;
     }
 
     .rc-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 700;
       font-size: 16px;
       color: var(--navy);

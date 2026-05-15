@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin — Trimzy</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <!-- Brevo API integration replaces EmailJS -->
   <link rel="stylesheet" href="css/admin.css">
@@ -15,7 +15,11 @@
 </head>
 
 <body>
-
+  <!-- GLOBAL LOADER -->
+  <div id="global-loader" class="global-loader">
+    <div class="gl-logo">Trim<span>zy</span></div>
+    <div class="gl-blueprint"></div>
+  </div>
   <!-- LOGIN SCREEN -->
   <div class="login-screen" id="login-screen">
     <div class="login-box">
@@ -73,7 +77,7 @@
     <div class="admin-tabs">
       <button class="admin-tab active" onclick="switchTab('applications')">📋 Applications</button>
       <button class="admin-tab" onclick="switchTab('bookings')">📅 All Bookings</button>
-      <button class="admin-tab" onclick="switchTab('users')">👥 Users</button>
+      <button class="admin-tab" onclick="switchTab('users')">Users</button>
     </div>
 
     <!-- Content -->
@@ -82,7 +86,7 @@
       <!-- APPLICATIONS -->
       <div class="admin-view active" id="view-applications">
         <div class="filter-bar">
-          <input class="filter-search" type="text" placeholder="🔍 Search by name, phone, area..." id="app-search"
+          <input class="filter-search" type="text" placeholder=" Search by name, phone, area..." id="app-search"
             oninput="renderApplications()" />
           <select class="filter-select" id="app-status-filter" onchange="renderApplications()">
             <option value="">All Status</option>
@@ -92,8 +96,8 @@
           </select>
           <div class="filter-count">Showing <span id="app-count">0</span> applications</div>
           <button
-            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer"
-            onclick="loadApplications()">🔄 Refresh</button>
+            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer"
+            onclick="loadApplications()"> Refresh</button>
         </div>
         <div class="apps-grid" id="apps-grid">
           <div class="admin-loading">
@@ -105,7 +109,7 @@
       <!-- BOOKINGS -->
       <div class="admin-view" id="view-bookings">
         <div class="filter-bar">
-          <input class="filter-search" type="text" placeholder="🔍 Search bookings..." id="booking-search"
+          <input class="filter-search" type="text" placeholder=" Search bookings..." id="booking-search"
             oninput="renderBookings()" />
           <select class="filter-select" id="booking-status-filter" onchange="renderBookings()">
             <option value="">All Status</option>
@@ -114,8 +118,8 @@
           </select>
           <div class="filter-count">Showing <span id="booking-count">0</span> bookings</div>
           <button
-            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer"
-            onclick="loadBookings()">🔄 Refresh</button>
+            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer"
+            onclick="loadBookings()">Refresh</button>
         </div>
         <div id="bookings-wrap">
           <div class="admin-loading">
@@ -127,12 +131,12 @@
       <!-- USERS -->
       <div class="admin-view" id="view-users">
         <div class="filter-bar">
-          <input class="filter-search" type="text" placeholder="🔍 Search users..." id="user-search"
+          <input class="filter-search" type="text" placeholder=" Search users..." id="user-search"
             oninput="renderUsers()" />
           <div class="filter-count">Showing <span id="user-count">0</span> users</div>
           <button
-            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer"
-            onclick="loadUsers()">🔄 Refresh</button>
+            style="padding:10px 16px;border-radius:10px;border:none;background:var(--gold);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer"
+            onclick="loadUsers()"> Refresh</button>
         </div>
         <div id="users-wrap">
           <div class="admin-loading">
@@ -151,29 +155,29 @@
   <div id="approve-modal"
     style="display:none;position:fixed;inset:0;background:rgba(14,14,26,.8);backdrop-filter:blur(8px);z-index:999;align-items:center;justify-content:center;padding:20px">
     <div style="background:#fff;border-radius:20px;padding:36px;max-width:440px;width:100%">
-      <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px">
+      <div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px">
         Approve Barber ✅</div>
       <div id="modal-desc" style="font-size:14px;color:var(--gray);margin-bottom:24px">Set login credentials for <strong
           id="modal-barber-name"></strong>. They will use these to log into their dashboard.</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
         <label style="font-size:13px;font-weight:600;color:var(--navy)">Login Email *</label>
         <input id="modal-email" type="email" placeholder="barber@email.com"
-          style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none" />
+          style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);outline:none" />
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
         <label style="font-size:13px;font-weight:600;color:var(--navy)">Temporary Password *</label>
         <input id="modal-password" type="text" placeholder="e.g. Barber@2026"
-          style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--navy);outline:none" />
+          style="padding:13px 16px;border-radius:10px;border:1.5px solid var(--border);font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);outline:none" />
         <div style="font-size:11px;color:var(--gray);margin-top:2px">Share this with the barber. They can change it
           later.</div>
       </div>
       <div id="modal-error" style="display:none;font-size:13px;color:var(--red);margin-bottom:12px"></div>
       <div style="display:flex;gap:10px">
         <button id="modal-confirm-btn" onclick="confirmApprove()"
-          style="flex:1;padding:13px;border-radius:10px;border:none;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff;background:var(--green);cursor:pointer">✓
+          style="flex:1;padding:13px;border-radius:10px;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:#fff;background:var(--green);cursor:pointer">✓
           Approve & Create Account</button>
         <button onclick="closeApproveModal()"
-          style="padding:13px 20px;border-radius:10px;border:1.5px solid var(--border);font-family:'Sora',sans-serif;font-size:14px;font-weight:600;color:var(--gray);background:transparent;cursor:pointer">Cancel</button>
+          style="padding:13px 20px;border-radius:10px;border:1.5px solid var(--border);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--gray);background:transparent;cursor:pointer">Cancel</button>
       </div>
     </div>
   </div>

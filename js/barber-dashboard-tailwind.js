@@ -12,7 +12,7 @@
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
-            jakarta: ['Plus Jakarta Sans', 'sans-serif']
+            jakarta: ['Inter', 'sans-serif']
           },
           borderRadius: {
             'xl': '24px',

@@ -1,4 +1,4 @@
-    .about-hero {
+    .about-hero { font-weight: 800;
       background: var(--navy);
       padding: 140px 5% 72px;
       position: relative;
@@ -26,7 +26,7 @@
     }
 
     .about-hero h1 {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(40px, 6vw, 72px);
       font-weight: 800;
       color: #fff;
@@ -36,7 +36,7 @@
       max-width: 700px
     }
 
-    .about-hero p {
+    .about-hero p { font-weight: 800;
       font-size: 18px;
       color: rgba(255, 255, 255, .55);
       max-width: 580px;
@@ -70,7 +70,7 @@
     }
 
     .mission-quote p {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--navy);
@@ -105,7 +105,7 @@
     }
 
     .ms-num {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 40px;
       font-weight: 800;
       color: #fff
@@ -161,7 +161,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 800;
       color: var(--navy);
@@ -185,14 +185,14 @@
     }
 
     .story-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--navy);
       margin-bottom: 8px
     }
 
-    .story-desc {
+    .story-desc { font-weight: 600;
       font-size: 15px;
       color: var(--gray);
       line-height: 1.7
@@ -232,7 +232,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 28px;
       font-weight: 800;
       color: #fff
@@ -256,7 +256,7 @@
     }
 
     .team-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--navy);
@@ -281,7 +281,7 @@
       background: var(--navy)
     }
 
-    .values-section .section-title {
+    .values-section .section-title { font-weight: 700;
       color: #fff
     }
 
@@ -311,14 +311,14 @@
     }
 
     .value-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 10px
     }
 
-    .value-desc {
+    .value-desc { font-weight: 600;
       font-size: 14px;
       color: rgba(255, 255, 255, .5);
       line-height: 1.6
@@ -364,7 +364,7 @@
     }
 
     .contact-label {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: var(--navy);
@@ -384,7 +384,7 @@
     }
 
     .cf-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
       font-weight: 700;
       color: var(--navy);
@@ -408,7 +408,7 @@
       padding: 12px 16px;
       border-radius: 10px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       transition: all .2s;
@@ -425,16 +425,16 @@
       padding: 14px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--navy);
       background: var(--gold);
       transition: all .2s;
       margin-top: 4px
     }
 
-    .cf-submit:hover {
+    .cf-submit:hover { font-weight: 600;
       background: var(--gold-light)
     }
 
@@ -469,14 +469,14 @@
     }
 
     .success-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 24px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 12px
     }
 
-    .success-desc {
+    .success-desc { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       line-height: 1.7;
@@ -487,9 +487,9 @@
       padding: 13px 28px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: var(--gold)
     }

@@ -18,7 +18,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--bg);
       color: var(--navy)
     }
@@ -43,27 +43,27 @@
     }
 
     .login-logo {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 28px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 8px
     }
 
-    .login-logo span {
+    .login-logo span { font-weight: 700;
       color: var(--gold)
     }
 
-    .login-sub {
+    .login-sub { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       margin-bottom: 32px
     }
 
     .login-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 24px
     }
@@ -73,7 +73,7 @@
       padding: 14px 16px;
       border-radius: 12px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       color: var(--navy);
       outline: none;
@@ -91,16 +91,16 @@
       padding: 15px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       cursor: pointer;
       transition: all .2s
     }
 
-    .login-btn:hover {
+    .login-btn:hover { font-weight: 500;
       background: var(--gold-light)
     }
 
@@ -139,19 +139,19 @@
     }
 
     .admin-logo {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: #fff
     }
 
-    .admin-logo span {
+    .admin-logo span { font-weight: 700;
       color: var(--gold)
     }
 
     .admin-logo small {
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 700;
       color: rgba(255, 255, 255, .4);
       margin-left: 8px;
       background: rgba(232, 164, 74, .15);
@@ -175,16 +175,16 @@
       padding: 8px 16px;
       border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, .2);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
       background: transparent;
       cursor: pointer;
       transition: all .2s
     }
 
-    .admin-logout:hover {
+    .admin-logout:hover { font-weight: 700;
       border-color: var(--red);
       color: var(--red)
     }
@@ -205,7 +205,7 @@
     }
 
     .stat-num {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 32px;
       font-weight: 800;
       color: var(--navy)
@@ -234,7 +234,7 @@
     }
 
     /* Tabs */
-    .admin-tabs {
+    .admin-tabs { font-weight: 500;
       display: flex;
       gap: 0;
       padding: 0 32px;
@@ -244,9 +244,9 @@
 
     .admin-tab {
       padding: 16px 24px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--gray);
       border-bottom: 3px solid transparent;
       cursor: pointer;
@@ -257,11 +257,11 @@
       border-right: none
     }
 
-    .admin-tab:hover {
+    .admin-tab:hover { font-weight: 500;
       color: var(--navy)
     }
 
-    .admin-tab.active {
+    .admin-tab.active { font-weight: 500;
       color: var(--gold);
       border-bottom-color: var(--gold)
     }
@@ -294,7 +294,7 @@
       padding: 10px 16px;
       border-radius: 10px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       outline: none;
@@ -309,7 +309,7 @@
       padding: 10px 14px;
       border-radius: 10px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       color: var(--navy);
       outline: none;
@@ -382,7 +382,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 800;
       color: #fff;
@@ -390,9 +390,9 @@
     }
 
     .app-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 17px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 3px
     }
@@ -403,7 +403,7 @@
       margin-bottom: 6px
     }
 
-    .app-badges {
+    .app-badges { font-weight: 500;
       display: flex;
       gap: 6px;
       flex-wrap: wrap
@@ -413,20 +413,20 @@
       padding: 3px 10px;
       border-radius: 100px;
       font-size: 11px;
-      font-weight: 700
+      font-weight: 500;
     }
 
-    .app-badge.home {
+    .app-badge.home { font-weight: 500;
       background: rgba(232, 164, 74, .1);
       color: var(--gold)
     }
 
-    .app-badge.exp {
+    .app-badge.exp { font-weight: 500;
       background: rgba(74, 175, 232, .1);
       color: var(--blue)
     }
 
-    .app-badge.service {
+    .app-badge.service { font-weight: 500;
       background: rgba(139, 92, 246, .1);
       color: #8B5CF6
     }
@@ -443,20 +443,20 @@
       padding: 5px 14px;
       border-radius: 100px;
       font-size: 12px;
-      font-weight: 700
+      font-weight: 500;
     }
 
-    .status-badge.pending {
+    .status-badge.pending { font-weight: 500;
       background: rgba(232, 164, 74, .12);
       color: var(--gold)
     }
 
-    .status-badge.approved {
+    .status-badge.approved { font-weight: 500;
       background: rgba(46, 204, 142, .12);
       color: var(--green)
     }
 
-    .status-badge.rejected {
+    .status-badge.rejected { font-weight: 500;
       background: rgba(232, 85, 85, .1);
       color: var(--red)
     }
@@ -522,16 +522,16 @@
       padding: 10px 20px;
       border-radius: 10px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
       color: #fff;
       background: var(--green);
       cursor: pointer;
       transition: all .2s
     }
 
-    .btn-approve:hover {
+    .btn-approve:hover { font-weight: 500;
       background: #25a873;
       transform: translateY(-1px)
     }
@@ -540,16 +540,16 @@
       padding: 10px 20px;
       border-radius: 10px;
       border: 1.5px solid var(--red);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--red);
       background: transparent;
       cursor: pointer;
       transition: all .2s
     }
 
-    .btn-reject:hover {
+    .btn-reject:hover { font-weight: 500;
       background: var(--red);
       color: #fff
     }
@@ -558,22 +558,22 @@
       padding: 10px 20px;
       border-radius: 10px;
       border: 1.5px solid var(--border);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--gray);
       background: transparent;
       cursor: pointer;
       transition: all .2s
     }
 
-    .btn-undo:hover {
+    .btn-undo:hover { font-weight: 500;
       border-color: var(--navy);
       color: var(--navy)
     }
 
     /* Bookings table */
-    .bookings-table {
+    .bookings-table { font-weight: 500;
       width: 100%;
       border-collapse: collapse;
       background: #fff;
@@ -585,9 +585,9 @@
     .bookings-table th {
       padding: 14px 16px;
       text-align: left;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--gray);
       letter-spacing: .5px;
       text-transform: uppercase;
@@ -595,18 +595,18 @@
       border-bottom: 1px solid var(--border)
     }
 
-    .bookings-table td {
+    .bookings-table td { font-weight: 500;
       padding: 14px 16px;
       font-size: 14px;
       color: var(--navy);
       border-bottom: 1px solid var(--border)
     }
 
-    .bookings-table tr:last-child td {
+    .bookings-table tr:last-child td { font-weight: 500;
       border-bottom: none
     }
 
-    .bookings-table tr:hover td {
+    .bookings-table tr:hover td { font-weight: 500;
       background: #fafafa
     }
 
@@ -656,7 +656,7 @@
     }
 
     .admin-empty h3 {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--navy);
@@ -675,7 +675,7 @@
       right: 32px;
       padding: 14px 20px;
       border-radius: 12px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: #fff;
@@ -718,12 +718,12 @@
         grid-template-columns: 1fr 1fr
       }
 
-      .bookings-table {
+      .bookings-table { font-weight: 500;
         font-size: 12px
       }
 
       .bookings-table th,
-      .bookings-table td {
+      .bookings-table td { font-weight: 500;
         padding: 10px 10px
       }
     }

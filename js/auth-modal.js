@@ -258,11 +258,120 @@ async function saveUserProfile(uid, data) {
     }, { merge: true });
 }
 
+async function sendWelcomeEmail(email, name) {
+    if (!email) return;
+    const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || '';
+    if (!BREVO_API_KEY) return;
+
+    try {
+        await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: { 
+                'api-key': BREVO_API_KEY,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { name: "Trimzy", email: "official@trimzy.co.in" },
+                to: [{ email: email, name: name || "Customer" }],
+                subject: "Welcome to Trimzy! ✂️",
+                htmlContent: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1A1A2E; line-height: 1.6;">
+                        <h2 style="color: #1A1A2E; margin-bottom: 20px;">Dear ${name || "Customer"},</h2>
+                        <p style="font-size: 15px;">You've just joined something that's changing the way India gets its haircut.</p>
+                        <p style="font-size: 15px;">At Trimzy, we believe your time is too valuable to spend standing in a queue. So we built something better.</p>
+                        
+                        <h3 style="color: #E8A44A; margin-top: 30px; margin-bottom: 15px; font-size: 18px;">Here's what you now have access to:</h3>
+                        
+                        <ul style="list-style-type: none; padding: 0; margin: 0;">
+                            <li style="margin-bottom: 15px;">
+                                <strong style="font-size: 15px; color: #1A1A2E;">⏱️ Real Time Queue Tracking</strong><br>
+                                <span style="color: #555; font-size: 14px;">See exactly how many people are ahead of you before you even leave home.</span>
+                            </li>
+                            <li style="margin-bottom: 15px;">
+                                <strong style="font-size: 15px; color: #1A1A2E;">⭐ Premium Booking &mdash; Zero Wait</strong><br>
+                                <span style="color: #555; font-size: 14px;">Skip the queue entirely. Book a premium slot and walk straight to the chair.</span>
+                            </li>
+                            <li style="margin-bottom: 15px;">
+                                <strong style="font-size: 15px; color: #1A1A2E;">🏠 Home Service</strong><br>
+                                <span style="color: #555; font-size: 14px;">Can't come to the shop? No problem. Book a professional barber to come to you.</span>
+                            </li>
+                        </ul>
+
+                        <p style="margin-top: 25px; font-size: 15px;">This is not just an app. This is your personal barbershop &mdash; on your terms, on your schedule, wherever you are.</p>
+                        
+                        <p style="font-size: 15px;">Thousands of customers across India are already experiencing the Trimzy difference. Now it's your turn.</p>
+                        
+                        <p style="font-weight: bold; font-size: 16px; margin-top: 30px; color: #1A1A2E;">Welcome aboard. Your chair is waiting.</p>
+
+                        <div style="margin: 35px 0;">
+                            <a href="https://trimzy.co.in/app.html" style="background: #E8A44A; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Book Your First Appointment →</a>
+                        </div>
+
+                        <p style="margin-top: 30px; color: #555; font-size: 14px;">
+                            Warm regards,<br>
+                            <strong style="color: #1A1A2E;">Team Trimzy</strong>
+                        </p>
+                    </div>
+                `
+            })
+        });
+        console.log("Welcome email sent to " + email);
+    } catch (e) {
+        console.error("Failed to send welcome email:", e);
+    }
+}
+
+async function sendWelcomeBackEmail(email, name) {
+    if (!email) return;
+    const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || '';
+    if (!BREVO_API_KEY) return;
+
+    try {
+        await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: { 
+                'api-key': BREVO_API_KEY,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { name: "Trimzy", email: "official@trimzy.co.in" },
+                to: [{ email: email, name: name || "Customer" }],
+                subject: "Welcome Back to Trimzy! ✂️",
+                htmlContent: `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1A1A2E; line-height: 1.6;">
+                        <h2 style="color: #1A1A2E; margin-bottom: 20px;">Welcome back, ${name || "Customer"}!</h2>
+                        <p style="font-size: 15px;">We noticed you just logged into your Trimzy account.</p>
+                        <p style="font-size: 15px;">Ready for your next fresh cut? Your favorite barbers are just a few clicks away. Skip the queue and book a premium slot directly from the app.</p>
+                        
+                        <div style="margin: 35px 0;">
+                            <a href="https://trimzy.co.in/app.html" style="background: #E8A44A; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Book Your Next Appointment →</a>
+                        </div>
+
+                        <p style="margin-top: 30px; color: #555; font-size: 14px;">
+                            Warm regards,<br>
+                            <strong style="color: #1A1A2E;">Team Trimzy</strong>
+                        </p>
+                    </div>
+                `
+            })
+        });
+        console.log("Welcome back email sent to " + email);
+    } catch (e) {
+        console.error("Failed to send welcome back email:", e);
+    }
+}
+
 async function googleLogin() {
     try {
         const provider = new GoogleAuthProvider();
         const cred = await signInWithPopup(auth, provider);
         const user = cred.user;
+
+        // Check if new user for welcome email
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const isNewUser = !userDoc.exists();
 
         const initials = (user.displayName || 'GU').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
         const profile = {
@@ -274,6 +383,13 @@ async function googleLogin() {
         };
 
         await saveUserProfile(user.uid, profile);
+        
+        if (isNewUser && user.email) {
+            await sendWelcomeEmail(user.email, profile.name);
+        } else if (!isNewUser && user.email) {
+            await sendWelcomeBackEmail(user.email, profile.name);
+        }
+
         sessionStorage.setItem('ss_user', JSON.stringify({ ...profile, uid: user.uid }));
         location.reload();
     } catch (err) {
@@ -386,6 +502,10 @@ async function submitSignupFinish() {
         const initials = signupData.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
         const profile = { ...signupData, initials, role: 'customer', createdAt: serverTimestamp() };
         await saveUserProfile(cred.user.uid, profile);
+        
+        if (signupData.email) {
+            await sendWelcomeEmail(signupData.email, signupData.name);
+        }
         
         sessionStorage.setItem('ss_user', JSON.stringify({ ...profile, uid: cred.user.uid }));
         location.reload();

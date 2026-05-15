@@ -15,19 +15,27 @@
 </head>
 
 <body>
+  <!-- GLOBAL LOADER -->
+  <div id="global-loader" class="global-loader">
+    <div class="gl-logo">Trim<span>zy</span></div>
+    <div class="gl-blueprint"></div>
+  </div>
   <!-- Pincode Location Modal -->
   <div class="pincode-overlay" id="pincode-overlay" onclick="handleOverlayClick(event)">
     <div class="pincode-modal">
       <button class="pm-close" onclick="closePincodeModal()">✕</button>
       <div class="pm-icon">📍</div>
       <div class="pm-title">Change Location</div>
-      <div class="pm-sub">Enter your 6-digit pincode to find barbers near you</div>
-      <div class="pm-input-row">
-        <input class="pm-input" id="pincode-input" type="number" maxlength="6" placeholder="e.g. 751001"
-          oninput="onPincodeInput()" onkeydown="if(event.key==='Enter')lookupPincode()" />
-        <button class="pm-find-btn" id="pincode-find-btn" onclick="lookupPincode()" disabled>Find</button>
+      <div class="pm-sub">Search for your city, area, or pincode</div>
+      <div class="pm-search-container" style="position:relative;">
+        <div class="pm-input-row">
+          <input class="pm-input" id="pincode-input" type="text" placeholder="e.g. Bhopal, 751001"
+            oninput="onPincodeInput()" onkeydown="if(event.key==='Enter')lookupPincode()" autocomplete="off" />
+          <button class="pm-find-btn" id="pincode-find-btn" onclick="lookupPincode()" disabled>Find</button>
+        </div>
+        <div class="pm-autocomplete" id="pm-autocomplete"></div>
       </div>
-      <div class="pm-error" id="pincode-error">Pincode not found. Please try another.</div>
+      <div class="pm-error" id="pincode-error">Location not found. Please try another.</div>
       <div class="pm-result" id="pincode-result"></div>
       <div class="pm-divider"><span>OR CHOOSE CITY</span></div>
       <div class="pm-cities">
@@ -64,7 +72,25 @@
       <a href="about.html">About</a>
     </div>
     <div class="nav-right" style="display:flex;gap:12px;align-items:center;flex:1;justify-content:flex-end;">
-      <div class="nav-cta" id="nav-cta" style="display:flex;gap:12px;align-items:center;">
+      <div class="city-btn-wrap">
+        <button class="city-btn" id="city-btn" onclick="openPincodeModal()">
+          <div class="city-icon" id="loc-dot">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <span class="city-name" id="loc-label">Detecting...</span>
+          <div class="city-chevron">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </button>
+      </div>
+      <div class="nav-cta" id="nav-cta" style="display:flex;gap:12px;align-items:center;flex:none;">
         <div class="nav-auth-wrapper" id="nav-auth-wrapper" style="display:flex;align-items:center;">
           <div class="profile-corner" id="profile-corner" style="display:none">
             <div style="position:relative; width:fit-content;">
@@ -98,24 +124,6 @@
             In</button>
         </div>
       </div>
-      <div class="city-btn-wrap">
-        <button class="city-btn" id="city-btn" onclick="openPincodeModal()">
-          <div class="city-icon" id="loc-dot">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-          </div>
-          <span class="city-name" id="loc-label">Detecting...</span>
-          <div class="city-chevron">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-        </button>
-      </div>
     </div>
     <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
   </nav>
@@ -129,7 +137,7 @@
   <!-- Login Gate -->
   <div class="login-gate" id="login-gate">
     <div class="lg-box">
-      <div class="lg-icon">✂️</div>
+      <div class="lg-icon"></div>
       <div class="lg-title">Log in to book</div>
       <div class="lg-sub">Create a free account or log in to confirm your booking and track all your appointments.</div>
       <div class="lg-btns">
@@ -300,12 +308,12 @@
             <div class="po-sub">PhonePe · GPay · Paytm · Any UPI app</div>
           </div>
           <span class="po-badge">Instant</span>
-        </button>
+        </button> 
 
         <!-- Option 2: Card -->
         <button type="button" class="payment-option" id="po-card" onclick="selectPayment('card')">
           <div class="po-radio" id="radio-card"></div>
-          <span class="po-icon">💳</span>
+          <span class="po-icon"></span>
           <div>
             <div class="po-title">Pay with Card / Net Banking</div>
             <div class="po-sub">Credit card · Debit card · Net banking</div>
@@ -315,7 +323,7 @@
         <!-- Option 3: Pay Barber -->
         <button type="button" class="payment-option" id="po-cash" onclick="selectPayment('cash')">
           <div class="po-radio" id="radio-cash"></div>
-          <span class="po-icon">🤝</span>
+          <span class="po-icon"></span>
           <div>
             <div class="po-title">Pay Barber in Person</div>
             <div class="po-sub">Pay via UPI or cash after your cut</div>
@@ -324,7 +332,7 @@
         </button>
       </div>
 
-      <div class="pay-secure">🔒 Secured by Razorpay · 256-bit SSL encryption</div>
+      <div class="pay-secure"> Secured by Razorpay · 256-bit SSL encryption</div>
 
       <div class="bp-action">
         <button type="button" class="bp-back-btn" onclick="goToStep(2)">← Back</button>

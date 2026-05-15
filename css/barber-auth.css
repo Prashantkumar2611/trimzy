@@ -41,22 +41,22 @@
     }
 
     .al-logo {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 26px;
-      font-weight: 800;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 8px;
       text-decoration: none;
       display: block
     }
 
-    .al-logo span {
+    .al-logo span { font-weight: 700;
       color: var(--gold)
     }
 
     .al-logo small {
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--green);
       background: rgba(46, 204, 142, .12);
       padding: 2px 8px;
@@ -66,7 +66,7 @@
     }
 
     .al-headline {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(28px, 4vw, 48px);
       font-weight: 800;
       color: #fff;
@@ -79,7 +79,7 @@
       color: var(--gold)
     }
 
-    .al-sub {
+    .al-sub { font-weight: 600;
       font-size: 15px;
       color: rgba(255, 255, 255, .5);
       line-height: 1.8;
@@ -127,7 +127,7 @@
     }
 
     .al-stat-num {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 26px;
       font-weight: 800;
       color: #fff
@@ -160,7 +160,7 @@
     }
 
     /* TABS */
-    .auth-tabs {
+    .auth-tabs { font-weight: 500;
       display: flex;
       background: #F4F3F0;
       border-radius: 14px;
@@ -173,16 +173,16 @@
       padding: 11px 8px;
       border-radius: 10px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--gray);
       background: transparent;
       cursor: pointer;
       transition: all .25s
     }
 
-    .auth-tab.active {
+    .auth-tab.active { font-weight: 500;
       background: #fff;
       color: var(--navy);
       box-shadow: 0 2px 8px rgba(0, 0, 0, .08)
@@ -224,15 +224,15 @@
 
     /* FORM */
     .auth-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 24px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 6px;
       letter-spacing: -.5px
     }
 
-    .auth-subtitle {
+    .auth-subtitle { font-weight: 700;
       font-size: 14px;
       color: var(--gray);
       margin-bottom: 28px;
@@ -266,7 +266,7 @@
       padding: 13px 16px;
       border-radius: 12px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       background: #fff;
@@ -304,7 +304,7 @@
       border-radius: 12px 0 0 12px;
       border: 1.5px solid var(--border);
       border-right: none;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 600;
       color: var(--navy);
@@ -438,9 +438,9 @@
       padding: 15px;
       border-radius: 13px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       transition: all .25s;
@@ -449,20 +449,20 @@
       position: relative
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover { font-weight: 500;
       background: var(--gold-light);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .3)
     }
 
-    .btn-primary:disabled {
+    .btn-primary:disabled { font-weight: 500;
       opacity: .6;
       cursor: not-allowed;
       transform: none;
       box-shadow: none
     }
 
-    .btn-loader {
+    .btn-loader { font-weight: 500;
       display: none;
       width: 20px;
       height: 20px;
@@ -473,11 +473,11 @@
       margin: 0 auto
     }
 
-    .btn-primary.loading .btn-text {
+    .btn-primary.loading .btn-text { font-weight: 500;
       display: none
     }
 
-    .btn-primary.loading .btn-loader {
+    .btn-primary.loading .btn-loader { font-weight: 500;
       display: block
     }
 
@@ -490,7 +490,7 @@
 
     .auth-footer-text button {
       color: var(--navy);
-      font-weight: 700;
+      font-weight: 500;
       background: none;
       border: none;
       cursor: pointer;
@@ -521,15 +521,15 @@
     }
 
     .status-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 24px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 12px;
       letter-spacing: -.5px
     }
 
-    .status-desc {
+    .status-desc { font-weight: 600;
       font-size: 15px;
       color: var(--gray);
       line-height: 1.7;
@@ -571,16 +571,16 @@
       padding: 15px;
       border-radius: 13px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       cursor: pointer;
       transition: all .2s
     }
 
-    .btn-dashboard:hover {
+    .btn-dashboard:hover { font-weight: 500;
       background: var(--gold-light)
     }
 
@@ -589,9 +589,9 @@
       padding: 14px;
       border-radius: 13px;
       border: 1.5px solid var(--border);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--gray);
       background: transparent;
       cursor: pointer;
@@ -599,7 +599,7 @@
       transition: all .2s
     }
 
-    .btn-secondary:hover {
+    .btn-secondary:hover { font-weight: 500;
       border-color: var(--navy);
       color: var(--navy)
     }

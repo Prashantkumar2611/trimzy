@@ -1,5 +1,5 @@
     /* ═══ HERO ═══ */
-    .hero {
+    .hero { font-weight: 800;
       position: relative;
       min-height: 100vh;
       display: flex;
@@ -11,7 +11,7 @@
       overflow: hidden;
     }
 
-    .hero-video-bg {
+    .hero-video-bg { font-weight: 800;
       position: absolute;
       top: 0;
       left: 0;
@@ -23,11 +23,11 @@
       transition: opacity 1s ease;
     }
 
-    .hero-video-bg.loaded {
+    .hero-video-bg.loaded { font-weight: 800;
       opacity: 1;
     }
 
-    .hero-overlay {
+    .hero-overlay { font-weight: 800;
       position: absolute;
       top: 0;
       left: 0;
@@ -37,7 +37,7 @@
       z-index: 1;
     }
 
-    .hero-content {
+    .hero-content { font-weight: 800;
       position: relative;
       z-index: 2;
       max-width: 900px;
@@ -48,7 +48,7 @@
     }
 
     .hero-logo-type {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 42px;
       font-weight: 800;
       color: #fff;
@@ -56,12 +56,12 @@
       letter-spacing: -1px;
     }
 
-    .hero-logo-type span {
+    .hero-logo-type span { font-weight: 800;
       color: #E8A44A;
     }
 
     .hero-headline {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(36px, 7vw, 62px);
       font-weight: 800;
       color: #fff;
@@ -71,16 +71,16 @@
     }
 
     .hero-sub {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(16px, 2.5vw, 22px);
       color: rgba(255, 255, 255, 0.95);
       max-width: 650px;
       line-height: 1.5;
       margin-bottom: 40px;
-      font-weight: 400;
+      font-weight: 800;
     }
 
-    .hero-actions {
+    .hero-actions { font-weight: 800;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -92,9 +92,9 @@
     .btn-hero-secondary {
       padding: 16px 36px;
       border-radius: 12px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       transition: all .3s cubic-bezier(.4, 0, .2, 1);
       display: flex;
       align-items: center;
@@ -104,27 +104,27 @@
       cursor: pointer;
     }
 
-    .btn-hero-primary {
+    .btn-hero-primary { font-weight: 800;
       border: none;
       color: #0B0B18;
       background: #FFFFFF;
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
-    .btn-hero-primary:hover {
+    .btn-hero-primary:hover { font-weight: 800;
       transform: translateY(-3px);
       background: #f8f8f8;
       box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
     }
 
-    .btn-hero-secondary {
+    .btn-hero-secondary { font-weight: 800;
       border: 1.5px solid rgba(255, 255, 255, 0.3);
       color: #fff;
       background: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(8px);
     }
 
-    .btn-hero-secondary:hover {
+    .btn-hero-secondary:hover { font-weight: 800;
       border-color: #E8A44A;
       background: rgba(232, 164, 74, 0.1);
       transform: translateY(-2px);
@@ -140,13 +140,13 @@
       text-align: center;
     }
 
-    .how .section-title {
+    .how .section-title { font-weight: 700;
       color: var(--navy);
       margin-bottom: 24px;
       text-align: center;
     }
 
-    .how .section-sub {
+    .how .section-sub { font-weight: 600;
       color: var(--gray);
       max-width: 600px;
       margin: 0 auto 80px;
@@ -211,7 +211,7 @@
       z-index: 20;
       color: var(--navy);
       padding: 4px 12px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       font-weight: 800;
       text-align: center;
@@ -250,22 +250,22 @@
       position: absolute;
       top: 32px;
       right: 32px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 48px;
-      font-weight: 800;
+      font-weight: 500;
       color: rgba(255, 255, 255, 0.03);
       line-height: 1;
       transition: all 0.4s;
       pointer-events: none;
     }
 
-    .step-card:hover .step-badge {
+    .step-card:hover .step-badge { font-weight: 500;
       color: rgba(232, 164, 74, 0.06);
       transform: translateZ(10px) scale(1.1);
     }
 
     .step-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 22px;
       font-weight: 700;
       color: #fff;
@@ -273,7 +273,7 @@
       transform: translateZ(25px);
     }
 
-    .step-desc {
+    .step-desc { font-weight: 600;
       font-size: 15px;
       line-height: 1.6;
       color: rgba(255, 255, 255, 0.5);
@@ -303,11 +303,11 @@
       z-index: 1;
     }
 
-    .features .section-title {
+    .features .section-title { font-weight: 700;
       color: #fff;
     }
 
-    .features .section-sub {
+    .features .section-sub { font-weight: 600;
       color: rgba(255, 255, 255, 0.7);
     }
 
@@ -353,11 +353,11 @@
       transform: translateY(-4px);
     }
 
-    .feat-card:hover .feat-title {
+    .feat-card:hover .feat-title { font-weight: 700;
       color: #fff !important;
     }
 
-    .feat-card:hover .feat-desc {
+    .feat-card:hover .feat-desc { font-weight: 600;
       color: rgba(255, 255, 255, .45);
     }
 
@@ -378,14 +378,14 @@
     }
 
     .feat-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--navy);
       margin-bottom: 10px;
     }
 
-    .feat-desc {
+    .feat-desc { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       line-height: 1.7;
@@ -458,7 +458,7 @@
     }
 
     .earnings-value {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 34px;
       font-weight: 800;
       color: #fff;
@@ -512,14 +512,14 @@
     }
 
     .perk-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 700;
       color: var(--navy);
       margin-bottom: 4px;
     }
 
-    .perk-desc {
+    .perk-desc { font-weight: 600;
       font-size: 13px;
       color: var(--gray);
       line-height: 1.6;
@@ -543,11 +543,11 @@
       pointer-events: none;
     }
 
-    .pricing .section-title {
+    .pricing .section-title { font-weight: 700;
       color: #fff;
     }
 
-    .pricing .section-sub {
+    .pricing .section-sub { font-weight: 600;
       color: rgba(255, 255, 255, .42);
     }
 
@@ -589,9 +589,9 @@
       transform: translateX(-50%);
       background: var(--navy);
       color: var(--gold);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 500;
       padding: 6px 18px;
       border-radius: 100px;
       letter-spacing: 1px;
@@ -614,7 +614,7 @@
     }
 
     .price-amount {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 52px;
       font-weight: 800;
       color: #fff;
@@ -682,15 +682,15 @@
       padding: 16px;
       border-radius: var(--radius-md);
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       background: var(--navy);
       color: var(--gold);
       transition: all .3s;
     }
 
-    .btn-price-primary:hover {
+    .btn-price-primary:hover { font-weight: 500;
       background: var(--navy2);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
@@ -701,15 +701,15 @@
       padding: 16px;
       border-radius: var(--radius-md);
       border: 1px solid rgba(255, 255, 255, .12);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       background: transparent;
       color: #fff;
       transition: all .3s;
     }
 
-    .btn-price-outline:hover {
+    .btn-price-outline:hover { font-weight: 500;
       border-color: rgba(255, 255, 255, .35);
       background: rgba(255, 255, 255, .05);
     }
@@ -790,7 +790,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: #fff;
@@ -799,7 +799,7 @@
     }
 
     .testi-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: var(--navy);
@@ -846,7 +846,7 @@
         gap: 28px;
       }
 
-      .hero-headline {
+      .hero-headline { font-weight: 800;
         letter-spacing: -1.5px;
       }
     }
@@ -889,7 +889,7 @@
     }
 
     .lt-text strong {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: #0E0E1A
@@ -904,7 +904,7 @@
       padding: 9px 18px;
       border-radius: 10px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 700;
       color: #0E0E1A;
@@ -954,13 +954,13 @@
 
     .testimonial-header .section-title {
       font-size: clamp(40px, 6vw, 68px);
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       letter-spacing: -2px;
       margin-bottom: 16px;
     }
 
-    .testimonial-header .section-sub {
+    .testimonial-header .section-sub { font-weight: 600;
       font-size: 18px;
       color: var(--gray);
       max-width: 650px;
@@ -1059,7 +1059,7 @@
     }
 
     .tc-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14.5px;
       font-weight: 700;
       color: #1a1a2e;
@@ -1087,17 +1087,17 @@
         height: 600px;
       }
 
-      .col-hide-tablet {
+      .col-hide-tablet { font-weight: 500;
         display: none;
       }
     }
 
     @media (max-width: 768px) {
       .hero { padding: 100px 20px 60px; }
-      .hero-logo-type { font-size: 32px; }
-      .hero-headline { margin-bottom: 16px; }
-      .hero-sub { margin-bottom: 32px; }
-      .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; padding: 14px 24px; font-size: 15px; }
+      .hero-logo-type { font-weight: 800; font-size: 32px; }
+      .hero-headline { font-weight: 800; margin-bottom: 16px; }
+      .hero-sub { font-weight: 800; margin-bottom: 32px; }
+      .btn-hero-primary, .btn-hero-secondary { font-weight: 800; width: 100%; justify-content: center; padding: 14px 24px; font-size: 15px; }
       
       .testimonial-grid {
         grid-template-columns: 1fr;
@@ -1121,5 +1121,5 @@
 
     @media (max-width: 480px) {
       .hero-headline { font-size: 32px; }
-      .hero-sub { font-size: 14px; }
+      .hero-sub { font-weight: 800; font-size: 14px; }
     }

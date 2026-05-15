@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;0,800;1,700&family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <script src="js/barber-dashboard-tailwind.js"></script>
   <link rel="stylesheet" href="css/barber-dashboard.css">
@@ -17,6 +17,11 @@
 </head>
 
 <body class="bg-bg text-navy antialiased">
+  <!-- GLOBAL LOADER -->
+  <div id="global-loader" class="global-loader">
+    <div class="gl-logo">Trim<span>zy</span></div>
+    <div class="gl-blueprint"></div>
+  </div>
   <div class="flex h-screen overflow-hidden">
     <!-- SIDEBAR (Desktop Only) -->
     <aside class="hidden md:flex w-64 flex-shrink-0 bg-white border-r border-border flex flex-col h-full z-20">

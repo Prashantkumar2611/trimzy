@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Barber Profile — Trimzy</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@300;400;450;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -16,7 +16,11 @@
 </head>
 
 <body>
-
+  <!-- GLOBAL LOADER -->
+  <div id="global-loader" class="global-loader">
+    <div class="gl-logo">Trim<span>zy</span></div>
+    <div class="gl-blueprint"></div>
+  </div>
   <!-- NAV -->
   <nav id="navbar">
     <a href="index.html" class="nav-logo">Trim<span>zy</span></a>
@@ -35,7 +39,7 @@
   </nav>
 
   <!-- BREADCRUMB -->
-  <div class="breadcrumb">
+  <div class="breadcrumb" style="margin-top:80px">
     <a href="https://trimzy.co.in">Home</a>
     <span class="breadcrumb-sep">›</span>
     <a href="https://trimzy.co.in/app.html">Browse Barbers</a>
@@ -50,23 +54,22 @@
       <div class="hero-banner-fade"></div>
       <div class="hero-banner-glow"></div>
     </div>
-    <div class="hero-inner" style="display:flex;align-items:center;padding:40px 6%;gap:32px;position:relative;z-index:2">
-      <div id="hero-avatar" style="width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--amber));display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff;font-weight:800;border:4px solid #fff;box-shadow:0 8px 24px rgba(0,0,0,0.1)">...</div>
-      <div style="flex:1">
-
-        <h1 id="hero-name" style="font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#fff;margin-bottom:4px">...</h1>
-        <div id="hero-loc" style="display:flex;align-items:center;gap:6px;font-size:14px;color:rgba(255,255,255,0.7)">
+    <div class="hero-inner bp-hero-inner">
+      <div id="hero-avatar" class="bp-hero-avatar">...</div>
+      <div class="bp-hero-info">
+        <h1 id="hero-name" class="bp-hero-name">...</h1>
+        <div id="hero-loc" class="bp-hero-loc">
           <span>📍</span> <span id="hero-loc-detail">Loading location...</span>
         </div>
       </div>
-      <div class="hero-stats" style="display:flex;gap:40px">
-        <div class="hero-stat">
-          <div id="hero-rating" style="font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:var(--amber)">... ★</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px">Rating</div>
+      <div class="hero-stats bp-hero-stats">
+        <div class="hero-stat bp-hero-stat">
+          <div id="hero-rating" class="bp-stat-val bp-stat-rating">... ★</div>
+          <div class="bp-stat-lbl">Rating</div>
         </div>
-        <div class="hero-stat">
-          <div id="hero-experience" style="font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:#fff">...</div>
-          <div style="font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px">Experience</div>
+        <div class="hero-stat bp-hero-stat">
+          <div id="hero-experience" class="bp-stat-val">...</div>
+          <div class="bp-stat-lbl">Experience</div>
         </div>
       </div>
     </div>
@@ -108,21 +111,25 @@
       </div>
 
       <!-- RATINGS & REVIEWS -->
-      <div class="section" style="border:none; background:transparent; padding:0; margin-bottom: 40px; margin-top: 40px;">
-        <div style="font-family:'Sora',sans-serif; font-size:18px; font-weight:700; color:var(--navy); margin-bottom:8px;">
-          Ratings & Reviews
-        </div>
-        <div style="font-family:'Sora',sans-serif; font-size:32px; font-weight:800; color:var(--navy); margin-bottom:24px;">
-          <span id="review-avg">0</span> Stars <span style="font-size:24px; color:var(--gray); font-weight:600;">(<span id="review-count">0</span> Reviews)</span>
+      <div class="section bp-reviews-section">
+        <div class="bp-reviews-header">
+          <div class="bp-reviews-title">Ratings & Reviews</div>
+          <div class="bp-reviews-score">
+            <span id="review-avg" class="bp-reviews-avg">0</span>
+            <div class="bp-reviews-score-meta">
+              <span class="bp-reviews-stars">★★★★★</span>
+              <span class="bp-reviews-count">(<span id="review-count">0</span> Reviews)</span>
+            </div>
+          </div>
         </div>
         
-        <div id="no-reviews-overview" style="display:none;padding:20px;text-align:center;color:var(--gray)">
-          <div style="font-size:14px;font-weight:500">No ratings yet</div>
+        <div id="no-reviews-overview" class="bp-no-reviews">
+          <div>No ratings yet</div>
         </div>
 
-        <!-- Reviews Masonry Container -->
+        <!-- Reviews Container -->
         <div id="reviews-container" class="reviews-masonry">
-          <div style="padding:20px;text-align:center;color:var(--gray)">Loading reviews...</div>
+          <div class="bp-reviews-loading">Loading reviews...</div>
         </div>
 
         <!-- See All Button -->
@@ -142,31 +149,26 @@
         <div id="services-list">
           <!-- filled by JS -->
         </div>
-        <div
-          style="margin-top:14px;padding:10px 14px;background:#F0FBF6;border-radius:10px;font-size:12px;color:#1A7A55;font-weight:500;display:flex;align-items:center;gap:8px">
-          <span style="font-size:16px">💡</span> Select a service above, then scroll right to book your slot
+        <div class="bp-service-hint">
+          <span>💡</span> Select a service above, then scroll right to book your slot
         </div>
       </div>
 
       <!-- LOCATION -->
-      <div class="section" style="border:none; background:transparent; padding:0; margin-bottom: 40px; border-top: 1px solid var(--border); padding-top: 40px; border-radius: 0;">
-        <div style="font-family:'Sora',sans-serif; font-size:18px; font-weight:700; color:var(--navy); margin-bottom:20px;">
+      <div class="section bp-location-section">
+        <div class="section-title">
+          <div class="section-title-icon" style="background:#EEF2FF">📍</div>
           Location
         </div>
-        <div class="location-card" style="display: flex; gap: 24px; align-items: center; background: transparent; padding: 0;">
-          <div class="map-placeholder" style="width: 280px; height: 120px; border-radius: 8px; flex-shrink: 0; position: relative; overflow: hidden; background: #E2E8F0; background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 20px), repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(255,255,255,0.5) 10px, rgba(255,255,255,0.5) 20px);">
-            <div class="map-pin" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
-              <svg width="24" height="32" viewBox="0 0 24 32" fill="none">
-                <path d="M12 0C5.37 0 0 5.37 0 12C0 21 12 32 12 32C12 32 24 21 24 12C24 5.37 18.63 0 12 0ZM12 16.3C9.63 16.3 7.7 14.37 7.7 12C7.7 9.63 9.63 7.7 12 7.7C14.37 7.7 16.3 9.63 16.3 12C16.3 14.37 14.37 16.3 12 16.3Z" fill="black"/>
-              </svg>
-            </div>
+        <div class="bp-location-card">
+          <div class="bp-map-container">
+            <iframe id="gmap-iframe" width="100%" height="100%" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Bhubaneswar&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
           </div>
-          <div class="location-details" style="flex: 1;">
-            <div class="location-name" id="loc-name" style="font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; margin-bottom: 2px; color: var(--navy);">The Barber's Hub</div>
-            <div class="location-addr" id="loc-addr" style="color: var(--navy); font-size: 14px; margin-bottom: 12px; line-height: 1.5;">
-              123 Main St, City
-            </div>
-            <button class="location-btn" onclick="openMaps()" style="background: var(--navy); color: #fff; border-radius: 6px; padding: 8px 16px; font-weight: 500; font-size: 13px; border: none; cursor: pointer;">
+          <div class="bp-location-info">
+            <div class="bp-location-name" id="loc-name">The Barber's Hub</div>
+            <div class="bp-location-addr" id="loc-addr">Loading address...</div>
+            <button class="bp-directions-btn" onclick="openMaps()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
               Get Directions
             </button>
           </div>
@@ -178,8 +180,8 @@
     <!-- RIGHT COLUMN — BOOKING CARD -->
     <div class="sticky-book fade-up-2">
       <div class="book-card">
-        <div class="book-card-header" style="margin-bottom: 20px;">
-          <div class="book-card-title" id="book-card-title" style="font-family: 'Inter', sans-serif; font-size: 16px; font-weight: 700; color: var(--navy);">Booking Payment Selection Flow</div>
+        <div class="bp-book-header">
+          <div class="bp-book-title" id="book-card-title">Book Appointment</div>
         </div>
         <div class="book-card-body">
 
@@ -200,7 +202,7 @@
             <div class="service-mini" id="footer-services-list">
               <!-- filled by JS -->
             </div>
-            <button class="book-btn" onclick="goToStep(2)" style="width:100%; padding:16px; background:#000; color:#fff; font-family:'Inter', sans-serif; font-size:14px; font-weight:600; border:none; border-radius:8px; cursor:pointer; margin-top:8px;">
+            <button class="book-btn" onclick="goToStep(2)" style="width:100%; padding:16px; background:#000; color:#fff; font-family:'Inter', sans-serif; font-size:14px; font-weight:500; border:none; border-radius:8px; cursor:pointer; margin-top:8px;">
               <span>Schedule</span>
             </button>
           </div>
@@ -226,7 +228,7 @@
 
             <div style="display:flex;gap:8px;margin-bottom:14px">
               <button onclick="goToStep(1)"
-                style="flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer">←
+                style="flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer">←
                 Back</button>
               <button class="book-btn" style="flex:2" id="btn-confirm" onclick="attemptGoToStep3()" disabled>
                 <span>Confirm Slot →</span>
@@ -261,13 +263,13 @@
             </div>
 
             <div style="background:#F9FAFB;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:20px">
-              <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px">Booking Summary</div>
+              <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px">Booking Summary</div>
               <div id="summary-rows"></div>
             </div>
 
             <div style="display:flex;gap:8px;margin-bottom:14px">
               <button onclick="goToStep(2)"
-                style="flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer">←
+                style="flex:1;padding:11px;border-radius:12px;border:1px solid var(--border);background:#fff;font-size:13px;font-weight:500;color:var(--navy);cursor:pointer">←
                 Back</button>
               <button class="book-btn" style="flex:2; background:var(--navy); color:#fff;" onclick="attemptGoToStep4()">
                 <span>Proceed to Payment</span>
@@ -312,7 +314,7 @@
               </button>
             </div>
 
-            <button class="book-btn" style="width:100%; padding:16px; background:#000; color:#fff; font-family:'Inter', sans-serif; font-size:14px; font-weight:600; border:none; border-radius:8px; cursor:pointer;" id="btn-submit" onclick="submitBooking()">
+            <button class="book-btn" style="width:100%; padding:16px; background:#000; color:#fff; font-family:'Inter', sans-serif; font-size:14px; font-weight:500; border:none; border-radius:8px; cursor:pointer;" id="btn-submit" onclick="submitBooking()">
               <span class="btn-text">Complete Booking</span>
               <span class="btn-loader" style="display:none">Processing...</span>
             </button>
@@ -322,23 +324,23 @@
       </div>
 
       <!-- Quick stats under card -->
-      <div style="display:flex; flex-direction:column; gap:12px; margin-top:12px">
-        <div style="background:#fff; border-radius:8px; padding:16px; border:1px solid var(--border); display:flex; align-items:center; gap:16px;">
-          <div style="width:24px; height:24px; color:#000;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      <div class="bp-quick-stats">
+        <div class="bp-quick-stat">
+          <div class="bp-quick-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
           <div>
-            <div style="font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#000; margin-bottom:2px;">~22 min</div>
-            <div style="font-size:13px;color:var(--gray);font-weight:500;">Queue Wait</div>
+            <div class="bp-quick-stat-val">~22 min</div>
+            <div class="bp-quick-stat-lbl">Queue Wait</div>
           </div>
         </div>
-        <div style="background:#fff; border-radius:8px; padding:16px; border:1px solid var(--border); display:flex; align-items:center; gap:16px;">
-          <div style="width:24px; height:24px; color:#000;">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <div class="bp-quick-stat">
+          <div class="bp-quick-stat-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           </div>
           <div>
-            <div id="bp-hours-val" style="font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:#000; margin-bottom:2px;">9:00 AM - 8:00 PM</div>
-            <div id="bp-hours-lbl" style="font-size:13px;color:var(--gray);font-weight:500;">Open Today</div>
+            <div class="bp-quick-stat-val" id="bp-hours-val">9:00 AM – 8:00 PM</div>
+            <div class="bp-quick-stat-lbl" id="bp-hours-lbl">Open Today</div>
           </div>
         </div>
       </div>

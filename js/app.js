@@ -54,10 +54,10 @@
         const mobileBtns = document.querySelector('.mobile-menu-btns');
         if (mobileBtns) {
           mobileBtns.innerHTML = `
-                <button class="pd-item" onclick="requireAuthThen('bookings');toggleProfileDropdown()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Sora',sans-serif;font-size:14px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:10px">📅 My Bookings</button>
-                <button class="pd-item" onclick="switchAppView('browse');toggleProfileDropdown()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Sora',sans-serif;font-size:14px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:10px">🔍 Browse Barbers</button>
+                <button class="pd-item" onclick="requireAuthThen('bookings');toggleProfileDropdown()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:10px">📅 My Bookings</button>
+                <button class="pd-item" onclick="switchAppView('browse');toggleProfileDropdown()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Inter',sans-serif;font-size:14px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:10px">🔍 Browse Barbers</button>
                 <hr style="border:none;border-bottom:1px solid #eee;margin:8px 0" />
-                <button class="pd-item pd-logout" onclick="doLogout()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Sora',sans-serif;font-size:14px;color:var(--red);font-weight:600;display:flex;align-items:center;gap:10px">🚪 Log Out</button>
+                <button class="pd-item pd-logout" onclick="doLogout()" style="width:100%;text-align:left;padding:12px 16px;border:none;background:none;font-family:'Inter',sans-serif;font-size:14px;color:var(--red);font-weight:600;display:flex;align-items:center;gap:10px">🚪 Log Out</button>
             `;
         }
       } else {
@@ -67,7 +67,7 @@
         const mobileBtns = document.querySelector('.mobile-menu-btns');
         if (mobileBtns) {
           mobileBtns.innerHTML = `
-                <button class="btn-gold" style="width:100%;padding:14px;border-radius:12px;border:none;font-family:'Sora',sans-serif;font-weight:700;font-size:14px;cursor:pointer" onclick="openAuthModal()">Log In / Sign Up →</button>
+                <button class="btn-gold" style="width:100%;padding:14px;border-radius:12px;border:none;font-family:'Inter',sans-serif;font-weight:700;font-size:14px;cursor:pointer" onclick="openAuthModal()">Log In / Sign Up →</button>
             `;
         }
       }
@@ -146,6 +146,10 @@
           allBarbers.push({ id: doc.id, initials, gradient, ...d });
         });
 
+        if (userLat !== null && userLng !== null) {
+            updateBarberDistances(userLat, userLng);
+        }
+
         filterBarbers();
       } catch (error) {
         console.error("Error loading barbers:", error);
@@ -156,6 +160,8 @@
     window.filterBarbers = () => {
       const q = document.getElementById('search-input').value.toLowerCase();
       const sort = document.getElementById('sort-select').value;
+      const areaSelect = document.getElementById('area-select');
+      const areaFilter = areaSelect ? areaSelect.value.toLowerCase() : '';
 
       let list = allBarbers.filter(b => {
         const bName = (b.name || '').toLowerCase();
@@ -165,6 +171,14 @@
         const bArea = (b.area || '').toLowerCase();
 
         if (mode === 'home' && !b.homeVisit) return false;
+
+        if (userLat && userLng && typeof b._dist === 'number' && b._dist > 50) {
+            return false;
+        }
+
+        if (areaFilter && !bArea.includes(areaFilter)) {
+            return false;
+        }
 
         if (q) {
           const match = bName.includes(q) ||
@@ -179,6 +193,8 @@
 
       if (sort === 'rating') list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
       else if (sort === 'price-low') list.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+      else if (sort === 'price-high') list.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
+      else if (sort === 'distance') list.sort((a, b) => (a._dist || 999) - (b._dist || 999));
 
       console.log(`DEBUG [Search]: Query "${q}" found ${list.length} results.`);
       renderBarbers(list);
@@ -194,7 +210,11 @@
 
       try {
         if (list.length === 0) {
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray)">No barbers found in this area.</div>';
+          if (userLat && userLng) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--gray)"><div style="font-size:40px;margin-bottom:10px">📍</div><h3 style="color:var(--navy);font-family:\'Sora\',sans-serif;margin-bottom:5px">No nearby shops</h3><p>We couldn\'t find any barbers within 50km of your location.</p></div>';
+          } else {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray)">No barbers found matching your search.</div>';
+          }
           return;
         }
 
@@ -229,8 +249,8 @@
                    
                    ${!isOpen ? `
                     <div class="bc-closed-overlay">
-                      <div style="color:white; font-family:'Sora',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Shop Closed</div>
-                      <div style="color:rgba(255,255,255,0.8); font-family:'DM Sans',sans-serif; font-weight:500; font-size:11px; line-height:1.4">We will be back soon to style you</div>
+                      <div style="color:white; font-family:'Inter',sans-serif; font-weight:800; font-size:16px; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px">Shop Closed</div>
+                      <div style="color:rgba(255,255,255,0.8); font-family:'Inter',sans-serif; font-weight:500; font-size:11px; line-height:1.4">We will be back soon to style you</div>
                     </div>
                    ` : ''}
 
@@ -352,7 +372,7 @@
     async function renderMyBookings() {
       const body = document.getElementById('bookings-body');
       if (!currentUser) {
-        body.innerHTML = `<div class="bookings-empty"><div class="be-icon">🔐</div><h3>Log in to see your bookings</h3><p>Your booking history will appear here after you log in.</p><button class="btn-gold" style="padding:14px 28px;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer" onclick="openAuthModal()">Log In / Sign Up →</button></div>`;
+        body.innerHTML = `<div class="bookings-empty"><div class="be-icon">🔐</div><h3>Log in to see your bookings</h3><p>Your booking history will appear here after you log in.</p><button class="btn-gold" style="padding:14px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer" onclick="openAuthModal()">Log In / Sign Up →</button></div>`;
         return;
       }
       body.innerHTML = '<div class="bookings-loading">Loading your history...</div>';
@@ -362,7 +382,7 @@
         const bookings = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         window.customerBookings = bookings;
         if (!bookings || !bookings.length) {
-          body.innerHTML = `<div class="bookings-empty"><div class="be-icon">📅</div><h3>No bookings yet</h3><p>You haven't booked any barbers yet. Find one and make your first booking!</p><button class="btn-gold" style="padding:14px 28px;border-radius:12px;font-family:'Sora',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer" onclick="switchAppView('browse')">Browse Barbers →</button></div>`;
+          body.innerHTML = `<div class="bookings-empty"><div class="be-icon">📅</div><h3>No bookings yet</h3><p>You haven't booked any barbers yet. Find one and make your first booking!</p><button class="btn-gold" style="padding:14px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer" onclick="switchAppView('browse')">Browse Barbers →</button></div>`;
           return;
         }
 
@@ -412,19 +432,19 @@
         };
 
         body.innerHTML = `
-          <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:20px">
+          <div style="font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--navy);margin-bottom:20px">
             My Bookings <span style="color:var(--gold)">(${bookings.length})</span>
           </div>
           ${upcoming.length ? `
-            <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px">📅 Upcoming (${upcoming.length})</div>
+            <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--blue);margin-bottom:12px">📅 Upcoming (${upcoming.length})</div>
             <div class="bookings-list" style="margin-bottom:24px">${upcoming.map(renderCard).join('')}</div>
           ` : ''}
           ${completed.length ? `
-            <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--green);margin-bottom:12px">✅ Completed (${completed.length})</div>
+            <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--green);margin-bottom:12px">✅ Completed (${completed.length})</div>
             <div class="bookings-list" style="margin-bottom:24px">${completed.map(renderCard).join('')}</div>
           ` : ''}
           ${cancelled.length ? `
-            <div style="font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:12px">❌ Cancelled (${cancelled.length})</div>
+            <div style="font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--red);margin-bottom:12px">❌ Cancelled (${cancelled.length})</div>
             <div class="bookings-list" style="margin-bottom:24px">${cancelled.map(renderCard).join('')}</div>
           ` : ''}`;
       } catch (err) {
@@ -627,50 +647,132 @@
       document.getElementById('pincode-input').focus();
     };
 
+    let acTimer = null;
+
     window.closePincodeModal = () => {
       document.getElementById('pincode-overlay').classList.remove('open');
       document.getElementById('pincode-error').style.display = 'none';
       document.getElementById('pincode-result').textContent = '';
       document.getElementById('pincode-input').value = '';
+      const acContainer = document.getElementById('pm-autocomplete');
+      if (acContainer) acContainer.style.display = 'none';
     };
 
     window.handleOverlayClick = (e) => {
       if (e.target.id === 'pincode-overlay') closePincodeModal();
     };
 
-    window.onPincodeInput = () => {
-      const val = document.getElementById('pincode-input').value;
-      document.getElementById('pincode-find-btn').disabled = val.length < 6;
-      document.getElementById('pincode-input').classList.remove('error');
-      document.getElementById('pincode-error').style.display = 'none';
+    // Helper to get a clean area name from Nominatim data
+    const getCleanAreaName = (item) => {
+        let areaName = item.name || '';
+        if (!areaName || /^\d+$/.test(areaName)) {
+           if (item.address) {
+              const addr = item.address;
+              areaName = addr.city || addr.town || addr.county || addr.state_district || areaName;
+           } else {
+              const parts = item.display_name.split(',');
+              areaName = parts.length > 1 ? parts[1].trim() : parts[0].trim();
+           }
+        }
+        if (typeof areaName === 'string') {
+           areaName = areaName.replace(/Municipal Corporation/ig, '').replace(/\(.*\)/g, '').trim();
+        }
+        return areaName;
     };
 
-    // Use Nominatim API to get location from pincode
+    window.onPincodeInput = () => {
+      const val = document.getElementById('pincode-input').value.trim();
+      document.getElementById('pincode-find-btn').disabled = val.length < 3;
+      document.getElementById('pincode-input').classList.remove('error');
+      document.getElementById('pincode-error').style.display = 'none';
+      
+      const acContainer = document.getElementById('pm-autocomplete');
+      if (val.length < 3) {
+          if (acContainer) acContainer.style.display = 'none';
+          return;
+      }
+      
+      clearTimeout(acTimer);
+      acTimer = setTimeout(async () => {
+          let apiUrl = '';
+          if (/^\d+$/.test(val)) {
+             apiUrl = `https://nominatim.openstreetmap.org/search?postalcode=${val}&countrycodes=in&format=json&addressdetails=1&limit=5`;
+          } else {
+             apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(val)}&countrycodes=in&format=json&addressdetails=1&limit=5`;
+          }
+          
+          try {
+              const res = await fetch(apiUrl);
+              const data = await res.json();
+              
+              // Filter out POIs like hotels, cafes, shops, etc.
+              const badClasses = ['tourism', 'amenity', 'shop', 'office', 'leisure', 'building', 'craft', 'emergency', 'healthcare', 'military', 'historic', 'man_made', 'aeroway'];
+              const validData = (data || []).filter(item => !badClasses.includes(item.class));
+
+              if (validData.length > 0 && acContainer) {
+                  acContainer.innerHTML = '';
+                  validData.forEach(item => {
+                      const areaName = getCleanAreaName(item);
+                      const div = document.createElement('div');
+                      div.className = 'pm-ac-item';
+                      div.innerHTML = `<div class="pm-ac-title">${areaName}</div><div class="pm-ac-sub">${item.display_name}</div>`;
+                      div.onclick = () => {
+                          userLat = parseFloat(item.lat);
+                          userLng = parseFloat(item.lon);
+                          updateBarberDistances(userLat, userLng);
+                          setLocPill(' ' + areaName, true);
+                          closePincodeModal();
+
+                          const sortSel = document.getElementById('sort-select');
+                          if (sortSel) sortSel.value = 'distance';
+                          filterBarbers();
+                      };
+                      acContainer.appendChild(div);
+                  });
+                  acContainer.style.display = 'block';
+              } else if (acContainer) {
+                  acContainer.style.display = 'none';
+              }
+          } catch(e) {
+              console.error(e);
+          }
+      }, 400);
+    };
+
+    // Fallback if they hit "Find" or "Enter" instead of clicking an autocomplete option
     window.lookupPincode = async () => {
-      const pin = document.getElementById('pincode-input').value;
-      if (pin.length < 6) return;
+      const queryText = document.getElementById('pincode-input').value.trim();
+      if (queryText.length < 3) return;
       const btn = document.getElementById('pincode-find-btn');
       btn.textContent = '...';
       btn.disabled = true;
       document.getElementById('pincode-result').textContent = 'Searching...';
 
       try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${pin}&country=India&format=json`);
+        let apiUrl = '';
+        if (/^\d{6}$/.test(queryText)) {
+            apiUrl = `https://nominatim.openstreetmap.org/search?postalcode=${queryText}&countrycodes=in&format=json&addressdetails=1`;
+        } else {
+            apiUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(queryText)}&countrycodes=in&format=json&addressdetails=1`;
+        }
+
+        const res = await fetch(apiUrl);
         const data = await res.json();
+        
+        // Filter out POIs like hotels, cafes, shops, etc.
+        const badClasses = ['tourism', 'amenity', 'shop', 'office', 'leisure', 'building', 'craft', 'emergency', 'healthcare', 'military', 'historic', 'man_made', 'aeroway'];
+        const validData = (data || []).filter(item => !badClasses.includes(item.class));
 
-        if (data && data.length > 0) {
-          userLat = parseFloat(data[0].lat);
-          userLng = parseFloat(data[0].lon);
+        if (validData.length > 0) {
+          userLat = parseFloat(validData[0].lat);
+          userLng = parseFloat(validData[0].lon);
 
-          // Get a clean area name from the result
-          const parts = data[0].display_name.split(',');
-          const areaName = parts[0].trim();
+          const areaName = getCleanAreaName(validData[0]);
 
           updateBarberDistances(userLat, userLng);
-          setLocPill(' ' + areaName + ' (' + pin + ')', true);
+          setLocPill(' ' + areaName, true);
           closePincodeModal();
 
-          // Auto-sort by nearest
           const sortSel = document.getElementById('sort-select');
           if (sortSel) sortSel.value = 'distance';
           filterBarbers();
@@ -685,11 +787,33 @@
       }
       btn.textContent = 'Find';
       btn.disabled = false;
+      document.getElementById('pincode-result').textContent = '';
+    };
+
+    const CITIES = {
+      'Bhubaneswar': { lat: 20.2961, lng: 85.8245 },
+      'Cuttack': { lat: 20.4625, lng: 85.8830 },
+      'Puri': { lat: 19.8135, lng: 85.8312 },
+      'Rourkela': { lat: 22.2604, lng: 84.8536 },
+      'Sambalpur': { lat: 21.4666, lng: 83.9777 },
+      'Berhampur': { lat: 19.3150, lng: 84.7941 }
     };
 
     window.pickCity = (city) => {
+      const coords = CITIES[city];
+      if (coords) {
+         userLat = coords.lat;
+         userLng = coords.lng;
+         updateBarberDistances(userLat, userLng);
+      } else {
+         userLat = null;
+         userLng = null;
+      }
       setLocPill(' ' + city, true);
       closePincodeModal();
+      
+      const sortSel = document.getElementById('sort-select');
+      if (sortSel) sortSel.value = 'distance';
       filterBarbers();
     };
 
@@ -698,16 +822,21 @@
       requestLocation();
     };
 
+    const DEFAULT_BHUBANESWAR_LAT = 20.2961;
+    const DEFAULT_BHUBANESWAR_LNG = 85.8245;
+
     function updateBarberDistances(lat, lng) {
       allBarbers.forEach(b => {
+        let bLat = DEFAULT_BHUBANESWAR_LAT;
+        let bLng = DEFAULT_BHUBANESWAR_LNG;
         if (b.location?.lat && b.location?.lng) {
-          const d = haversine(lat, lng, b.location.lat, b.location.lng);
-          b.distance = d < 1 ? Math.round(d * 1000) + ' m' : d.toFixed(1) + ' km';
-          b._dist = d;
-        } else {
-          b._dist = Math.random() * 3 + 0.3;
-          b.distance = b._dist.toFixed(1) + ' km';
+            bLat = parseFloat(b.location.lat);
+            bLng = parseFloat(b.location.lng);
         }
+        
+        const d = haversine(lat, lng, bLat, bLng);
+        b.distance = d < 1 ? Math.round(d * 1000) + ' m' : d.toFixed(1) + ' km';
+        b._dist = d;
       });
     }
 
@@ -757,8 +886,7 @@
     window.dismissLocBanner = () => {
       const banner = document.getElementById('loc-banner');
       if (banner) banner.style.display = 'none';
-      setLocPill(' Bhubaneswar', true);
-      filterBarbers();
+      pickCity('Bhubaneswar');
     };
 
     function initLocationFlow() {
@@ -767,7 +895,7 @@
           if (perm.state === 'granted') {
             window.requestLocation();
           } else if (perm.state === 'denied') {
-            setLocPill(' Bhubaneswar', true);
+            pickCity('Bhubaneswar');
           } else {
             setTimeout(() => {
               const banner = document.getElementById('loc-banner');

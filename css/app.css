@@ -4,7 +4,7 @@
       cursor: not-allowed;
     }
 
-    .barber-card.closed .bc-select-btn {
+    .barber-card.closed .bc-select-btn { font-weight: 500;
       background: #eee !important;
       color: #999 !important;
       border-color: #ddd !important;
@@ -50,18 +50,18 @@
     }
 
     .app-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
     }
 
-    .app-title span {
+    .app-title span { font-weight: 700;
       color: var(--gold);
     }
 
     /* Segmented controls */
-    .app-nav-tabs {
+    .app-nav-tabs { font-weight: 500;
       display: none !important;
       background: rgba(255, 255, 255, .06);
       border-radius: 12px;
@@ -73,9 +73,9 @@
       padding: 8px 18px;
       border-radius: 9px;
       border: none;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: rgba(255, 255, 255, .45);
       background: transparent;
       cursor: pointer;
@@ -83,7 +83,7 @@
       white-space: nowrap
     }
 
-    .app-nav-tab.active {
+    .app-nav-tab.active { font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       box-shadow: 0 2px 12px rgba(232, 164, 74, .35)
@@ -101,9 +101,9 @@
       padding: 8px 18px;
       border-radius: 9px;
       border: none;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: rgba(255, 255, 255, .45);
       background: transparent;
       cursor: pointer;
@@ -111,7 +111,7 @@
       white-space: nowrap
     }
 
-    .app-toggle-btn.active {
+    .app-toggle-btn.active { font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       box-shadow: 0 2px 12px rgba(232, 164, 74, .35)
@@ -148,7 +148,7 @@
       padding: 11px 16px 11px 40px;
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       background: #F8F9FA;
@@ -170,7 +170,7 @@
       padding: 11px 14px;
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       background: #F8F9FA;
       color: var(--navy);
@@ -247,16 +247,16 @@
     }
 
     .ticket-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 26px;
-      font-weight: 800;
+      font-weight: 700;
       color: #0b0b18;
       line-height: 1.3;
       margin-bottom: 12px;
       letter-spacing: -0.5px;
     }
 
-    .ticket-subtitle {
+    .ticket-subtitle { font-weight: 700;
       font-size: 14px;
       color: #6B7280;
       line-height: 1.6;
@@ -291,8 +291,8 @@
     }
 
     .review-name {
-      font-family: 'Sora', sans-serif;
-      font-weight: 800;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
       font-size: 15px;
       color: var(--navy);
       margin-bottom: 4px;
@@ -314,14 +314,14 @@
     }
 
     .ticket-pin-value {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 42px;
       font-weight: 800;
       letter-spacing: 8px;
       color: #0b0b18;
     }
 
-    .ticket-details {
+    .ticket-details { font-weight: 600;
       background: #F8FAFC;
       border-radius: 16px;
       padding: 24px;
@@ -354,7 +354,7 @@
 
     .ticket-value {
       color: #0b0b18;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       text-align: right;
@@ -367,14 +367,14 @@
       width: 100%;
       padding: 18px;
       border-radius: 100px;
-      font-family: 'Sora', sans-serif;
-      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
       font-size: 15px;
       cursor: pointer;
       transition: opacity 0.2s;
     }
 
-    .btn-ticket-back:hover {
+    .btn-ticket-back:hover { font-weight: 500;
       opacity: 0.9;
     }
 
@@ -394,7 +394,7 @@
     }
 
     .arm-count {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 800;
       color: var(--navy)
@@ -455,14 +455,14 @@
     }
 
     .loc-banner-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 8px
     }
 
-    .loc-banner-sub {
+    .loc-banner-sub { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       line-height: 1.7;
@@ -474,9 +474,9 @@
       padding: 15px;
       border-radius: 14px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       cursor: pointer;
@@ -485,29 +485,29 @@
       margin-bottom: 10px
     }
 
-    .loc-allow-btn:hover {
+    .loc-allow-btn:hover { font-weight: 500;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .4)
     }
 
-    .loc-skip-btn {
+    .loc-skip-btn { font-weight: 500;
       width: 100%;
       padding: 12px;
       border-radius: 14px;
       border: none;
       background: transparent;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--gray);
       cursor: pointer
     }
 
-    .loc-skip-btn:hover {
+    .loc-skip-btn:hover { font-weight: 500;
       color: var(--navy)
     }
 
     /* Location city button (modern pill) */
-    .city-btn-wrap {
+    .city-btn-wrap { font-weight: 500;
       position: relative;
       display: inline-flex;
       align-items: center
@@ -523,22 +523,22 @@
       border: 1px solid #E6E4E0;
       cursor: pointer;
       transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13.5px;
-      font-weight: 600;
+      font-weight: 500;
       color: #333;
       white-space: nowrap;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
     }
 
-    .city-btn:hover {
+    .city-btn:hover { font-weight: 500;
       background: #F8F9FA;
       border-color: #D1D1D1;
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
-    .city-btn .city-icon {
+    .city-btn .city-icon { font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -547,7 +547,7 @@
       transition: color .3s;
     }
 
-    .city-btn .city-icon.green {
+    .city-btn .city-icon.green { font-weight: 500;
       color: #2ECC8E;
     }
 
@@ -555,14 +555,14 @@
       max-width: 160px;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--navy);
       letter-spacing: -0.2px;
     }
 
-    .city-btn .city-chevron {
+    .city-btn .city-chevron { font-weight: 500;
       display: flex;
       align-items: center;
       color: #7B7B8E;
@@ -628,14 +628,14 @@
     }
 
     .pm-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 4px
     }
 
-    .pm-sub {
+    .pm-sub { font-weight: 600;
       font-size: 13px;
       color: var(--gray);
       margin-bottom: 20px;
@@ -645,7 +645,56 @@
     .pm-input-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 18px
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .pm-autocomplete {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      border: 1px solid #E6E4E0;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+    }
+
+    .pm-ac-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: left;
+      border-bottom: 1px solid #F0F0F0;
+      transition: background 0.2s;
+    }
+
+    .pm-ac-item:last-child {
+      border-bottom: none;
+    }
+
+    .pm-ac-item:hover {
+      background: #F8F9FA;
+    }
+
+    .pm-ac-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .pm-ac-sub { font-weight: 600;
+      font-size: 12px;
+      color: var(--gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .pm-input {
@@ -653,7 +702,7 @@
       padding: 12px 16px;
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       color: var(--navy);
       outline: none;
@@ -663,7 +712,7 @@
       appearance: textfield;
     }
 
-    .pm-input::-webkit-inner-spin-button {
+    .pm-input::-webkit-inner-spin-button { font-weight: 500;
       -webkit-appearance: none;
       appearance: none;
     }
@@ -682,9 +731,9 @@
       padding: 12px 20px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       cursor: pointer;
@@ -693,12 +742,12 @@
       box-shadow: 0 3px 10px rgba(232, 164, 74, .25)
     }
 
-    .pm-find-btn:hover {
+    .pm-find-btn:hover { font-weight: 500;
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(232, 164, 74, .35)
     }
 
-    .pm-find-btn:disabled {
+    .pm-find-btn:disabled { font-weight: 500;
       opacity: .5;
       cursor: not-allowed;
       transform: none
@@ -744,16 +793,16 @@
       padding: 7px 14px;
       border-radius: 100px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--navy);
       background: #fff;
       cursor: pointer;
       transition: all .2s
     }
 
-    .pm-city-chip:hover {
+    .pm-city-chip:hover { font-weight: 500;
       border-color: var(--gold);
       color: var(--gold);
       background: rgba(232, 164, 74, .04)
@@ -765,9 +814,9 @@
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
       background: #fff;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--gray);
       cursor: pointer;
       transition: all .2s;
@@ -777,7 +826,7 @@
       gap: 7px
     }
 
-    .pm-gps-btn:hover {
+    .pm-gps-btn:hover { font-weight: 500;
       border-color: var(--gold);
       color: var(--navy)
     }
@@ -824,14 +873,14 @@
     }
 
     .rm-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 4px
     }
 
-    .rm-sub {
+    .rm-sub { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       margin-bottom: 24px
@@ -861,7 +910,7 @@
       padding: 14px;
       border-radius: 14px;
       border: 1.5px solid #EEE;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       outline: none;
@@ -881,19 +930,19 @@
       border: none;
       background: var(--gold);
       color: var(--navy);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 600;
       cursor: pointer;
       transition: all .2s
     }
 
-    .rm-submit:hover {
+    .rm-submit:hover { font-weight: 600;
       background: var(--gold-light);
       transform: translateY(-1px)
     }
 
-    .rm-submit:disabled {
+    .rm-submit:disabled { font-weight: 600;
       opacity: .5;
       cursor: not-allowed
     }
@@ -964,9 +1013,9 @@
     }
 
     .bc-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 2px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
@@ -989,7 +1038,7 @@
     }
 
     .bc-rating {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
       font-weight: 700;
       color: var(--gold);
@@ -1009,9 +1058,9 @@
       color: #fff;
       padding: 6px 14px;
       border-radius: 100px;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 500;
       z-index: 3;
       transform: translateZ(80px);
     }
@@ -1024,9 +1073,9 @@
       background: rgba(232, 164, 74, 0.1);
       backdrop-filter: blur(8px);
       color: var(--gold);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1034,7 +1083,7 @@
       transform: translateZ(50px);
     }
 
-    .barber-card:hover .bc-book-btn {
+    .barber-card:hover .bc-book-btn { font-weight: 500;
       background: var(--gold);
       color: var(--navy);
       transform: translateZ(90px) scale(1.02);
@@ -1062,7 +1111,7 @@
       border-radius: 24px;
     }
 
-    .bc-select-btn {
+    .bc-select-btn { font-weight: 500;
       background: transparent;
       transition: all .3s cubic-bezier(.4, 0, .2, 1);
       cursor: pointer;
@@ -1070,7 +1119,7 @@
     }
 
     .bc-select-btn:hover,
-    .barber-card.selected .bc-select-btn {
+    .barber-card.selected .bc-select-btn { font-weight: 500;
       background: var(--gold);
       color: #1a1a2e;
       border-color: var(--gold);
@@ -1084,14 +1133,14 @@
       background: transparent;
       cursor: pointer;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 500;
       color: rgba(255, 255, 255, .6);
       white-space: nowrap;
       flex-shrink: 0;
       transition: all .2s
     }
 
-    .bc-directions-btn:hover {
+    .bc-directions-btn:hover { font-weight: 500;
       border-color: var(--gold);
       color: var(--gold)
     }
@@ -1121,9 +1170,9 @@
     }
 
     .bookings-empty h3 {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 22px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 10px
     }
@@ -1167,7 +1216,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 800;
       color: #fff;
@@ -1180,7 +1229,7 @@
     }
 
     .bi-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       font-weight: 700;
       color: var(--navy);
@@ -1229,7 +1278,7 @@
     }
 
     .bi-price {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 700;
       color: var(--gold)
@@ -1291,21 +1340,21 @@
     }
 
     .lg-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 26px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 10px
     }
 
-    .lg-sub {
+    .lg-sub { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       line-height: 1.8;
       margin-bottom: 28px
     }
 
-    .lg-btns {
+    .lg-btns { font-weight: 500;
       display: flex;
       flex-direction: column;
       gap: 10px
@@ -1315,9 +1364,9 @@
       padding: 15px;
       border-radius: 14px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       cursor: pointer;
@@ -1325,7 +1374,7 @@
       box-shadow: 0 4px 16px rgba(232, 164, 74, .3)
     }
 
-    .lg-btn-primary:hover {
+    .lg-btn-primary:hover { font-weight: 500;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .4)
     }
@@ -1334,16 +1383,16 @@
       padding: 15px;
       border-radius: 14px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--navy);
       background: transparent;
       cursor: pointer;
       transition: all .2s
     }
 
-    .lg-btn-outline:hover {
+    .lg-btn-outline:hover { font-weight: 500;
       border-color: var(--navy)
     }
 
@@ -1410,7 +1459,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       font-weight: 800;
       color: #fff;
@@ -1418,13 +1467,13 @@
     }
 
     .bp-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 17px;
       font-weight: 700;
       color: var(--navy)
     }
 
-    .bp-detail {
+    .bp-detail { font-weight: 600;
       font-size: 12px;
       color: var(--gray);
       margin-top: 2px
@@ -1460,7 +1509,7 @@
       flex: 1;
       padding: 10px 8px;
       text-align: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
       font-weight: 700;
       color: var(--gray);
@@ -1536,7 +1585,7 @@
     }
 
     .si-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: var(--navy)
@@ -1549,7 +1598,7 @@
     }
 
     .si-price {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 800;
       color: var(--navy)
@@ -1575,9 +1624,9 @@
       border-radius: 14px;
       border: 1.5px solid #EBEBEB;
       background: #fff;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       cursor: pointer;
       transition: all .25s;
@@ -1585,12 +1634,12 @@
       min-width: 64px
     }
 
-    .date-btn:hover {
+    .date-btn:hover { font-weight: 500;
       border-color: var(--gold);
       background: rgba(232, 164, 74, .04)
     }
 
-    .date-btn.active {
+    .date-btn.active { font-weight: 500;
       background: var(--gold);
       border-color: var(--gold);
       color: var(--navy);
@@ -1604,14 +1653,14 @@
       margin-bottom: 3px
     }
 
-    .date-btn:disabled {
+    .date-btn:disabled { font-weight: 500;
       opacity: 0.4;
       cursor: not-allowed;
       background: rgba(0, 0, 0, 0.02);
       border-color: #EBEBEB;
     }
 
-    .date-btn:disabled:hover {
+    .date-btn:disabled:hover { font-weight: 500;
       border-color: #EBEBEB;
       background: rgba(0, 0, 0, 0.02);
     }
@@ -1629,28 +1678,28 @@
       border-radius: 12px;
       border: 1.5px solid #EBEBEB;
       background: #fff;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       cursor: pointer;
       transition: all .2s;
       text-align: center
     }
 
-    .time-btn:hover:not(:disabled) {
+    .time-btn:hover:not(:disabled) { font-weight: 500;
       border-color: var(--gold);
       background: rgba(232, 164, 74, .05)
     }
 
-    .time-btn.active {
+    .time-btn.active { font-weight: 500;
       background: var(--gold);
       border-color: var(--gold);
       color: var(--navy);
       box-shadow: 0 3px 10px rgba(232, 164, 74, .3)
     }
 
-    .time-btn:disabled {
+    .time-btn:disabled { font-weight: 500;
       opacity: .35;
       cursor: not-allowed;
       text-decoration: line-through
@@ -1689,7 +1738,7 @@
       padding: 12px 14px;
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       color: var(--navy);
       outline: none;
@@ -1722,7 +1771,7 @@
 
     .bs-row:last-child {
       margin-bottom: 0;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-weight: 800;
       font-size: 16px;
       padding-top: 8px;
@@ -1747,16 +1796,16 @@
       padding: 12px 22px;
       border-radius: 12px;
       border: 1.5px solid #E6E4E0;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: #fff;
       transition: all .2s;
       cursor: pointer
     }
 
-    .bp-back-btn:hover {
+    .bp-back-btn:hover { font-weight: 500;
       border-color: var(--navy)
     }
 
@@ -1764,9 +1813,9 @@
       padding: 13px 28px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       transition: all .25s;
@@ -1775,12 +1824,12 @@
       cursor: pointer
     }
 
-    .bp-next-btn:hover {
+    .bp-next-btn:hover { font-weight: 500;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .35)
     }
 
-    .bp-next-btn:disabled {
+    .bp-next-btn:disabled { font-weight: 500;
       opacity: .4;
       cursor: not-allowed;
       transform: none;
@@ -1858,13 +1907,13 @@
     }
 
     .po-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: var(--navy)
     }
 
-    .po-sub {
+    .po-sub { font-weight: 600;
       font-size: 12px;
       color: var(--gray);
       margin-top: 2px
@@ -1875,7 +1924,7 @@
       padding: 4px 10px;
       border-radius: 100px;
       font-size: 10px;
-      font-weight: 700;
+      font-weight: 500;
       background: rgba(46, 204, 142, .1);
       color: #1EA870;
       flex-shrink: 0
@@ -1920,7 +1969,7 @@
     }
 
     .pay-total-amount {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 24px;
       font-weight: 800;
       color: var(--gold)
@@ -1983,20 +2032,20 @@
     }
 
     .ss-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(32px, 5vw, 52px);
-      font-weight: 800;
+      font-weight: 700;
       color: #fff;
       margin-bottom: 14px;
       letter-spacing: -1.5px;
       animation: fadeUp .6s .2s both
     }
 
-    .ss-title span {
+    .ss-title span { font-weight: 700;
       color: var(--gold)
     }
 
-    .ss-sub {
+    .ss-sub { font-weight: 600;
       font-size: 16px;
       color: rgba(255, 255, 255, .5);
       max-width: 460px;
@@ -2036,7 +2085,7 @@
     }
 
     .ss-row-value {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
       font-weight: 700;
       color: #fff
@@ -2050,7 +2099,7 @@
       animation: fadeUp .6s .5s both
     }
 
-    .ss-btns {
+    .ss-btns { font-weight: 500;
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
@@ -2062,9 +2111,9 @@
       padding: 14px 28px;
       border-radius: 14px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: linear-gradient(135deg, var(--gold), var(--gold-light));
       cursor: pointer;
@@ -2072,7 +2121,7 @@
       box-shadow: 0 4px 16px rgba(232, 164, 74, .35)
     }
 
-    .ss-btn-primary:hover {
+    .ss-btn-primary:hover { font-weight: 500;
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .45)
     }
@@ -2081,16 +2130,16 @@
       padding: 14px 28px;
       border-radius: 14px;
       border: 1.5px solid rgba(255, 255, 255, .15);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 500;
       color: #fff;
       background: transparent;
       cursor: pointer;
       transition: all .25s
     }
 
-    .ss-btn-outline:hover {
+    .ss-btn-outline:hover { font-weight: 500;
       border-color: rgba(255, 255, 255, .35);
       background: rgba(255, 255, 255, .06)
     }
@@ -2109,21 +2158,21 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 500;
       color: var(--navy);
       cursor: pointer;
       transition: all .25s;
       overflow: hidden
     }
 
-    .profile-btn:hover {
+    .profile-btn:hover { font-weight: 500;
       transform: scale(1.08);
       box-shadow: 0 0 0 4px rgba(232, 164, 74, .2)
     }
 
-    .profile-btn img {
+    .profile-btn img { font-weight: 500;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -2167,7 +2216,7 @@
     }
 
     .pd-name {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       font-weight: 700;
       color: var(--navy)
@@ -2204,11 +2253,11 @@
       background: #F5F4F1
     }
 
-    .pd-logout {
+    .pd-logout { font-weight: 700;
       color: var(--red)
     }
 
-    .pd-logout:hover {
+    .pd-logout:hover { font-weight: 700;
       background: rgba(248, 113, 113, .06)
     }
 
@@ -2230,10 +2279,10 @@
 
     @media (max-width: 480px) {
       .app-header { padding: 12px 16px; }
-      .app-title { font-size: 18px; }
-      .city-btn .city-name { max-width: 100px; }
+      .app-title { font-weight: 700; font-size: 18px; }
+      .city-btn .city-name { font-weight: 700; max-width: 100px; }
       
       .ticket-card { padding: 24px 16px; border-radius: 24px; }
-      .ticket-title { font-size: 22px; }
+      .ticket-title { font-weight: 700; font-size: 22px; }
       .ticket-pin-value { font-size: 32px; letter-spacing: 4px; }
     }

@@ -35,7 +35,7 @@
           console.warn("[SECURITY] Unauthorized access attempt by non-barber UID:", user.uid);
           
           document.body.innerHTML = `
-            <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#F6F5F2; font-family:'Plus Jakarta Sans',sans-serif; text-align:center; padding:24px;">
+            <div style="min-height:100vh; display:flex; align-items:center; justify-content:center; background:#F6F5F2; font-family:'Inter',sans-serif; text-align:center; padding:24px;">
               <div style="background:white; padding:48px; border-radius:32px; box-shadow:0 4px 24px rgba(0,0,0,0.06); max-width:400px; width:100%; border:1px solid #E6E4E0;">
                 <div style="width:72px; height:72px; background:rgba(232,164,74,0.1); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; color:#E8A44A;">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -1539,8 +1539,8 @@
             legend: { display: false },
             tooltip: {
               backgroundColor: '#0B0B18',
-              titleFont: { family: 'Sora', weight: 'bold' },
-              bodyFont: { family: 'Sora' },
+              titleFont: { family: 'Inter', weight: 'bold' },
+              bodyFont: { family: 'Inter' },
               padding: 12,
               displayColors: false
             }
@@ -1549,7 +1549,7 @@
             y: { display: false, beginAtZero: true },
             x: {
               grid: { display: false },
-              ticks: { font: { family: 'Sora', weight: 'bold', size: 10 }, color: '#9CA3AF' }
+              ticks: { font: { family: 'Inter', weight: 'bold', size: 10 }, color: '#9CA3AF' }
             }
           }
         }

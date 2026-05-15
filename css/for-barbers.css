@@ -1,4 +1,4 @@
-    .barber-hero {
+    .barber-hero { font-weight: 800;
       min-height: 90vh;
       background: var(--navy);
       display: flex;
@@ -35,7 +35,7 @@
     }
 
     .bh-content h1 {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: clamp(40px, 6vw, 72px);
       font-weight: 800;
       color: #fff;
@@ -62,7 +62,7 @@
     }
 
     .bh-stat-num {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 32px;
       font-weight: 800;
       color: #fff
@@ -98,7 +98,7 @@
     }
 
     .dash-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
       font-weight: 700;
       color: #fff
@@ -110,7 +110,7 @@
       border-radius: 100px;
       padding: 3px 10px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--green)
     }
 
@@ -130,7 +130,7 @@
     }
 
     .dash-metric-val {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 24px;
       font-weight: 800;
       color: #fff
@@ -202,14 +202,14 @@
     }
 
     .benefit-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: var(--navy);
       margin-bottom: 10px
     }
 
-    .benefit-desc {
+    .benefit-desc { font-weight: 600;
       font-size: 14px;
       color: var(--gray);
       line-height: 1.6
@@ -234,7 +234,7 @@
       border-radius: 50%;
       background: var(--gold);
       color: var(--navy);
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 22px;
       font-weight: 800;
       display: flex;
@@ -244,14 +244,14 @@
     }
 
     .join-step-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 18px;
       font-weight: 700;
       color: #fff;
       margin-bottom: 10px
     }
 
-    .join-step-desc {
+    .join-step-desc { font-weight: 600;
       font-size: 14px;
       color: rgba(255, 255, 255, .5);
       line-height: 1.6
@@ -294,7 +294,7 @@
       padding: 14px 16px;
       border-radius: 12px;
       border: 1.5px solid var(--border);
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
       color: var(--navy);
       background: var(--white);
@@ -321,16 +321,16 @@
       padding: 16px;
       border-radius: 14px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 600;
       color: var(--navy);
       background: var(--gold);
       margin-top: 8px;
       transition: all .2s
     }
 
-    .form-submit:hover {
+    .form-submit:hover { font-weight: 600;
       background: var(--gold-light);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(232, 164, 74, .3)
@@ -374,14 +374,14 @@
     }
 
     .success-title {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 28px;
-      font-weight: 800;
+      font-weight: 700;
       color: var(--navy);
       margin-bottom: 12px
     }
 
-    .success-desc {
+    .success-desc { font-weight: 600;
       font-size: 15px;
       color: var(--gray);
       line-height: 1.7;
@@ -392,15 +392,15 @@
       padding: 14px 32px;
       border-radius: 12px;
       border: none;
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
       color: var(--navy);
       background: var(--gold);
       transition: all .2s
     }
 
-    .success-btn:hover {
+    .success-btn:hover { font-weight: 500;
       background: var(--gold-light)
     }
 
