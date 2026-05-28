@@ -88,10 +88,9 @@ router.post('/applications', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Phone number must be exactly 10 digits' });
     }
 
-    // Check if email already registered in Mongoose users or application list
-    const userExists = await User.exists({ email: email.toLowerCase() });
-    if (userExists) {
-      return res.status(400).json({ success: false, error: 'A user account with this email already exists' });
+    const userExists = await User.findOne({ email: email.toLowerCase() });
+    if (userExists && userExists.role === 'barber') {
+      return res.status(400).json({ success: false, error: 'A barber account with this email already exists' });
     }
 
     const applicationExists = await Application.findOne({ email: email.toLowerCase(), status: 'pending' });
