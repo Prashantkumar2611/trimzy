@@ -23,6 +23,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Trimzy Backend is running perfectly!' });
 });
 
+// Root Route
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to Trimzy API</h1><p>The backend is up and running.</p>');
+});
+
 // Import Routes
 const authRoutes = require('./routes/auth');
 const barberRoutes = require('./routes/barber');
