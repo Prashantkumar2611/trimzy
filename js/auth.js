@@ -1,4 +1,4 @@
-import { auth, db } from './firebase.js';
+import { auth } from './firebase.js';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,8 +10,6 @@ import {
   RecaptchaVerifier,
   signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, setDoc, getDoc, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ── Redirect if already logged in ──
 onAuthStateChanged(auth, user => {
@@ -86,13 +84,25 @@ window.checkPwStrength = (val) => {
   document.getElementById('pw-strength-text').textContent=labels[score];
 };
 
-// ── Save user profile to Firestore ──
-async function saveUserProfile(uid, data) {
-  await setDoc(doc(db, 'users', uid), {
-    ...data,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
-  }, { merge: true });
+// ── Synchronize User Profile with backend ──
+async function syncUserProfile(user, additionalData = {}) {
+  const token = await user.getIdToken(true);
+  const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/sync`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(additionalData)
+  });
+
+  if (!response.ok) {
+    const errData = await response.json();
+    throw new Error(errData.error || 'Failed to sync user profile with backend');
+  }
+
+  const result = await response.json();
+  return result.user;
 }
 
 // ══ LOGIN ══
@@ -110,16 +120,16 @@ window.submitLogin = async (e) => {
   setLoading('login-btn', true);
   try {
     const cred = await signInWithEmailAndPassword(auth, email, pw);
-    // fetch profile
-    const snap = await getDoc(doc(db,'users',cred.user.uid));
-    const profile = snap.exists() ? snap.data() : {};
+    // Sync profile with backend
+    const profile = await syncUserProfile(cred.user);
     sessionStorage.setItem('ss_user', JSON.stringify({
       uid: cred.user.uid,
+      mongoId: profile._id,
       name: profile.name || cred.user.displayName || 'User',
       email: cred.user.email,
       phone: profile.phone || '',
       area:  profile.area  || '',
-      initials: (profile.name||cred.user.displayName||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
+      initials: profile.initials || 'U'
     }));
     showAlert('Login successful! Redirecting...','success');
     setTimeout(()=>{
@@ -145,21 +155,20 @@ window.googleLogin = async () => {
     const provider = new GoogleAuthProvider();
     const cred = await signInWithPopup(auth, provider);
     const user = cred.user;
-    // Save/update profile in Firestore
-    await saveUserProfile(user.uid, {
+    // Sync/update profile in Backend
+    const profile = await syncUserProfile(user, {
       name:  user.displayName || 'Google User',
-      email: user.email,
       phone: user.phoneNumber || '',
-      area:  '',
-      initials: (user.displayName||'GU').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
+      role: 'customer'
     });
     sessionStorage.setItem('ss_user', JSON.stringify({
       uid:  user.uid,
-      name: user.displayName,
-      email:user.email,
-      phone:'',
-      area: '',
-      initials:(user.displayName||'GU').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)
+      mongoId: profile._id,
+      name: profile.name,
+      email:profile.email,
+      phone:profile.phone || '',
+      area: profile.area || '',
+      initials:profile.initials
     }));
     location.href = new URLSearchParams(location.search).get('redirect')||'app.html';
   } catch(err) {
@@ -210,23 +219,21 @@ window.suFinish = async (e) => {
     const cred = await createUserWithEmailAndPassword(auth, suData.email, pw);
     // Update display name
     await updateProfile(cred.user, { displayName: suData.name });
-    // Save full profile to Firestore
-    const initials = suData.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-    await saveUserProfile(cred.user.uid, {
+    // Sync full profile with Backend
+    const profile = await syncUserProfile(cred.user, {
       name:     suData.name,
-      email:    suData.email,
       phone:    suData.phone,
       area:     suData.area,
-      initials: initials,
       role:     'customer'
     });
     sessionStorage.setItem('ss_user', JSON.stringify({
       uid:      cred.user.uid,
-      name:     suData.name,
-      email:    suData.email,
-      phone:    suData.phone,
-      area:     suData.area,
-      initials: initials
+      mongoId:  profile._id,
+      name:     profile.name,
+      email:    profile.email,
+      phone:    profile.phone,
+      area:     profile.area,
+      initials: profile.initials
     }));
     showAlert('Account created! Welcome to Trimzy 🎉','success');
     setTimeout(()=>{

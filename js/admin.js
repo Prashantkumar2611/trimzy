@@ -1,7 +1,5 @@
-    import { auth, db, doc, getDoc, getDocs, collection, query, where, updateDoc, deleteDoc, addDoc, setDoc, serverTimestamp, orderBy } from './firebase.js';
-    import { onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-    const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || 'YOUR_BREVO_API_KEY_HERE';
+import { auth } from './firebase.js';
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     window.firebaseAuth = auth;
 
@@ -36,25 +34,57 @@
     }
 
     window.loadApplications = async function () {
-      const q = query(collection(db, "barber_applications"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      allApplications = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateStats();
-      renderApplications();
+      try {
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications`, {
+          headers: {
+            'X-Admin-Password': ADMIN_PASSWORD
+          }
+        });
+        if (!res.ok) throw new Error('Failed to load applications from backend');
+        const data = await res.json();
+        // Normalize _id to id for backwards compatibility
+        allApplications = data.applications.map(a => ({ id: a._id, ...a }));
+        updateStats();
+        renderApplications();
+      } catch (err) {
+        console.error(err);
+        showToast("Error loading applications: " + err.message, "error");
+      }
     };
 
     window.loadBookings = async function () {
-      const q = query(collection(db, "bookings"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      allBookings = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      updateStats(); // Update stats after loading bookings
-      renderBookings();
+      try {
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/bookings`, {
+          headers: {
+            'X-Admin-Password': ADMIN_PASSWORD
+          }
+        });
+        if (!res.ok) throw new Error('Failed to load bookings from backend');
+        const data = await res.json();
+        allBookings = data.bookings.map(b => ({ id: b._id, ...b }));
+        updateStats(); // Update stats after loading bookings
+        renderBookings();
+      } catch (err) {
+        console.error(err);
+        showToast("Error loading bookings: " + err.message, "error");
+      }
     };
 
     window.loadUsers = async function () {
-      const snap = await getDocs(collection(db, "users"));
-      allUsers = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      renderUsers();
+      try {
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/users`, {
+          headers: {
+            'X-Admin-Password': ADMIN_PASSWORD
+          }
+        });
+        if (!res.ok) throw new Error('Failed to load users from backend');
+        const data = await res.json();
+        allUsers = data.users.map(u => ({ id: u._id, ...u }));
+        renderUsers();
+      } catch (err) {
+        console.error(err);
+        showToast("Error loading users: " + err.message, "error");
+      }
     };
 
     // ── Actions ──
@@ -90,169 +120,52 @@
       errEl.style.display = 'none';
 
       try {
-        // 1. Create Firebase Auth User for the Barber
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const uid = userCredential.user.uid;
+        // Backend handles Firebase Auth user creation, barber profile syncing, and Brevo SMTP email dispatch natively!
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications/${selectedApp.id}/approve`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Password': ADMIN_PASSWORD
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-        // Sign out immediately so admin page doesn't remain authenticated as the barber
-        await signOut(auth);
-
-        // 2. Update Application status
-        await updateDoc(doc(db, "barber_applications", selectedApp.id), { status: 'approved' });
-
-        // 3. Create Barber Profile
-        // Standardize: The Document ID is ALWAYS the Auth UID. Simple & clean.
-        const barberData = {
-          ...selectedApp,
-          status: 'approved',
-          uid: uid,
-          tempPassword: password,
-          approvedAt: serverTimestamp()
-        };
-
-        await setDoc(doc(db, "barbers", uid), barberData, { merge: true });
-        console.log("Created barber profile with UID as ID:", uid);
-
-        // 4. Send Approval Email via Brevo
-        await sendApprovalEmail(selectedApp, email, password);
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Failed to approve application on server');
+        }
 
         showToast("Barber approved and account synced!");
         closeApproveModal();
         loadApplications();
       } catch (err) {
         console.error(err);
-        if (err.code === 'auth/email-already-in-use') {
-          // If user already exists, try to find their profile and just link it
-          try {
-            // Robust Recovery: If account exists in Auth but profile is missing/broken
-            const q = query(collection(db, "barbers"), where("email", "==", email));
-            const qSnap = await getDocs(q);
-
-            // Mark application as approved regardless
-            await updateDoc(doc(db, "barber_applications", selectedApp.id), { status: 'approved' });
-
-            if (!qSnap.empty) {
-              const existingId = qSnap.docs[0].id;
-              await updateDoc(doc(db, "barbers", existingId), { status: 'approved', uid: existingId });
-              showToast("Profile already existed, linked successfully!");
-            } else {
-              // Profile missing but Auth exists? Create it now.
-              // Note: We can't get the UID of an existing user via Client SDK without signing in,
-              // so we use the email as a temporary ID or wait for the barber to login.
-              // BEST ACTION: Tell user to delete the Auth User and try again for a clean UID link.
-              errEl.innerHTML = "⚠️ <strong>Email exists in Auth but profile is missing!</strong><br><br>Please go to Firebase Console -> Authentication, delete user <strong>" + email + "</strong>, then click Approve again.";
-              errEl.style.display = 'block';
-              return;
-            }
-
-            closeApproveModal();
-            loadApplications();
-            return;
-          } catch (linkErr) {
-            console.error("Linking failed:", linkErr);
-          }
-
-          errEl.innerHTML = "⚠️ <strong>Email already exists!</strong> To set a **new** password, you must delete the user from Firebase Console first. <br><br>Otherwise, if they have already logged in once, the account should be linked.";
-        } else {
-          errEl.textContent = "Error: " + err.message;
-        }
+        errEl.textContent = err.message;
         errEl.style.display = 'block';
+      } finally {
         btn.disabled = false;
         btn.textContent = "✓ Approve & Create Account";
       }
     };
 
-    async function sendApprovalEmail(app, loginEmail, password) {
-      try {
-        await fetch("https://api.brevo.com/v3/smtp/email", {
-          method: "POST",
-          headers: {
-            'api-key': BREVO_API_KEY,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({
-            sender: { name: "Trimzy Admin", email: "official@trimzy.co.in" },
-            to: [{ email: loginEmail, name: app.name }],
-            subject: "Congratulations! Your Trimzy Barber Profile is Approved ✅",
-            htmlContent: `
-            <div style="font-family:sans-serif; max-width:600px; margin:0 auto; padding:20px; border:1px solid #eee; border-radius:10px;">
-              <h2 style="color:#0E0E1A;">Welcome to the Trimzy Family, ${app.name}! ✂️</h2>
-              <p>We are thrilled to inform you that your application to join Trimzy as a professional barber has been <strong>Approved</strong>.</p>
-              
-              <div style="background:#F4F3F0; padding:20px; border-radius:12px; margin:24px 0;">
-                <h3 style="margin-top:0; color:#E8A44A;">Your Dashboard Credentials</h3>
-                <p style="margin-bottom:8px;"><strong>Login Email:</strong> ${loginEmail}</p>
-                <p style="margin-bottom:0;"><strong>Temporary Password:</strong> ${password}</p>
-                <p style="font-size:12px; color:#8A8A9A; margin-top:12px;">Please change your password after your first login for security.</p>
-              </div>
-
-              <p>You can now log in to your dashboard to manage your shop status, bookings, and profile:</p>
-              <a href="https://trimzy.co.in/barber-auth.html" style="display:inline-block; padding:14px 24px; background:#E8A44A; color:#0E0E1A; text-decoration:none; border-radius:8px; font-weight:bold; margin:16px 0;">Go to Dashboard →</a>
-
-              <p style="margin-top:32px;">If you have any questions, feel free to reply to this email or contact us on WhatsApp.</p>
-              <p>Best regards,<br><strong>Team Trimzy</strong></p>
-            </div>
-          `
-          })
-        });
-      } catch (e) {
-        console.error("Email delivery failed:", e);
-        // We don't throw here to avoid failing the whole approval if just the email fails
-      }
-    }
-
     window.rejectBarber = async (id) => {
       if (!confirm("⚠️ Reject and permanently delete this barber's data? This will remove their application, profile, bookings, and reviews. This cannot be undone.")) return;
 
       try {
-        const appData = allApplications.find(a => a.id === id);
-
-        // 1. Delete the application document
-        await deleteDoc(doc(db, "barber_applications", id));
-
-        // 2. Find and delete barber profile (could be stored by UID or email match)
-        if (appData) {
-          // Try direct UID lookup first
-          if (appData.uid) {
-            try {
-              const barberSnap = await getDoc(doc(db, "barbers", appData.uid));
-              if (barberSnap.exists()) {
-                await deleteDoc(doc(db, "barbers", appData.uid));
-                console.log("[ADMIN] Deleted barber profile by UID:", appData.uid);
-              }
-            } catch (e) { console.warn("UID lookup skip:", e); }
+        // Backend handles Application status rejection, cascading booking purges, Mongoose profile deletes and Auth purges natively!
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications/${id}/reject`, {
+          method: 'POST',
+          headers: {
+            'X-Admin-Password': ADMIN_PASSWORD
           }
+        });
 
-          // Also search by email in barbers collection
-          if (appData.email) {
-            const bQuery = query(collection(db, "barbers"), where("email", "==", appData.email));
-            const bSnap = await getDocs(bQuery);
-            for (const barberDoc of bSnap.docs) {
-              // Delete all bookings for this barber
-              const bookQ = query(collection(db, "bookings"), where("barberId", "==", barberDoc.id));
-              const bookSnap = await getDocs(bookQ);
-              for (const b of bookSnap.docs) {
-                await deleteDoc(doc(db, "bookings", b.id));
-              }
-              console.log("[ADMIN] Deleted", bookSnap.size, "bookings for barber:", barberDoc.id);
-
-              // Delete all reviews for this barber
-              const revQ = query(collection(db, "reviews"), where("barberId", "==", barberDoc.id));
-              const revSnap = await getDocs(revQ);
-              for (const r of revSnap.docs) {
-                await deleteDoc(doc(db, "reviews", r.id));
-              }
-              console.log("[ADMIN] Deleted", revSnap.size, "reviews for barber:", barberDoc.id);
-
-              // Delete the barber profile doc
-              await deleteDoc(doc(db, "barbers", barberDoc.id));
-              console.log("[ADMIN] Deleted barber profile:", barberDoc.id);
-            }
-          }
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Failed to reject application on server');
         }
 
-        // 3. Remove from local array and re-render immediately
+        // Remove from local array and re-render immediately
         allApplications = allApplications.filter(a => a.id !== id);
         updateStats();
         renderApplications();

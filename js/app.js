@@ -1,6 +1,6 @@
-    import { auth, db, collection, getDoc, getDocs, query, where, orderBy, addDoc, serverTimestamp, doc, updateDoc } from './firebase.js';
+    import { auth } from './firebase.js';
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    console.log('DEBUG: Firebase modules imported');
+    console.log('DEBUG: Custom Backend and Firebase Auth imported');
 
     // ══ GRADIENT POOL ══
     const GRADIENTS = [
@@ -135,16 +135,28 @@
       if (grid) grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Searching for nearby barbers...</p></div>`;
 
       try {
-        const q = query(collection(db, "barbers"), where("status", "==", "approved"));
-        const querySnapshot = await getDocs(q);
+        // Construct backend query URL (incorporates geospatial lat/lng and home visit filter if active)
+        let url = `${window.TRIMZY_CONFIG.API_URL}/barbers?limit=50`;
+        if (userLat !== null && userLng !== null) {
+          url += `&lat=${userLat}&lng=${userLng}`;
+        }
+        if (mode === 'home') {
+          url += `&homeVisit=true`;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Failed to load barbers from backend');
+        const data = await res.json();
 
         allBarbers = [];
-        querySnapshot.forEach((doc) => {
-          const d = doc.data();
-          const initials = (d.name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-          const gradient = GRADIENTS[Math.floor(Math.random() * GRADIENTS.length)];
-          allBarbers.push({ id: doc.id, initials, gradient, ...d });
-        });
+        if (data.barbers && Array.isArray(data.barbers)) {
+          data.barbers.forEach((barber) => {
+            const initials = (barber.shopName || barber.name || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const gradient = GRADIENTS[Math.floor(Math.random() * GRADIENTS.length)];
+            // Normalize barber id from Mongoose _id for frontend compatibility
+            allBarbers.push({ id: barber._id, initials, gradient, ...barber });
+          });
+        }
 
         if (userLat !== null && userLng !== null) {
             updateBarberDistances(userLat, userLng);
@@ -153,7 +165,7 @@
         filterBarbers();
       } catch (error) {
         console.error("Error loading barbers:", error);
-        grid.innerHTML = `<p>Failed to load barbers.</p>`;
+        grid.innerHTML = `<p>Failed to load barbers from backend.</p>`;
       }
     }
 
@@ -313,34 +325,33 @@
       const svc = selectedService;
       const btn = document.getElementById('confirm-btn');
       try {
-        const bookingData = {
-          barberId: selectedBarber.id,
-          serviceName: svc.name,
-          mode: mode,
-          price: svc.price,
-          scheduledAt: new Date(selectedDateLabel + ' ' + selectedTime).toISOString(),
-          customerName: name,
-          customerPhone: phone,
-          customerEmail: email,
-          notes: notes,
-          address: address || null
-        };
+        if (!currentUser) throw new Error('User session not logged in.');
 
-        const pin = Math.floor(1000 + Math.random() * 9000).toString();
-        const docRef = await addDoc(collection(db, "bookings"), {
-          ...bookingData,
-          pin,
-          userId: currentUser ? currentUser.uid : null,
-          status: 'upcoming',
-          createdAt: serverTimestamp(),
-          // Snapshots for offline/fast rendering in My Bookings
-          barberName: selectedBarber.shopName || selectedBarber.name || 'Barber',
-          barberGradient: selectedBarber.gradient,
-          barberInitials: selectedBarber.initials,
-          barberProfilePic: selectedBarber.profilePic || '',
-          serviceName: svc.name
+        const token = await currentUser.getIdToken(true);
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            barberId: selectedBarber.id || selectedBarber._id,
+            serviceName: svc.name,
+            mode: mode,
+            scheduledAt: new Date(selectedDateLabel + ' ' + selectedTime).toISOString(),
+            customerPhone: phone,
+            notes: notes,
+            address: address || null
+          })
         });
-        const booking = { id: docRef.id, pin };
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Booking creation failed on backend');
+        }
+
+        const result = await response.json();
+        const booking = { id: result.booking._id, pin: result.booking.pin };
 
         const payLabel = paymentStatus === 'paid'
           ? `✅ Paid ₹${svc.price} via ${paymentMethod === 'upi' ? 'UPI' : 'Card'}`
@@ -352,7 +363,7 @@
           <div class="ss-row"><span class="ss-row-label">Service</span><span class="ss-row-value">${svc.name}</span></div>
           <div class="ss-row"><span class="ss-row-label">When</span><span class="ss-row-value">${selectedDateLabel}, ${selectedTime}</span></div>
           <div class="ss-row"><span class="ss-row-label">Mode</span><span class="ss-row-value">${mode === 'home' ? ' Home Visit' : '🏪Shop Visit'}</span></div>
-          <div class="ss-row"><span class="ss-row-label">Trip PIN</span><span class="ss-row-value" style="background:rgba(232, 164, 74, .1);color:var(--gold);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;letter-spacing:2px">${pin}</span></div>
+          <div class="ss-row"><span class="ss-row-label">Trip PIN</span><span class="ss-row-value" style="background:rgba(232, 164, 74, .1);color:var(--gold);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;letter-spacing:2px">${booking.pin}</span></div>
           <div class="ss-row"><span class="ss-row-label">Payment</span><span class="ss-row-value" style="color:var(--gold)">${payLabel}</span></div>`;
 
         document.getElementById('ss-id').textContent = 'ID: ' + booking.id;
@@ -377,9 +388,18 @@
       }
       body.innerHTML = '<div class="bookings-loading">Loading your history...</div>';
       try {
-        const q = query(collection(db, "bookings"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        const bookings = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const token = await currentUser.getIdToken(true);
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch bookings from backend');
+        const data = await response.json();
+        
+        // Normalize _id to id for backwards compatibility
+        const bookings = data.bookings.map(b => ({ id: b._id, ...b }));
         window.customerBookings = bookings;
         if (!bookings || !bookings.length) {
           body.innerHTML = `<div class="bookings-empty"><div class="be-icon">📅</div><h3>No bookings yet</h3><p>You haven't booked any barbers yet. Find one and make your first booking!</p><button class="btn-gold" style="padding:14px 28px;border-radius:12px;font-family:'Inter',sans-serif;font-weight:700;font-size:15px;border:none;cursor:pointer" onclick="switchAppView('browse')">Browse Barbers →</button></div>`;
@@ -542,41 +562,25 @@
       btn.textContent = 'Submitting...';
 
       try {
-        // Backend handles atomic stats updates and marking as rated
-        await addDoc(collection(db, "reviews"), {
-          bookingId: ratingData.id,
-          barberId: ratingData.barberId,
-          userId: currentUser.uid,
-          customerName: ratingData.customerName || currentUser.displayName || 'Customer',
-          rating: selectedRating,
-          comment: comment,
-          createdAt: serverTimestamp()
+        // Backend handles atomic reviews, ratings recalculations and updating booking status atomically!
+        const token = await currentUser.getIdToken(true);
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/reviews`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            bookingId: ratingData.id,
+            rating: selectedRating,
+            comment: comment
+          })
         });
 
-        // Atomic update to barber stats
-        try {
-          const barberRef = doc(db, "barbers", ratingData.barberId);
-          const barberSnap = await getDoc(barberRef);
-          if (barberSnap.exists()) {
-            const bData = barberSnap.data();
-            const oldCount = Number(bData.reviewCount) || 0;
-            const oldRating = Number(bData.rating) || 0;
-
-            const newCount = oldCount + 1;
-            const newRating = ((oldRating * oldCount) + selectedRating) / newCount;
-
-            await updateDoc(barberRef, {
-              rating: newRating,
-              reviewCount: newCount
-            });
-            console.log(`[STATS] Updated barber ${ratingData.barberId} to ${newRating.toFixed(1)} stars across ${newCount} reviews.`);
-          }
-        } catch (statsErr) {
-          console.error("Error updating barber stats:", statsErr);
-          // Don't fail the whole submission if stats update fails
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Failed to submit review');
         }
-
-        await updateDoc(doc(db, "bookings", ratingData.id), { isReviewed: true });
 
         closeRatingModal();
         renderMyBookings();
@@ -829,7 +833,10 @@
       allBarbers.forEach(b => {
         let bLat = DEFAULT_BHUBANESWAR_LAT;
         let bLng = DEFAULT_BHUBANESWAR_LNG;
-        if (b.location?.lat && b.location?.lng) {
+        if (b.location?.coordinates && Array.isArray(b.location.coordinates)) {
+            bLng = parseFloat(b.location.coordinates[0]);
+            bLat = parseFloat(b.location.coordinates[1]);
+        } else if (b.location?.lat && b.location?.lng) {
             bLat = parseFloat(b.location.lat);
             bLng = parseFloat(b.location.lng);
         }

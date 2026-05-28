@@ -1,4 +1,4 @@
-    import { auth, db, doc, getDoc, getDocs, collection, query, where, addDoc, updateDoc, serverTimestamp, orderBy } from './firebase.js';
+    import { auth } from './firebase.js';
     import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     window.firebaseAuth = auth;
@@ -55,14 +55,16 @@
       if (!barberId) { window.location.href = 'app.html'; return; }
       
       try {
-        const snap = await getDoc(doc(db, "barbers", barberId));
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/barbers/${barberId}`);
+        if (!res.ok) throw new Error('Barber profile not found in backend');
+        const data = await res.json();
 
-        if (snap.exists()) {
-          BARBER = { id: snap.id, ...snap.data() };
+        if (data.success && data.barber) {
+          BARBER = { id: data.barber._id, ...data.barber };
           populatePage();
           window.generateDates();
           window.renderSlots();
-          loadRealReviews(snap.id);
+          loadRealReviews(BARBER.id);
         } else {
           document.body.innerHTML = `
             <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:white;font-family:sans-serif;text-align:center;padding:20px;">
@@ -78,7 +80,6 @@
       } catch (e) {
         console.error('Error loading barber:', e);
         alert('Crash inside profile code: ' + e.message);
-        // window.location.href = 'app.html'; // temporarily disabled redirect to see the screen
       }
     }
 
@@ -323,68 +324,55 @@
       }
 
       try {
-        const shopName = BARBER.shopName || BARBER.name || 'Barber';
-        const initials = (shopName || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const pin = Math.floor(1000 + Math.random() * 9000).toString();
-        const docRef = await addDoc(collection(db, "bookings"), {
-          barberId: BARBER.id,
-          userId: currentUser.uid, // Mandatory UID
-          customerName: name,
-          customerPhone: phone,
-          serviceName: selectedService.name,
-          price: selectedService.price,
-          scheduledAt: selectedDate + ' ' + selectedSlot,
-          status: 'upcoming',
-          paymentMethod: paymentMethod || 'cash',
-          paymentStatus: paymentStatus || 'pending',
-          razorpayId: razorpayId || null,
-          pin,
-          createdAt: serverTimestamp(),
-          // Metadata for history
-          barberName: shopName,
-          barberGradient: BARBER.gradient || 'var(--gold)',
-          barberInitials: initials,
-          barberProfilePic: BARBER.profilePic || ''
+        const token = await currentUser.getIdToken(true);
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            barberId: BARBER.id || BARBER._id,
+            serviceName: selectedService.name,
+            mode: mode,
+            scheduledAt: selectedDate + ' ' + selectedSlot,
+            customerPhone: phone,
+            notes: notes,
+            address: address || null
+          })
         });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Booking failed on backend');
+        }
+
+        const result = await response.json();
+        const booking = result.booking;
 
         document.getElementById('ss-card').innerHTML = `
           <div class="ss-row"><span class="ss-row-label">Service</span><span class="ss-row-value">${selectedService.name}</span></div>
           <div class="ss-row"><span class="ss-row-label">When</span><span class="ss-row-value">${selectedDate}, ${selectedSlot}</span></div>
-          <div class="ss-row"><span class="ss-row-label">Trip PIN</span><span class="ss-row-value" style="background:rgba(232, 164, 74, .1);color:var(--gold);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;letter-spacing:2px">${pin}</span></div>
+          <div class="ss-row"><span class="ss-row-label">Trip PIN</span><span class="ss-row-value" style="background:rgba(232, 164, 74, .1);color:var(--gold);padding:4px 12px;border-radius:6px;font-weight:800;font-size:18px;letter-spacing:2px">${booking.pin}</span></div>
         `;
-        document.getElementById('ss-id').textContent = 'ID: ' + docRef.id.slice(0,8).toUpperCase();
+        document.getElementById('ss-id').textContent = 'ID: ' + booking._id.slice(0,8).toUpperCase();
         document.getElementById('success-screen').classList.add('show');
       } catch (err) {
-        alert('Booking failed. Please try again.');
+        alert('Booking failed. Please try again: ' + err.message);
         console.error(err);
       }
     }
 
     async function loadRealReviews(barberId) {
-      // Collect all possible IDs this barber might have reviews under
-      const possibleIds = new Set([barberId]);
-      if (BARBER) {
-        if (BARBER.id) possibleIds.add(BARBER.id);
-        if (BARBER.uid) possibleIds.add(BARBER.uid);
-      }
-      // Also include the URL param in case it differs
-      const urlId = new URLSearchParams(window.location.search).get('id');
-      if (urlId) possibleIds.add(urlId);
-
-      console.log('[REVIEWS] Querying reviews for all possible barberIds:', [...possibleIds]);
+      console.log('[REVIEWS] Querying reviews for barberId from backend:', barberId);
 
       try {
-        // Query for each possible ID and merge results (deduplicate by doc ID)
-        const reviewMap = new Map();
-        for (const id of possibleIds) {
-          const q = query(collection(db, "reviews"), where("barberId", "==", id));
-          const snap = await getDocs(q);
-          snap.docs.forEach(d => {
-            if (!reviewMap.has(d.id)) reviewMap.set(d.id, { id: d.id, ...d.data() });
-          });
-        }
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/reviews/barber/${barberId}`);
+        if (!res.ok) throw new Error('Failed to load reviews from backend');
+        const data = await res.json();
+        const allReviews = data.reviews || [];
 
-        console.log('[REVIEWS] Total unique reviews found:', reviewMap.size);
+        console.log('[REVIEWS] Total unique reviews found:', allReviews.length);
 
         const container = document.getElementById('reviews-container');
         const seeAllWrap = document.getElementById('see-all-container');
@@ -392,7 +380,7 @@
         const ratingOverview = document.getElementById('rating-overview');
         const noReviewsOverview = document.getElementById('no-reviews-overview');
 
-        if (reviewMap.size === 0) {
+        if (allReviews.length === 0) {
           container.innerHTML = '';
           if (seeAllWrap) seeAllWrap.style.display = 'none';
           if (ratingOverview) ratingOverview.style.display = 'none';
@@ -400,20 +388,10 @@
           return;
         }
 
-        // Sort manually by createdAt (descending)
-        const allReviews = [...reviewMap.values()].sort((a, b) => {
-          const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 0);
-          const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 0);
-          return tB - tA;
-        });
-
         // ── Compute & Render Rating Overview (Dynamic) ──
         let sum = 0;
-        const dist = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
         allReviews.forEach(r => {
-          const rate = Math.min(5, Math.max(1, r.rating || 5));
-          sum += rate;
-          dist[rate] = (dist[rate] || 0) + 1;
+          sum += Math.min(5, Math.max(1, r.rating || 5));
         });
         const avg = allReviews.length > 0 ? (sum / allReviews.length) : 0;
         const total = allReviews.length;
@@ -433,12 +411,6 @@
           starsEl.textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
         }
 
-        // Populate distribution bars
-        const barsEl = document.getElementById('rating-bars');
-        if (barsEl) {
-          barsEl.innerHTML = ''; // Removed rating bars for new minimalist design
-        }
-
         // Populate count
         const countEl = document.getElementById('review-count');
         if (countEl) countEl.textContent = total;
@@ -448,15 +420,13 @@
         if (heroRating) heroRating.textContent = avg.toFixed(1) + ' ★';
 
         // ── Render Review Cards ──
-        const displayReviews = allReviews; // Show all for masonry layout
-        
-        container.innerHTML = displayReviews.map(r => {
-          const rawName = (r.customerName && r.customerName !== 'Customer') ? r.customerName : 'Verified Guest';
-          const initials = rawName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        container.innerHTML = allReviews.map(r => {
+          const rawName = r.customerName || 'Verified Guest';
+          const initials = r.customerId?.initials || rawName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
           
           let dateStr = 'Recently';
           if (r.createdAt) {
-            const date = r.createdAt.toDate ? r.createdAt.toDate() : new Date(r.createdAt.seconds * 1000);
+            const date = new Date(r.createdAt);
             dateStr = date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
           }
 
@@ -481,12 +451,7 @@
           if (seeAllWrap) seeAllWrap.style.display = 'block';
           if (seeAllBtn) {
             seeAllBtn.onclick = () => {
-              let url = `reviews.html?id=${barberId}`;
-              // Also pass uid if it's different — reviews may be stored under either
-              if (BARBER && BARBER.uid && BARBER.uid !== barberId) {
-                url += `&uid=${BARBER.uid}`;
-              }
-              window.location.href = url;
+              window.location.href = `reviews.html?id=${barberId}`;
             };
           }
         } else {
@@ -770,24 +735,7 @@
       selectedPayment = pay;
     };
 
-    // ── Maintenance: One-time Name Repair ──
-    window.repairReviewNames = async () => {
-      if(!confirm("This will find all 'Customer' reviews and try to fix their names from the original bookings. Continue?")) return;
-      const q = query(collection(db, "reviews"), where("customerName", "==", "Customer"));
-      const snap = await getDocs(q);
-      let count = 0;
-      for(const d of snap.docs) {
-        const r = d.data();
-        if(r.bookingId) {
-          const bSnap = await getDoc(doc(db, "bookings", r.bookingId));
-          if(bSnap.exists() && bSnap.data().customerName) {
-            await updateDoc(d.ref, { customerName: bSnap.data().customerName });
-            count++;
-          }
-        }
-      }
-      alert(`Success! Repaired ${count} review names. Please refresh the page.`);
-    };
+    // Name repair removed in Mongoose backend standard.
     // ── Navigation Highlighter ──
     (function() {
       const pill = document.getElementById('nav-pill');

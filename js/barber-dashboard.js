@@ -1,4 +1,4 @@
-    import { auth, db, doc, getDoc, updateDoc, setDoc, deleteDoc, onSnapshot, collection, query, where, getDocs, orderBy, serverTimestamp, limit } from './firebase.js';
+    import { auth } from './firebase.js';
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     let currentBarber = null;
@@ -24,13 +24,25 @@
       try {
         console.log("DEBUG [Clean]: Loading session for UID:", user.uid);
 
-        // 1. Direct Lookup by UID
-        const docRef = doc(db, "barbers", user.uid);
-        const snap = await getDoc(docRef);
+        // Fetch profile from backend
+        const token = await user.getIdToken(true);
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-        if (snap.exists()) {
-          currentBarber = { id: snap.id, ...snap.data() };
-        } else {
+        if (res.ok) {
+          const data = await res.json();
+          const dbUser = data.user;
+          
+          if (dbUser && dbUser.role === 'barber') {
+            // Normalize barber id from Mongoose _id for frontend compatibility
+            currentBarber = { id: dbUser._id, ...dbUser };
+          }
+        }
+
+        if (!currentBarber) {
           // RESTRICTED ACCESS: This UID is NOT in the 'barbers' collection
           console.warn("[SECURITY] Unauthorized access attempt by non-barber UID:", user.uid);
           
@@ -719,10 +731,11 @@
       }
 
       if (!Array.isArray(currentBarber.services)) currentBarber.services = [];
-      currentBarber.services.push({ name, price, time });
+      const updatedServices = [...currentBarber.services, { name, price: parseFloat(price), time }];
 
       try {
-        await updateDoc(doc(db, "barbers", currentBarber.id), { services: currentBarber.services });
+        await updateBarberProfileBackend({ services: updatedServices });
+        currentBarber.services = updatedServices;
         showToast('Service added!', 'success');
         closeServiceModal();
         if (document.getElementById('profile-services-list')) {
@@ -732,7 +745,7 @@
         renderSettingsServices();
       } catch (err) {
         console.error("Add service error:", err);
-        showToast('Failed to save service.', 'error');
+        showToast('Failed to save service: ' + err.message, 'error');
       }
     };
 
@@ -742,10 +755,11 @@
       // Final sanity check for array type
       if (!Array.isArray(currentBarber.services)) currentBarber.services = [];
 
-      currentBarber.services.splice(idx, 1);
+      const updatedServices = [...currentBarber.services];
+      updatedServices.splice(idx, 1);
       try {
-        console.log("Removing service for ID:", currentBarber.id);
-        await setDoc(doc(db, "barbers", currentBarber.id), { services: currentBarber.services }, { merge: true });
+        await updateBarberProfileBackend({ services: updatedServices });
+        currentBarber.services = updatedServices;
         showToast('Service removed', 'info');
         if (document.getElementById('profile-services-list')) {
           document.getElementById('profile-services-list').innerHTML = renderPortfolioServices(currentBarber.services);
@@ -754,7 +768,7 @@
         renderSettingsServices();
       } catch (err) {
         console.error("Delete service error:", err);
-        showToast('Failed to delete. Check for ad-blockers.', 'error');
+        showToast('Failed to delete: ' + err.message, 'error');
       }
     };
 
@@ -858,20 +872,39 @@
       renderSettings(); // Re-render pills
     };
 
+    // ── Update Barber Profile REST API helper ──
+    async function updateBarberProfileBackend(profileData) {
+      if (!auth.currentUser) throw new Error('User not logged in');
+      const token = await auth.currentUser.getIdToken(true);
+      const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/barbers/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData)
+      });
+
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || 'Failed to update profile on backend');
+      }
+
+      const result = await response.json();
+      return result.barber;
+    }
+
     window.saveSettings = async () => {
       const homeVisit = document.getElementById('home-visit-toggle')?.checked;
       const startTime = document.getElementById('start-time')?.value;
       const endTime = document.getElementById('end-time')?.value;
 
       try {
-        const updateData = {
-          workingDays: currentBarber.workingDays || [],
+        await updateBarberProfileBackend({
           homeVisit,
           startTime,
           endTime
-        };
-
-        await updateDoc(doc(db, "barbers", currentBarber.id), updateData);
+        });
         
         // Update local state immediately so UI doesn't revert
         currentBarber.homeVisit = homeVisit;
@@ -881,15 +914,14 @@
         showToast("Settings Saved! Live profile updated.", "success");
       } catch (e) {
         console.error("Save settings error:", e);
-        showToast("Error saving settings.", "error");
+        showToast("Error saving settings: " + e.message, "error");
       }
     };
 
     window.saveProfileChanges = async () => {
       const btn = document.getElementById('save-profile-btn');
-      const uid = auth.currentUser ? auth.currentUser.uid : (currentBarber ? currentBarber.id : null);
       
-      if (!uid) {
+      if (!auth.currentUser) {
          showToast("Session expired. Please re-login.", "error");
          return;
       }
@@ -901,27 +933,19 @@
 
       try {
         const b = currentBarber;
-        console.log(`[PERSISTENCE] Saving Profile to ID: ${uid}`);
-        const docRef = doc(db, "barbers", uid);
-
-        await setDoc(docRef, {
+        await updateBarberProfileBackend({
           about: b.about || '',
           profilePic: b.profilePic || '',
           salonPhotos: b.salonPhotos || [],
           services: b.services || [],
-          updatedAt: serverTimestamp()
-        }, { merge: true });
+          shopName: b.shopName || '',
+          upiId: b.upiId || ''
+        });
 
-        // Verify with server
-        const verifySnap = await getDoc(docRef);
-        if (verifySnap.exists()) {
-          showToast("Profile Saved Successfully!", "success");
-        } else {
-          throw new Error("Save verification failed.");
-        }
+        showToast("Profile Saved Successfully!", "success");
       } catch (err) {
         console.error(err);
-        showToast("Failed to save. Try optimizing storage first.", "error");
+        showToast("Failed to save: " + err.message, "error");
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -1556,52 +1580,48 @@
       });
     }
 
-    function startBookingsListener() {
-      if (bookingsUnsubscribe) bookingsUnsubscribe();
-      // Removed orderBy("createdAt", "desc") to avoid requiring a composite index.
-      // Sorting is already handled in memory below.
-      const q = query(
-        collection(db, "bookings"),
-        where("barberId", "==", currentBarber.id)
-      );
-      bookingsUnsubscribe = onSnapshot(q, (snap) => {
-        allBookings = [];
-        snap.forEach(doc => allBookings.push({ id: doc.id, ...doc.data() }));
+    let bookingsInterval = null;
 
-        // V15.0: Enhanced Sorting Logic
-        // 1. ALL 'in_progress' sessions move to absolute top.
-        // 2. Upcoming sessions for TODAY move next (Sorted by time ASCENDING).
-        // 3. Other upcoming/pending sessions (Sorted by time ASCENDING).
-        // 4. Completed/Cancelled (Sorted by date DESCENDING).
-        const now = new Date();
-        const todayStr = now.toDateString();
+    async function fetchBookings() {
+      if (!currentUser) return;
+      try {
+        const token = await currentUser.getIdToken(true);
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
+        if (!res.ok) throw new Error('Failed to fetch bookings');
+        const data = await res.json();
+        
+        // Normalize _id to id for backwards compatibility
+        allBookings = data.bookings.map(b => ({ id: b._id, ...b }));
+
+        // Keep sorting as is
         allBookings.sort((a, b) => {
-          // Priority 1: In Progress sessions ALWAYS stay at the very top
           if (a.status === 'in_progress' && b.status !== 'in_progress') return -1;
           if (a.status !== 'in_progress' && b.status === 'in_progress') return 1;
-
-          // Priority 2: Newest bookings (by creation time) first
-          const ta = (a.createdAt && a.createdAt.toMillis) ? a.createdAt.toMillis() : 0;
-          const tb = (b.createdAt && b.createdAt.toMillis) ? b.createdAt.toMillis() : 0;
-          
+          const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
           if (tb !== ta) return tb - ta;
-
-          // Fallback: Scheduled time (Descending for historical view)
           const da = safeParseDate(a.scheduledAt);
           const db = safeParseDate(b.scheduledAt);
           return db - da;
         });
 
-
         renderBookings();
         updateStats();
-      }, (err) => {
-        console.error("Dashboard listener error:", err);
-        if (err.code === 'failed-precondition') {
-          console.warn("Index required. Please use the link in our chat instructions to create it.");
-        }
-      });
+      } catch (err) {
+        console.error("Dashboard bookings fetch error:", err);
+      }
+    }
+
+    function startBookingsListener() {
+      fetchBookings();
+      // Setup standard polling every 10s
+      if (bookingsInterval) clearInterval(bookingsInterval);
+      bookingsInterval = setInterval(fetchBookings, 10000);
     }
 
     function safeParseDate(str) {
@@ -2072,21 +2092,30 @@
       const input = document.getElementById('pin-input').value;
       const err = document.getElementById('pin-error');
 
-      if (input === (b.pin || '1234')) {
-        try {
-          await updateDoc(doc(db, "bookings", activeBookingId), {
-            status: 'in_progress',
-            startedAt: serverTimestamp()
-          });
+      try {
+        const token = await auth.currentUser.getIdToken(true);
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings/${activeBookingId}/verify-pin`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ pin: input })
+        });
+
+        if (res.ok) {
           showToast("PIN Verified! Session started.", "success");
           closePinModal();
-        } catch (e) {
-          err.textContent = "Error updating status. Try again.";
+          // Force refresh
+          fetchBookings();
+        } else {
+          const data = await res.json();
+          err.textContent = data.error || "Invalid PIN. Please check with customer.";
+          document.getElementById('pin-input').value = '';
+          document.getElementById('pin-input').focus();
         }
-      } else {
-        err.textContent = "Invalid PIN. Please check with customer.";
-        document.getElementById('pin-input').value = '';
-        document.getElementById('pin-input').focus();
+      } catch (e) {
+        err.textContent = "Error updating status. Try again.";
       }
     };
 
@@ -2096,11 +2125,23 @@
 
       if (confirm(`Finish session for ${b.customerName}?`)) {
         try {
-          await updateDoc(doc(db, "bookings", id), {
-            status: 'completed',
-            completedAt: serverTimestamp()
+          const token = await auth.currentUser.getIdToken(true);
+          const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings/${id}/status`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status: 'completed' })
           });
-          showToast("Service completed! Payment confirmed.", "success");
+
+          if (res.ok) {
+            showToast("Service completed! Payment confirmed.", "success");
+            fetchBookings();
+          } else {
+            const data = await res.json();
+            showToast(data.error || "Error finishing session.", "error");
+          }
         } catch (e) {
           showToast("Error finishing session.", "error");
         }
@@ -2116,8 +2157,12 @@
         upiId: document.getElementById('pf-upi').value
       };
       console.log("Saving full profile for ID:", currentBarber.id);
-      await setDoc(doc(db, "barbers", currentBarber.id), data, { merge: true });
-      showToast("Profile saved!", "success");
+      try {
+        await updateBarberProfileBackend(data);
+        showToast("Profile saved!", "success");
+      } catch (err) {
+        showToast("Failed to save profile: " + err.message, "error");
+      }
     }
 
     function showToast(msg, type) {

@@ -1,4 +1,4 @@
-    import { auth, db, doc, updateDoc, collection, addDoc, query, where, getDocs } from './firebase.js';
+    import { auth } from './firebase.js';
     import {
       createUserWithEmailAndPassword, signInWithEmailAndPassword,
       onAuthStateChanged, sendPasswordResetEmail, updateProfile
@@ -13,29 +13,24 @@
           showApproved(); return;
         }
 
-        let q = query(collection(db, "barbers"), where("uid", "==", user.uid));
-        let snap = await getDocs(q);
-        
-        // Fallback for legacy barbers missing UID but having matching Email
-        if (snap.empty && user.email) {
-          q = query(collection(db, "barbers"), where("email", "==", user.email));
-          snap = await getDocs(q);
-          
-          if (!snap.empty) {
-            const legacyDoc = snap.docs[0];
-            await updateDoc(doc(db, "barbers", legacyDoc.id), { uid: user.uid });
+        const token = await user.getIdToken(true);
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-        }
+        });
 
-        if (!snap.empty) {
-          const barber = snap.docs[0].data();
-          if (barber.status === 'approved') showApproved();
-          else showPending(barber);
+        if (res.ok) {
+          const data = await res.json();
+          const barber = data.user;
+          if (barber && barber.role === 'barber' && barber.status === 'approved') {
+            showApproved();
+          } else {
+            showPending(barber || {});
+          }
         } else {
-          // Check applications
-          const aq = query(collection(db, "barber_applications"), where("email", "==", user.email));
-          const asnap = await getDocs(aq);
-          if (!asnap.empty) showPending(asnap.docs[0].data());
+          // If profile not found in MongoDB yet but Auth session exists, they are pending application
+          showPending({ name: user.displayName, email: user.email });
         }
       } catch(e) { console.error('Auth state check error:', e); }
     });
@@ -129,9 +124,8 @@
         const cred = await createUserWithEmailAndPassword(auth, suData.email, suData.password);
         await updateProfile(cred.user, { displayName: suData.name });
 
-        // 2. Register Application in Firestore
+        // 2. Register Application in Backend
         const barberData = {
-          uid: cred.user.uid,
           name: suData.name,
           shopName: suData.shopName,
           email: suData.email,
@@ -141,15 +135,24 @@
           services: suData.services,
           homeVisit: suData.homeVisit === 'Yes',
           experience: suData.experience,
-          about: about,
-          status: 'pending',
-          createdAt: new Date().toISOString()
+          about: about
         };
         
-        await addDoc(collection(db, "barber_applications"), barberData);
+        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(barberData)
+        });
+
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Failed to submit application to backend');
+        }
 
         // 3. Show pending screen
-        showPending({ ...barberData });
+        showPending({ ...barberData, status: 'pending' });
         showAlert('Application submitted! We\'ll review it within 24–48 hours.', 'success');
       } catch (err) {
         setLoading('su-btn-3', false);
@@ -173,35 +176,32 @@
       setLoading('login-btn', true);
       try {
         const cred = await signInWithEmailAndPassword(auth, email, pw);
-        let q = query(collection(db, "barbers"), where("uid", "==", cred.user.uid));
-        let snap = await getDocs(q);
         
-        if (snap.empty) {
-          q = query(collection(db, "barbers"), where("email", "==", email));
-          snap = await getDocs(q);
-        }
-        
-        if (snap.empty) {
-          const aq = query(collection(db, "barber_applications"), where("email", "==", email));
-          const asnap = await getDocs(aq);
-          if (asnap.empty) {
-            await auth.signOut();
-            showAlert('No barber account found. Please create an account first.', 'error');
-            setLoading('login-btn', false); return;
+        // Fetch profile from backend
+        const token = await cred.user.getIdToken(true);
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
           }
-          showPending(asnap.docs[0].data());
-          setLoading('login-btn', false); return;
-        }
+        });
 
-        const barber = snap.docs[0].data();
         // 🚨 V10.0: MASTER ACCOUNT FORCE-APPROVAL
         const isMaster = (email === "aalimhakim@gmail.com" || email === "singhkrsanjay0911@gmail.com");
 
-        if (barber.status === 'approved' || isMaster) {
-          showAlert('Login successful! Redirecting to dashboard...', 'success');
-          setTimeout(() => location.href = 'barber-dashboard.html', 800);
+        if (res.ok) {
+          const data = await res.json();
+          const barber = data.user;
+          
+          if (barber.role === 'barber' && (barber.status === 'approved' || isMaster)) {
+            showAlert('Login successful! Redirecting to dashboard...', 'success');
+            setTimeout(() => location.href = 'barber-dashboard.html', 800);
+          } else {
+            showPending(barber);
+            showAlert('Your application is still under review. We\'ll notify you soon!', 'info');
+          }
         } else {
-          showPending(barber);
+          // If no profile exists yet in MongoDB but Auth exists, they are pending
+          showPending({ name: cred.user.displayName || 'Barber', email: cred.user.email });
           showAlert('Your application is still under review. We\'ll notify you soon!', 'info');
         }
       } catch (err) {
