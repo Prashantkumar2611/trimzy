@@ -224,4 +224,47 @@ router.put('/profile', verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route   DELETE /api/barbers/profile
+ * @desc    Delete barber profile completely (from Firebase Auth and MongoDB)
+ * @access  Private (Firebase JWT)
+ */
+router.delete('/profile', verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+
+    // 1. Find the barber in MongoDB
+    const barber = await User.findOne({ firebaseUid: uid, role: 'barber' });
+    if (!barber) {
+      return res.status(404).json({ success: false, error: 'Barber profile not found' });
+    }
+
+    // 2. Delete the user from Firebase Auth using Admin SDK
+    const admin = require('firebase-admin');
+    try {
+      await admin.auth().deleteUser(uid);
+      console.log(`Successfully deleted Firebase Auth user: ${uid}`);
+    } catch (fbError) {
+      console.error('Error deleting Firebase Auth user:', fbError);
+      // We will continue to delete from MongoDB even if Firebase deletion fails
+      // (e.g., if the user was already deleted from Firebase somehow)
+    }
+
+    // 3. Delete the user document from MongoDB
+    await User.deleteOne({ firebaseUid: uid });
+    console.log(`Successfully deleted MongoDB user document for UID: ${uid}`);
+
+    // (Optional: Delete associated reviews and bookings here if desired)
+    
+    return res.json({
+      success: true,
+      message: 'Barber account deleted permanently from all databases.'
+    });
+
+  } catch (error) {
+    console.error('❌ Error deleting barber profile:', error);
+    return res.status(500).json({ success: false, error: 'Internal Server Error', details: error.message });
+  }
+});
+
 module.exports = router;
