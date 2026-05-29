@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const { verifyToken } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 /**
  * @route   POST /api/auth/sync
  * @desc    Sync Firebase Auth user with MongoDB. Creates user if doesn't exist, updates if it does.
  * @access  Private (Firebase JWT)
  */
-router.post('/sync', verifyToken, async (req, res) => {
+router.post('/sync', authLimiter, verifyToken, async (req, res) => {
   try {
     const { uid, email, email_verified } = req.user;
     const { name, phone, area, initials, role } = req.body;
@@ -105,7 +106,7 @@ router.get('/profile', verifyToken, async (req, res) => {
  * @desc    Securely send an email via Brevo
  * @access  Public
  */
-router.post('/send-email', async (req, res) => {
+router.post('/send-email', authLimiter, async (req, res) => {
   try {
     const { toEmail, toName, subject, htmlContent } = req.body;
     const apiKey = process.env.BREVO_API_KEY;

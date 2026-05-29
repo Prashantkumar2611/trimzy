@@ -6,6 +6,7 @@ const User = require('../models/User');
 const Booking = require('../models/Booking');
 const Review = require('../models/Review');
 const { verifyAdmin } = require('../middleware/authMiddleware');
+const { authLimiter } = require('../middleware/rateLimiter');
 
 // Standard fetch node-version check - we can use native fetch since Node 18+ is standard,
 // but for maximum compatibility with all Node versions, let's use standard https module or native fetch with fallback.
@@ -69,7 +70,7 @@ const sendEmailViaBrevo = async (toEmail, toName, resetLink) => {
  * @desc    Verify admin password
  * @access  Public
  */
-router.post('/login', (req, res) => {
+router.post('/login', authLimiter, (req, res) => {
   const { password } = req.body;
   const serverAdminPassword = process.env.ADMIN_PASSWORD || '@Myadminslot1';
   if (password === serverAdminPassword) {
