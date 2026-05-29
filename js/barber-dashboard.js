@@ -568,6 +568,27 @@
                        <input id="pf-upi" type="text" value="${b.upiId || ''}" class="w-full bg-bg border border-border px-4 py-3 rounded-xl text-sm font-bold text-navy focus:border-gold outline-none">
                     </div>
                  </div>
+                 <div class="space-y-4">
+                    <h3 class="text-navy text-xs font-black uppercase tracking-widest border-b border-border/50 pb-2">Location Details</h3>
+                    <div class="space-y-1.5">
+                       <label class="text-gray text-[10px] font-black uppercase tracking-widest ml-1">Street / Area / Landmark <span class="text-red-500">*</span></label>
+                       <input id="pf-street" type="text" value="${b.address?.street || ''}" class="w-full bg-bg border border-border px-4 py-3 rounded-xl text-sm font-bold text-navy focus:border-gold outline-none" placeholder="123 Main St">
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                       <div class="space-y-1.5">
+                          <label class="text-gray text-[10px] font-black uppercase tracking-widest ml-1">City <span class="text-red-500">*</span></label>
+                          <input id="pf-city" type="text" value="${b.address?.city || ''}" class="w-full bg-bg border border-border px-4 py-3 rounded-xl text-sm font-bold text-navy focus:border-gold outline-none" placeholder="Bhubaneswar">
+                       </div>
+                       <div class="space-y-1.5">
+                          <label class="text-gray text-[10px] font-black uppercase tracking-widest ml-1">State <span class="text-red-500">*</span></label>
+                          <input id="pf-state" type="text" value="${b.address?.state || ''}" class="w-full bg-bg border border-border px-4 py-3 rounded-xl text-sm font-bold text-navy focus:border-gold outline-none" placeholder="Odisha">
+                       </div>
+                       <div class="space-y-1.5">
+                          <label class="text-gray text-[10px] font-black uppercase tracking-widest ml-1">Pincode <span class="text-red-500">*</span></label>
+                          <input id="pf-pincode" type="text" value="${b.address?.pincode || ''}" class="w-full bg-bg border border-border px-4 py-3 rounded-xl text-sm font-bold text-navy focus:border-gold outline-none" placeholder="751024">
+                       </div>
+                    </div>
+                 </div>
                  <button onclick="saveProfileAndClose()" class="w-full py-4 bg-gold text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-gold/20 hover:scale-[1.01] transition-all">Save Changes</button>
               </div>
            </div>
@@ -2215,6 +2236,11 @@
     };
 
     async function saveProfile() {
+      const street = document.getElementById('pf-street')?.value.trim() || '';
+      const city = document.getElementById('pf-city')?.value.trim() || '';
+      const state = document.getElementById('pf-state')?.value.trim() || '';
+      const pincode = document.getElementById('pf-pincode')?.value.trim() || '';
+
       const data = {
         name: document.getElementById('pf-name').value,
         shopName: document.getElementById('pf-shopname').value,
@@ -2222,6 +2248,19 @@
         about: document.getElementById('pf-about').value,
         upiId: document.getElementById('pf-upi').value
       };
+
+      if (street && city && state && pincode) {
+         try {
+           const coords = await geocodeAddress(city, state, pincode);
+           data.address = { street, city, state, pincode };
+           data.latitude = coords.latitude;
+           data.longitude = coords.longitude;
+         } catch(e) {
+           showToast("Could not find exact location. Please verify your address.", "error");
+           return; // Stop save if location fails
+         }
+      }
+
       console.log("Saving full profile for ID:", currentBarber.id);
       try {
         await updateBarberProfileBackend(data);

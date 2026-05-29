@@ -44,8 +44,8 @@ router.get('/', async (req, res) => {
         return res.status(400).json({ success: false, error: 'Coordinates out of range (Lat: -90 to 90, Lng: -180 to 180)' });
       }
 
-      // Max distance in meters (default 10km if not provided)
-      const distInMeters = parseFloat(maxDistance) || 10000;
+      // Max distance in meters (default 50km if not provided to match frontend)
+      const distInMeters = parseFloat(maxDistance) || 50000;
 
       // In Mongoose/MongoDB, we can use $near to find closest barbers
       const barbers = await User.find({
