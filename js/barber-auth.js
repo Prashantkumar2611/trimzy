@@ -6,7 +6,11 @@
 
     // ── Check if already logged in as barber ──
     onAuthStateChanged(auth, async user => {
-      if (!user) return;
+      const loader = document.getElementById('global-loader');
+      if (!user) {
+        if (loader) loader.style.display = 'none';
+        return;
+      }
       try {
         // 🚨 V10.0: MASTER ACCOUNT FORCE-APPROVAL (Always let them in)
         if (user.email === "aalimhakim@gmail.com" || user.email === "singhkrsanjay0911@gmail.com") {
@@ -33,6 +37,9 @@
           showPending({ name: user.displayName, email: user.email });
         }
       } catch(e) { console.error('Auth state check error:', e); }
+      finally {
+        if (loader) loader.style.display = 'none';
+      }
     });
 
     // ── Tab param ──
