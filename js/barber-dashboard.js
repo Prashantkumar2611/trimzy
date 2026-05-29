@@ -1195,7 +1195,7 @@
 
     function getProfileIncompleteFields() {
       const missing = [];
-      if (!currentBarber.shopAddress) missing.push("Shop Address");
+      if (!currentBarber.shopName) missing.push("Shop Name");
       if (!currentBarber.services || currentBarber.services.length === 0) missing.push("Services");
       if (!currentBarber.upiId) missing.push("UPI ID");
       return missing;
