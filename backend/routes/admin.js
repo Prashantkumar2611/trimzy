@@ -65,6 +65,21 @@ const sendEmailViaBrevo = async (toEmail, toName, resetLink) => {
 };
 
 /**
+ * @route   POST /api/admin/login
+ * @desc    Verify admin password
+ * @access  Public
+ */
+router.post('/login', (req, res) => {
+  const { password } = req.body;
+  const serverAdminPassword = process.env.ADMIN_PASSWORD || '@Myadminslot1';
+  if (password === serverAdminPassword) {
+    return res.json({ success: true, message: 'Admin authenticated' });
+  } else {
+    return res.status(401).json({ success: false, error: 'Invalid admin password' });
+  }
+});
+
+/**
  * @route   POST /api/admin/applications
  * @desc    Submit a new barber application (Public route)
  * @access  Public

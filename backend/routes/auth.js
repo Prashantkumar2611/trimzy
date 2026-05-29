@@ -100,4 +100,46 @@ router.get('/profile', verifyToken, async (req, res) => {
   }
 });
 
+/**
+ * @route   POST /api/auth/send-email
+ * @desc    Securely send an email via Brevo
+ * @access  Public
+ */
+router.post('/send-email', async (req, res) => {
+  try {
+    const { toEmail, toName, subject, htmlContent } = req.body;
+    const apiKey = process.env.BREVO_API_KEY;
+    if (!apiKey || apiKey === 'YOUR_BREVO_API_KEY_HERE') {
+      console.warn('⚠️ Brevo API key missing. Cannot send email.');
+      return res.status(500).json({ success: false, error: 'Email service misconfigured' });
+    }
+
+    const fetchRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { name: 'Trimzy Admin', email: 'official@trimzy.co.in' },
+        to: [{ email: toEmail, name: toName }],
+        subject: subject,
+        htmlContent: htmlContent
+      })
+    });
+
+    if (!fetchRes.ok) {
+      const errorData = await fetchRes.text();
+      throw new Error(`Brevo API Error: ${errorData}`);
+    }
+
+    const data = await fetchRes.json();
+    return res.json({ success: true, data });
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    return res.status(500).json({ success: false, error: 'Failed to send email' });
+  }
+});
+
 module.exports = router;

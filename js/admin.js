@@ -4,15 +4,25 @@ import { auth } from './firebase.js';
     window.firebaseAuth = auth;
 
     // ── Password Check ──
-    const ADMIN_PASSWORD = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.ADMIN_PASSWORD) || 'YOUR_ADMIN_PASSWORD_HERE';
-    window.checkAdminPw = () => {
+    window.checkAdminPw = async () => {
       const val = document.getElementById('admin-pw-input').value;
-      if (val === ADMIN_PASSWORD) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('admin-shell').classList.add('show');
-        sessionStorage.setItem('ss_admin', '1');
-        loadAll();
-      } else {
+      try {
+        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: val })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('admin-shell').classList.add('show');
+          sessionStorage.setItem('ss_admin', val);
+          loadAll();
+        } else {
+          document.getElementById('login-error').classList.add('show');
+        }
+      } catch (e) {
+        console.error('Admin login error:', e);
         document.getElementById('login-error').classList.add('show');
       }
     };
@@ -37,7 +47,7 @@ import { auth } from './firebase.js';
       try {
         const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications`, {
           headers: {
-            'X-Admin-Password': ADMIN_PASSWORD
+            'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
         });
         if (!res.ok) throw new Error('Failed to load applications from backend');
@@ -56,7 +66,7 @@ import { auth } from './firebase.js';
       try {
         const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/bookings`, {
           headers: {
-            'X-Admin-Password': ADMIN_PASSWORD
+            'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
         });
         if (!res.ok) throw new Error('Failed to load bookings from backend');
@@ -74,7 +84,7 @@ import { auth } from './firebase.js';
       try {
         const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/users`, {
           headers: {
-            'X-Admin-Password': ADMIN_PASSWORD
+            'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
         });
         if (!res.ok) throw new Error('Failed to load users from backend');
@@ -123,7 +133,7 @@ import { auth } from './firebase.js';
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Admin-Password': ADMIN_PASSWORD
+            'X-Admin-Password': sessionStorage.getItem('ss_admin')
           },
           body: JSON.stringify({ email })
         });
@@ -154,7 +164,7 @@ import { auth } from './firebase.js';
         const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications/${id}/reject`, {
           method: 'POST',
           headers: {
-            'X-Admin-Password': ADMIN_PASSWORD
+            'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
         });
 

@@ -12,20 +12,18 @@
       btn.disabled = true;
 
       // Use the restored secure local config
-      const BREVO_API_KEY = (window.TRIMZY_CONFIG && window.TRIMZY_CONFIG.BREVO_API_KEY) || 'YOUR_BREVO_API_KEY_HERE';
       const DESTINATION_EMAIL = 'trimzy.co.in@gmail.com';
+      const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
 
       try {
-        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        const response = await fetch(`${API_URL}/auth/send-email`, {
           method: "POST",
           headers: { 
-            'api-key': BREVO_API_KEY,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            sender: { name: "Trimzy Website", email: "official@trimzy.co.in" },
-            to: [{ email: DESTINATION_EMAIL, name: "Prasant Kumar" }],
+            toEmail: DESTINATION_EMAIL, 
+            toName: "Prasant Kumar",
             subject: `New Trimzy Message: ${subject}`,
             htmlContent: `
               <h2>New message from Trimzy Website!</h2>
