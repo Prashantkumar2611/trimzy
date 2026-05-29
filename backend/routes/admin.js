@@ -153,7 +153,7 @@ router.use(verifyAdmin);
  * @desc    Get all applications (with pagination and status filters)
  * @access  Private (Admin only)
  */
-router.get('/applications', async (req, res) => {
+router.get('/applications', verifyAdmin, async (req, res) => {
   try {
     const { status, limit = 20, page = 1 } = req.query;
 
@@ -193,7 +193,7 @@ router.get('/applications', async (req, res) => {
  * @desc    Approve application, create Firebase Auth user, sync Mongoose barber profile, send credentials via email
  * @access  Private (Admin only)
  */
-router.post('/applications/:id/approve', async (req, res) => {
+router.post('/applications/:id/approve', verifyAdmin, async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -323,7 +323,7 @@ router.post('/applications/:id/approve', async (req, res) => {
  * @desc    Reject application, delete bookings, reviews, and profiles associated with it
  * @access  Private (Admin only)
  */
-router.post('/applications/:id/reject', async (req, res) => {
+router.post('/applications/:id/reject', verifyAdmin, async (req, res) => {
   try {
     const appDoc = await Application.findById(req.params.id);
     if (!appDoc) {
@@ -379,7 +379,7 @@ router.post('/applications/:id/reject', async (req, res) => {
  * @desc    List all registered users (customers, barbers, admins)
  * @access  Private (Admin only)
  */
-router.get('/users', async (req, res) => {
+router.get('/users', verifyAdmin, async (req, res) => {
   try {
     const { role, limit = 50, page = 1 } = req.query;
 
@@ -420,7 +420,7 @@ router.get('/users', async (req, res) => {
  * @desc    Get all system-wide bookings (paginated)
  * @access  Private (Admin only)
  */
-router.get('/bookings', async (req, res) => {
+router.get('/bookings', verifyAdmin, async (req, res) => {
   try {
     const { status, limit = 50, page = 1 } = req.query;
 
@@ -462,7 +462,7 @@ router.get('/bookings', async (req, res) => {
  * @desc    Fetch aggregated dashboard analytics and stats
  * @access  Private (Admin only)
  */
-router.get('/stats', async (req, res) => {
+router.get('/stats', verifyAdmin, async (req, res) => {
   try {
     const totalBookings = await Booking.countDocuments();
     const completedBookings = await Booking.countDocuments({ status: 'completed' });
