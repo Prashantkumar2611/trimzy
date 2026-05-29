@@ -2318,6 +2318,12 @@
     window.showWizardStep = (step) => {
       document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
       document.getElementById(`wizard-step-${step}`).classList.add('active');
+      
+      const topBar = document.getElementById('wizard-top-bar');
+      if (topBar) {
+        topBar.style.display = step === 0 ? 'none' : 'flex';
+      }
+      
       wizCurrentStep = step;
       updateWizardProgress();
     };
