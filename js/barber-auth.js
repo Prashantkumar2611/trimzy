@@ -42,22 +42,6 @@
       }
     });
 
-    // ── Tab param ──
-    const urlParams = new URLSearchParams(location.search);
-    const mode = urlParams.get('mode');
-    const oobCode = urlParams.get('oobCode');
-
-    if (mode === 'resetPassword' && oobCode) {
-      // Show custom password reset UI
-      document.getElementById('signup-section').style.display = 'none';
-      document.getElementById('login-section').style.display = 'none';
-      document.getElementById('forgot-section').style.display = 'none';
-      document.getElementById('main-tabs').style.display = 'none';
-      document.getElementById('reset-password-section').style.display = 'block';
-    } else if (urlParams.get('tab') === 'login') {
-      switchTab('login');
-    }
-
     // ══ TAB SWITCHING ══
     window.switchTab = (tab) => {
       clearAlert();
@@ -80,6 +64,22 @@
     };
 
     window.showLogin = () => switchTab('login');
+
+    // ── Tab param ──
+    const urlParams = new URLSearchParams(location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      // Show custom password reset UI
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('forgot-section').style.display = 'none';
+      document.getElementById('main-tabs').style.display = 'none';
+      document.getElementById('reset-password-section').style.display = 'block';
+    } else if (urlParams.get('tab') === 'login') {
+      window.switchTab('login');
+    }
 
     // ══ SIGNUP DATA ══
     let suData = {};
