@@ -1,4 +1,18 @@
 require('dotenv').config();
+
+// Global Error Handlers to prevent Node process from crashing
+process.on('uncaughtException', (err) => {
+  console.error('🔥 UNCAUGHT EXCEPTION! Shutting down gracefully...', err.name, err.message);
+  console.error(err.stack);
+  // Ideally, notify admin via email/slack here
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🔥 UNHANDLED REJECTION! Shutting down gracefully...');
+  console.error(reason);
+  // Ideally, notify admin via email/slack here
+});
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
