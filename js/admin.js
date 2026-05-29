@@ -94,7 +94,6 @@ import { auth } from './firebase.js';
       if (!selectedApp) return;
       document.getElementById('modal-barber-name').textContent = selectedApp.name;
       document.getElementById('modal-email').value = selectedApp.email;
-      document.getElementById('modal-password').value = `Trimzy@${Math.floor(1000 + Math.random() * 9000)}`;
       document.getElementById('approve-modal').style.display = 'flex';
     };
 
@@ -105,12 +104,11 @@ import { auth } from './firebase.js';
 
     window.confirmApprove = async () => {
       const email = document.getElementById('modal-email').value.trim();
-      const password = document.getElementById('modal-password').value.trim();
       const btn = document.getElementById('modal-confirm-btn');
       const errEl = document.getElementById('modal-error');
 
-      if (!email || !password) {
-        errEl.textContent = "Email and password are required.";
+      if (!email) {
+        errEl.textContent = "Email is required.";
         errEl.style.display = 'block';
         return;
       }
@@ -127,7 +125,7 @@ import { auth } from './firebase.js';
             'Content-Type': 'application/json',
             'X-Admin-Password': ADMIN_PASSWORD
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email })
         });
 
         if (!response.ok) {

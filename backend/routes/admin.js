@@ -10,7 +10,7 @@ const { verifyAdmin } = require('../middleware/authMiddleware');
 // Standard fetch node-version check - we can use native fetch since Node 18+ is standard,
 // but for maximum compatibility with all Node versions, let's use standard https module or native fetch with fallback.
 // In modern environments, global.fetch is always available.
-const sendEmailViaBrevo = async (toEmail, toName, tempPassword) => {
+const sendEmailViaBrevo = async (toEmail, toName, resetLink) => {
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey || apiKey === 'YOUR_BREVO_API_KEY_HERE') {
     console.warn('⚠️ Brevo API key is not configured. Email will not be sent.');
@@ -35,14 +35,13 @@ const sendEmailViaBrevo = async (toEmail, toName, tempPassword) => {
             <p>We are thrilled to inform you that your application to join Trimzy as a professional barber has been <strong>Approved</strong>.</p>
             
             <div style="background:#F4F3F0; padding:20px; border-radius:12px; margin:24px 0;">
-              <h3 style="margin-top:0; color:#E8A44A;">Your Dashboard Credentials</h3>
+              <h3 style="margin-top:0; color:#E8A44A;">Set Your Password</h3>
               <p style="margin-bottom:8px;"><strong>Login Email:</strong> ${toEmail}</p>
-              <p style="margin-bottom:0;"><strong>Temporary Password:</strong> ${tempPassword}</p>
-              <p style="font-size:12px; color:#8A8A9A; margin-top:12px;">Please change your password after your first login for security.</p>
+              <p style="margin-bottom:0;">Please click the button below to securely set your password and access your dashboard.</p>
             </div>
 
             <p>You can now log in to your dashboard to manage your shop status, bookings, and profile:</p>
-            <a href="https://trimzy.co.in/barber-auth.html" style="display:inline-block; padding:14px 24px; background:#E8A44A; color:#0E0E1A; text-decoration:none; border-radius:8px; font-weight:bold; margin:16px 0;">Go to Dashboard →</a>
+            <a href="${resetLink}" style="display:inline-block; padding:14px 24px; background:#E8A44A; color:#0E0E1A; text-decoration:none; border-radius:8px; font-weight:bold; margin:16px 0;">Set Password & Login →</a>
 
             <p style="margin-top:32px;">If you have any questions, feel free to reply to this email or contact us on WhatsApp.</p>
             <p>Best regards,<br><strong>Team Trimzy</strong></p>
@@ -194,8 +193,8 @@ router.post('/applications/:id/approve', async (req, res) => {
     }
 
     const barberEmail = email ? email.trim().toLowerCase() : appDoc.email;
-    // Generate secure random temporary password if not provided
-    const tempPassword = password ? password.trim() : `Trimzy@${Math.floor(1000 + Math.random() * 9000)}`;
+    // Generate secure random temporary password (never shared with the barber)
+    const tempPassword = `Trimzy@${Math.floor(100000 + Math.random() * 900000)}`;
 
     let firebaseUid = '';
 
@@ -275,14 +274,18 @@ router.post('/applications/:id/approve', async (req, res) => {
     appDoc.status = 'approved';
     await appDoc.save();
 
-    // 5. Send Email via Brevo
-    // Runs asynchronously so we don't block the request if SMTP provider is slow
-    sendEmailViaBrevo(barberEmail, appDoc.name, tempPassword);
+    // 5. Generate Password Reset Link and Send Email
+    try {
+      const resetLink = await admin.auth().generatePasswordResetLink(barberEmail);
+      // Runs asynchronously so we don't block the request if SMTP provider is slow
+      sendEmailViaBrevo(barberEmail, appDoc.name, resetLink);
+    } catch (linkErr) {
+      console.error('Failed to generate reset link:', linkErr);
+    }
 
     return res.json({
       success: true,
       message: 'Application approved successfully! Barber account created and email dispatched.',
-      tempPassword,
       barber: barberProfile
     });
 
