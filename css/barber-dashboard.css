@@ -100,3 +100,58 @@
       margin-left: 8px;
       border: 1px solid #E8A44A30;
     }
+
+    /* Onboarding Wizard Styles */
+    #onboarding-wizard {
+      position: fixed;
+      inset: 0;
+      background: #F6F5F2;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      transition: opacity 0.5s ease-out;
+    }
+    .wizard-header {
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 24px;
+      border-bottom: 1px solid #E6E4E0;
+      z-index: 10;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    .wizard-progress-track {
+      width: 100%;
+      height: 6px;
+      background: #E6E4E0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .wizard-progress-bar {
+      height: 100%;
+      background: #E8A44A;
+      width: 0%;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .wizard-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .wizard-step {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      animation: slideUpFade 0.5s ease-out forwards;
+    }
+    .wizard-step.active {
+      display: block;
+    }
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }

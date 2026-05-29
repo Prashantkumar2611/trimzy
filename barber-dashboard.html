@@ -283,6 +283,147 @@
       </div>
     </div>
   </div>
+  <!-- ONBOARDING WIZARD OVERLAY -->
+  <div id="onboarding-wizard" style="display:none;">
+    <div class="wizard-header">
+      <div class="flex justify-between items-center max-w-4xl mx-auto w-full">
+        <div class="text-navy font-black text-xl tracking-tighter">trimzy <span class="text-gold">setup</span></div>
+        <div class="text-sm font-bold text-gray"><span id="wizard-percent">0</span>% Completed</div>
+      </div>
+      <div class="max-w-4xl mx-auto w-full">
+        <div class="wizard-progress-track">
+          <div class="wizard-progress-bar" id="wizard-progress-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard-content">
+      
+      <!-- STEP 0: Welcome -->
+      <div class="wizard-step active" id="wizard-step-0">
+        <div class="bg-white p-10 rounded-[32px] shadow-2xl text-center border border-border relative overflow-hidden">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-gold/10 rounded-full blur-3xl"></div>
+          <div class="w-20 h-20 bg-gold/10 rounded-3xl flex items-center justify-center text-gold mx-auto mb-6">
+            <i data-lucide="party-popper" class="w-10 h-10"></i>
+          </div>
+          <h2 class="text-3xl font-black text-navy mb-4">Welcome to Trimzy! 🎉</h2>
+          <p class="text-gray mb-8 text-lg">Your application is approved. Let's set up your shop profile so customers can start booking appointments.</p>
+          <button onclick="nextWizardStep()" class="w-full py-4 bg-navy text-white rounded-2xl font-black uppercase tracking-widest hover:bg-navy2 transition-all shadow-xl shadow-navy/20">Let's Get Started →</button>
+        </div>
+      </div>
+
+      <!-- STEP 1: Basic Details -->
+      <div class="wizard-step" id="wizard-step-1">
+        <div class="bg-white p-8 rounded-[32px] shadow-2xl border border-border">
+          <h3 class="text-2xl font-black text-navy mb-2">Basic Details</h3>
+          <p class="text-gray mb-6 text-sm">Tell customers about your shop.</p>
+          
+          <div class="space-y-6">
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Shop Name <span class="text-red-500">*</span></label>
+              <input type="text" id="wiz-shopname" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="e.g. Royal Cuts" oninput="updateWizardProgress()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">About / Bio <span class="text-gray font-medium">(Optional)</span></label>
+              <textarea id="wiz-bio" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all h-24 resize-none" placeholder="Short description of your shop" oninput="updateWizardProgress()"></textarea>
+            </div>
+          </div>
+
+          <div class="flex gap-4 mt-10">
+            <button onclick="prevWizardStep()" class="px-6 py-4 bg-bg text-gray rounded-2xl font-black uppercase tracking-widest hover:bg-border transition-colors">Back</button>
+            <button onclick="nextWizardStep()" class="flex-1 py-4 bg-gold text-navy rounded-2xl font-black uppercase tracking-widest hover:bg-[#d9973e] transition-colors shadow-lg shadow-gold/20">Next Step →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Pictures & Services -->
+      <div class="wizard-step" id="wizard-step-2">
+        <div class="bg-white p-8 rounded-[32px] shadow-2xl border border-border">
+          <h3 class="text-2xl font-black text-navy mb-2">Shop Setup</h3>
+          <p class="text-gray mb-6 text-sm">Upload pictures and add your services.</p>
+          
+          <div class="space-y-6">
+            <!-- PWA Avatar Upload (Reuse logic if possible, or simplified) -->
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Profile Avatar <span class="text-red-500">*</span></label>
+              <div class="flex items-center gap-4">
+                <div id="wiz-avatar-preview" class="w-16 h-16 rounded-full bg-bg border-2 border-dashed border-gray flex items-center justify-center text-gray overflow-hidden">
+                  <i data-lucide="camera" class="w-6 h-6"></i>
+                </div>
+                <input type="file" id="wiz-avatar-upload" accept="image/*" class="hidden" onchange="handleWizAvatarUpload(event)">
+                <button onclick="document.getElementById('wiz-avatar-upload').click()" class="px-4 py-2 bg-navy text-white text-xs font-bold rounded-lg hover:bg-navy2">Upload Photo</button>
+              </div>
+            </div>
+
+            <!-- Hint: Shop Photos will be handled in Dashboard for now to save complexity, or we can just ask for 1 main photo -->
+            
+            <!-- Quick Service Setup -->
+            <div class="pt-4 border-t border-border">
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Add Your First Service <span class="text-red-500">*</span></label>
+              <div class="grid grid-cols-2 gap-4">
+                <input type="text" id="wiz-service-name" class="bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="Service Name (e.g. Haircut)" oninput="updateWizardProgress()">
+                <input type="number" id="wiz-service-price" class="bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="Price (₹)" oninput="updateWizardProgress()">
+              </div>
+            </div>
+            
+            <!-- Quick Hours -->
+            <div class="pt-4 border-t border-border">
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Working Hours <span class="text-red-500">*</span></label>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <span class="text-xs text-gray mb-1 block">Opens At</span>
+                  <input type="time" id="wiz-time-open" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" value="09:00" oninput="updateWizardProgress()">
+                </div>
+                <div>
+                  <span class="text-xs text-gray mb-1 block">Closes At</span>
+                  <input type="time" id="wiz-time-close" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" value="21:00" oninput="updateWizardProgress()">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex gap-4 mt-10">
+            <button onclick="prevWizardStep()" class="px-6 py-4 bg-bg text-gray rounded-2xl font-black uppercase tracking-widest hover:bg-border transition-colors">Back</button>
+            <button onclick="nextWizardStep()" class="flex-1 py-4 bg-gold text-navy rounded-2xl font-black uppercase tracking-widest hover:bg-[#d9973e] transition-colors shadow-lg shadow-gold/20">Next Step →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Address & Payment -->
+      <div class="wizard-step" id="wizard-step-3">
+        <div class="bg-white p-8 rounded-[32px] shadow-2xl border border-border">
+          <h3 class="text-2xl font-black text-navy mb-2">Location & Payment</h3>
+          <p class="text-gray mb-6 text-sm">Final step to get your shop online.</p>
+          
+          <div class="space-y-6">
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Shop Address <span class="text-red-500">*</span></label>
+              <textarea id="wiz-address" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all h-20 resize-none" placeholder="Full shop address..." oninput="updateWizardProgress()"></textarea>
+            </div>
+            
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Payment UPI ID <span class="text-red-500">*</span></label>
+              <input type="text" id="wiz-upi" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="e.g. 9876543210@ybl" oninput="updateWizardProgress()">
+            </div>
+          </div>
+
+          <div id="wiz-error" class="mt-4 text-red-500 text-sm font-bold hidden text-center"></div>
+
+          <div class="flex gap-4 mt-10">
+            <button onclick="prevWizardStep()" class="px-6 py-4 bg-bg text-gray rounded-2xl font-black uppercase tracking-widest hover:bg-border transition-colors">Back</button>
+            <button onclick="finishWizard()" id="btn-finish-wizard" class="flex-1 py-4 bg-green-500 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-green-600 transition-colors shadow-lg shadow-green-500/20">Finish Setup 🎉</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Include Lucide icons for static initial rendering
+    lucide.createIcons();
+  </script>
 </body>
 
 </html>
