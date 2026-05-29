@@ -941,7 +941,10 @@
           salonPhotos: b.salonPhotos || [],
           services: b.services || [],
           shopName: b.shopName || '',
-          upiId: b.upiId || ''
+          upiId: b.upiId || '',
+          latitude: 20.2961,
+          longitude: 85.8245,
+          area: 'Bhubaneswar'
         });
 
         showToast("Profile Saved Successfully!", "success");
@@ -2419,6 +2422,9 @@
            shopName: document.getElementById('wiz-shopname').value.trim(),
            about: document.getElementById('wiz-bio').value.trim(),
            shopAddress: address,
+           latitude: 20.2961, // Default Bhubaneswar location
+           longitude: 85.8245,
+           area: "Bhubaneswar", // Default area
            upiId: upi,
            workingHours: {
               open: document.getElementById('wiz-time-open').value,

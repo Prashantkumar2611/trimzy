@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
     // Build query filter
     const filter = {
       role: 'barber',
-      status: 'approved'
+      status: { $in: ['approved', 'pending'] } // Allow pending for MVP
     };
 
     if (area) {
