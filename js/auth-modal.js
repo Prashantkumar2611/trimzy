@@ -41,7 +41,7 @@ window.showStep = (stepId) => {
     document.querySelectorAll('.am-error').forEach(el => el.style.display = 'none');
 };
 
-import { auth, db } from './firebase.js';
+import { auth } from './firebase.js';
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -54,8 +54,6 @@ import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, setDoc, getDoc, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ── MODAL HTML TEMPLATE ──
 const modalTemplate = `
@@ -251,11 +249,25 @@ const modalTemplate = `
 
 // ── AUTH LOGIC ──
 
-async function saveUserProfile(uid, data) {
-    await setDoc(doc(db, 'users', uid), {
-        ...data,
-        updatedAt: serverTimestamp()
-    }, { merge: true });
+async function syncUserProfile(user, additionalData = {}) {
+    const token = await user.getIdToken(true);
+    const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(additionalData)
+    });
+    if (!response.ok) throw new Error('Failed to sync profile');
+    return await response.json();
+}
+
+async function fetchUserProfile(user) {
+    const token = await user.getIdToken(true);
+    const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Profile not found');
+    const data = await response.json();
+    return data.user;
 }
 
 async function sendWelcomeEmail(email, name) {
@@ -369,20 +381,17 @@ async function googleLogin() {
         const cred = await signInWithPopup(auth, provider);
         const user = cred.user;
 
-        // Check if new user for welcome email
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        const isNewUser = !userDoc.exists();
-
         const initials = (user.displayName || 'GU').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const profile = {
+        const profileData = {
             name: user.displayName || 'Google User',
-            email: user.email,
             phone: user.phoneNumber || '',
             area: '',
-            initials: initials
+            role: 'customer'
         };
 
-        await saveUserProfile(user.uid, profile);
+        const syncResult = await syncUserProfile(user, profileData);
+        const profile = syncResult.user;
+        const isNewUser = syncResult.isNew;
         
         if (isNewUser && user.email) {
             await sendWelcomeEmail(user.email, profile.name);
@@ -390,7 +399,15 @@ async function googleLogin() {
             await sendWelcomeBackEmail(user.email, profile.name);
         }
 
-        sessionStorage.setItem('ss_user', JSON.stringify({ ...profile, uid: user.uid }));
+        sessionStorage.setItem('ss_user', JSON.stringify({ 
+            uid: user.uid,
+            mongoId: profile._id,
+            name: profile.name,
+            email: user.email,
+            phone: profile.phone || '',
+            area: profile.area || '',
+            initials: profile.initials || initials
+        }));
         location.reload();
     } catch (err) {
         console.error(err);
@@ -432,12 +449,22 @@ async function verifyOTP() {
     try {
         const cred = await confirmationResult.confirm(code);
         const user = cred.user;
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        let profile = snap.exists() ? snap.data() : { name: 'Trimzy User', email: '', phone: user.phoneNumber, area: '', initials: 'TU', role: 'customer' };
-        
-        if (!snap.exists()) await saveUserProfile(user.uid, profile);
+        const syncResult = await syncUserProfile(user, {
+            name: 'Trimzy User',
+            phone: user.phoneNumber,
+            role: 'customer'
+        });
+        const profile = syncResult.user;
 
-        sessionStorage.setItem('ss_user', JSON.stringify({ ...profile, uid: user.uid }));
+        sessionStorage.setItem('ss_user', JSON.stringify({
+            uid: user.uid,
+            mongoId: profile._id,
+            name: profile.name,
+            email: profile.email || '',
+            phone: profile.phone || user.phoneNumber,
+            area: profile.area || '',
+            initials: profile.initials || 'TU'
+        }));
         location.reload();
     } catch (error) {
         btn.disabled = false; btn.textContent = 'Verify & Log In';
@@ -456,16 +483,23 @@ async function submitEmailLogin() {
 
     try {
         const cred = await signInWithEmailAndPassword(auth, email, pw);
-        const snap = await getDoc(doc(db, 'users', cred.user.uid));
-        const profile = snap.exists() ? snap.data() : {};
+        let profile = {};
+        try {
+            profile = await fetchUserProfile(cred.user);
+        } catch (e) {
+            // Profile might not exist yet if created purely via Firebase Auth, so sync it
+            const syncRes = await syncUserProfile(cred.user, { role: 'customer' });
+            profile = syncRes.user;
+        }
         
         sessionStorage.setItem('ss_user', JSON.stringify({
             uid: cred.user.uid,
+            mongoId: profile._id,
             name: profile.name || 'User',
             email: cred.user.email,
             phone: profile.phone || '',
             area: profile.area || '',
-            initials: (profile.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+            initials: profile.initials || 'U'
         }));
         location.reload();
     } catch (err) {
@@ -499,15 +533,27 @@ async function submitSignupFinish() {
     try {
         const cred = await createUserWithEmailAndPassword(auth, signupData.email, pw);
         await updateProfile(cred.user, { displayName: signupData.name });
-        const initials = signupData.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const profile = { ...signupData, initials, role: 'customer', createdAt: serverTimestamp() };
-        await saveUserProfile(cred.user.uid, profile);
+        const syncRes = await syncUserProfile(cred.user, {
+            name: signupData.name,
+            phone: signupData.phone,
+            area: signupData.area,
+            role: 'customer'
+        });
+        const profile = syncRes.user;
         
         if (signupData.email) {
             await sendWelcomeEmail(signupData.email, signupData.name);
         }
         
-        sessionStorage.setItem('ss_user', JSON.stringify({ ...profile, uid: cred.user.uid }));
+        sessionStorage.setItem('ss_user', JSON.stringify({
+            uid: cred.user.uid,
+            mongoId: profile._id,
+            name: profile.name,
+            email: signupData.email,
+            phone: profile.phone,
+            area: profile.area,
+            initials: profile.initials
+        }));
         location.reload();
     } catch (err) {
         btn.disabled = false; btn.textContent = 'Create My Account';
@@ -555,16 +601,16 @@ onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
             // Only sync if the user exists in the CUSTOMER collection
-            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const userData = await fetchUserProfile(user);
             
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
+            if (userData && userData.role !== 'barber') {
                 const sessionUser = {
                     uid: user.uid,
+                    mongoId: userData._id,
                     name: userData.name || 'User',
                     email: user.email,
                     phone: user.phoneNumber || userData.phone || '',
-                    initials: (userData.name || 'U').slice(0, 2).toUpperCase()
+                    initials: userData.initials || 'U'
                 };
                 sessionStorage.setItem('ss_user', JSON.stringify(sessionUser));
                 if (window.injectAuthNav) window.injectAuthNav();
@@ -574,7 +620,25 @@ onAuthStateChanged(auth, async (user) => {
                 if (window.injectAuthNav) window.injectAuthNav();
             }
         } catch (e) {
-            console.error("Auth Sync Error:", e);
+            // Profile not found in MongoDB. Attempt to sync/migrate them automatically.
+            try {
+                const syncRes = await syncUserProfile(user, { role: 'customer' });
+                const newProfile = syncRes.user;
+                const sessionUser = {
+                    uid: user.uid,
+                    mongoId: newProfile._id,
+                    name: newProfile.name || 'User',
+                    email: user.email,
+                    phone: user.phoneNumber || newProfile.phone || '',
+                    initials: newProfile.initials || 'U'
+                };
+                sessionStorage.setItem('ss_user', JSON.stringify(sessionUser));
+                if (window.injectAuthNav) window.injectAuthNav();
+            } catch (syncErr) {
+                console.error("Auth Sync Error:", syncErr);
+                sessionStorage.removeItem('ss_user');
+                if (window.injectAuthNav) window.injectAuthNav();
+            }
         }
     } else {
         // Logged out

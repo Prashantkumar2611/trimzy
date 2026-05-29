@@ -1,13 +1,39 @@
 import { auth } from './firebase.js';
 import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { doc, getDoc, query, where, getDocs, setDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { db } from './firebase.js';
+async function syncUserProfile(user, additionalData = {}) {
+  const token = await user.getIdToken(true);
+  const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+  const response = await fetch(`${API_URL}/auth/sync`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(additionalData)
+  });
+  if (!response.ok) throw new Error('Failed to sync profile');
+  return await response.json();
+}
+
+async function fetchUserProfile(user) {
+  const token = await user.getIdToken(true);
+  const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+  const response = await fetch(`${API_URL}/auth/profile`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!response.ok) throw new Error('Profile not found');
+  const data = await response.json();
+  return data.user;
+}
 
 // Redirect if already logged in as barber
 onAuthStateChanged(auth, async user => {
   if (user) {
-    const snap = await getDoc(doc(db, 'barbers', user.uid));
-    if (snap.exists()) location.href = 'barber-dashboard.html';
+    try {
+      const userData = await fetchUserProfile(user);
+      if (userData && userData.role === 'barber') {
+        location.href = 'barber-dashboard.html';
+      }
+    } catch(e) {
+      // Ignore if not found
+    }
   }
 });
 
@@ -20,33 +46,31 @@ window.doLogin = async (e) => {
   setLoading(true);
   try {
     const cred = await signInWithEmailAndPassword(auth, email, pw);
-    // Check if this user is a barber
-    let snap = await getDoc(doc(db, 'barbers', cred.user.uid));
     
-    // Fallback: If not found by UID, try searching by email
-    if (!snap.exists()) {
-      console.log("Barber not found by UID, trying email fallback...");
-      const q = query(collection(db, "barbers"), where("email", "==", email));
-      const qSnap = await getDocs(q);
-      if (!qSnap.empty) {
-        snap = qSnap.docs[0];
-        // Auto-fix: Link this UID to the document for next time
-        await setDoc(doc(db, "barbers", cred.user.uid), { ...snap.data(), uid: cred.user.uid });
-        // Optional: delete the old random ID document if you want to be extra clean
-        if (snap.id !== cred.user.uid) {
-          await deleteDoc(doc(db, "barbers", snap.id));
-        }
-        // Re-get the snap from the new location to be safe
-        snap = await getDoc(doc(db, "barbers", cred.user.uid));
-      }
+    // Check if this user is a barber on the backend
+    let profile = null;
+    try {
+      profile = await fetchUserProfile(cred.user);
+    } catch(e) {
+      // Sync just in case they were approved via admin but not synced yet
+      const syncRes = await syncUserProfile(cred.user);
+      profile = syncRes.user;
     }
 
-    if (!snap.exists()) {
+    if (!profile || profile.role !== 'barber') {
       await auth.signOut();
       showAlert('This account is not registered as a barber. Please contact Trimzy support.', 'error');
       setLoading(false);
       return;
     }
+    
+    if (profile.status === 'pending') {
+      await auth.signOut();
+      showAlert('Your account has not been approved yet. Please wait a little longer, or Contact Us if there is an issue.', 'error');
+      setLoading(false);
+      return;
+    }
+    
     showAlert('Login successful! Redirecting...', 'success');
     setTimeout(() => location.href = 'barber-dashboard.html', 800);
   } catch(err) {
@@ -56,11 +80,9 @@ window.doLogin = async (e) => {
       'auth/user-not-found':     'No barber account found with this email.',
       'auth/wrong-password':     'Incorrect password. Please try again.',
       'auth/invalid-credential': 'Incorrect email or password.',
-      'auth/too-many-requests':  'Too many attempts. Please try again later.',
-      'auth/unauthorized-domain': 'This domain (trimzy.co.in) is not authorized in Firebase Console.',
-      'auth/operation-not-allowed': 'Email/Password login is not enabled in Firebase Console.'
+      'auth/too-many-requests':  'Too many attempts. Please try again later.'
     };
-    const detailedMsg = msgs[err.code] || `Login Error (${err.code}): ${err.message}`;
+    const detailedMsg = msgs[err.code] || `Login Error: ${err.message}`;
     showAlert(detailedMsg, 'error');
   }
 };

@@ -26,7 +26,8 @@
 
         // Fetch profile from backend
         const token = await user.getIdToken(true);
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const res = await fetch(`${API_URL}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -876,7 +877,8 @@
     async function updateBarberProfileBackend(profileData) {
       if (!auth.currentUser) throw new Error('User not logged in');
       const token = await auth.currentUser.getIdToken(true);
-      const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/barbers/profile`, {
+      const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+      const response = await fetch(`${API_URL}/barbers/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -958,8 +960,48 @@
 
 
     function renderDashboard() {
+      const missingFields = typeof getProfileIncompleteFields === 'function' ? getProfileIncompleteFields() : [];
+      const totalRequired = 3; // Address, Services, UPI
+      const completed = totalRequired - missingFields.length;
+      const progressPercent = Math.round((completed / totalRequired) * 100);
+
+      const profileBannerHTML = missingFields.length > 0 ? `
+        <div class="bg-navy rounded-2xl p-6 mb-6 relative overflow-hidden shadow-xl border border-white/10 group cursor-pointer" onclick="setScreen('profile')">
+          <div class="absolute -right-12 -top-12 w-40 h-40 bg-gold/20 rounded-full blur-3xl group-hover:bg-gold/30 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-white text-lg font-black tracking-tight flex items-center gap-2">
+                  <i data-lucide="alert-circle" class="w-5 h-5 text-gold"></i>
+                  Complete your profile
+                </h3>
+                <p class="text-white/60 text-xs font-medium mt-1">You must complete these to start accepting bookings</p>
+              </div>
+              <div class="px-3 py-1 bg-white/10 rounded-full border border-white/10 text-gold text-[10px] font-black uppercase tracking-widest backdrop-blur-sm">
+                ${progressPercent}% Done
+              </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full h-2 bg-black/40 rounded-full overflow-hidden mb-4">
+              <div class="h-full bg-gold rounded-full transition-all duration-1000 ease-out" style="width: ${progressPercent}%"></div>
+            </div>
+            
+            <div class="flex items-center gap-2 text-white/80 text-xs font-medium mb-4">
+              <span class="text-gold font-bold">Missing:</span> ${missingFields.join(', ')}
+            </div>
+            
+            <button class="bg-gold text-navy px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-gold/20 flex items-center gap-2">
+              Setup Shop Now
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      ` : '';
+
       const main = document.getElementById('main-content');
       main.innerHTML = `
+        ${profileBannerHTML}
         <!-- KPI Row -->
         <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <div class="bg-white p-6 rounded-2xl card-shadow border border-border">
@@ -1141,6 +1183,14 @@
     const statusBtnMobile = document.getElementById('status-toggle-mobile');
     const sidebarStatusCheckbox = document.getElementById('sidebar-status-checkbox');
 
+    function getProfileIncompleteFields() {
+      const missing = [];
+      if (!currentBarber.shopAddress) missing.push("Shop Address");
+      if (!currentBarber.services || currentBarber.services.length === 0) missing.push("Services");
+      if (!currentBarber.upiId) missing.push("UPI ID");
+      return missing;
+    }
+
     window.toggleShopStatus = async (forcedStatus = null) => {
       // CRITICAL: Always use the Authenticated UID as the source of truth!
       const uid = auth.currentUser ? auth.currentUser.uid : (currentBarber ? currentBarber.id : null);
@@ -1151,15 +1201,23 @@
       }
       
       const newStatus = (forcedStatus !== null) ? forcedStatus : !currentBarber.isOpen;
+      
+      // Prevent going live if profile is incomplete
+      if (newStatus === true) {
+        const missingFields = getProfileIncompleteFields();
+        if (missingFields.length > 0) {
+          showToast(`Complete profile to go live: ${missingFields.join(', ')}`, "error");
+          const cb = document.getElementById('sidebar-status-checkbox');
+          if (cb) cb.checked = false;
+          // Auto-redirect to the profile screen to act as a setup wizard
+          setScreen('profile');
+          return;
+        }
+      }
       console.log(`[PERSISTENCE] Saving with UID LOCKDOWN: ${newStatus ? 'OPEN' : 'CLOSED'} to path: barbers/${uid}`);
 
       try {
-        const docRef = doc(db, "barbers", uid);
-        await setDoc(docRef, { 
-          isOpen: newStatus,
-          lastStatusUpdate: serverTimestamp(),
-          uid: uid // Ensure UID field is also set correctly
-        }, { merge: true });
+        await updateBarberProfileBackend({ isOpen: newStatus });
 
         currentBarber.isOpen = newStatus;
         if (!currentBarber.id) currentBarber.id = uid; // Ensure ID is synced locally
@@ -1224,19 +1282,15 @@
       lucide.createIcons();
     }
 
-    function fetchReviewsData() {
+    async function fetchReviewsData() {
       if (!currentBarber || !currentBarber.id) return;
-      // Removed orderBy from query to avoid composite index requirement
-      const q = query(collection(db, "reviews"), where("barberId", "==", currentBarber.id));
-      
-      onSnapshot(q, (snap) => {
-        // Sort manually by createdAt (descending)
-        allReviews = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-          .sort((a, b) => {
-            const tA = (a.createdAt && a.createdAt.toMillis) ? a.createdAt.toMillis() : 0;
-            const tB = (b.createdAt && b.createdAt.toMillis) ? b.createdAt.toMillis() : 0;
-            return tB - tA;
-          });
+      try {
+        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const res = await fetch(`${API_URL}/reviews/barber/${currentBarber.id}`);
+        if (!res.ok) throw new Error('Failed to fetch reviews');
+        const data = await res.json();
+        
+        allReviews = data.reviews.map(r => ({ ...r, id: r._id }));
         
         // Compute Stats
         let sum = 0;
@@ -1248,7 +1302,7 @@
         });
 
         reviewStats = {
-          total: allReviews.length,
+          total: data.total || allReviews.length,
           avg: allReviews.length > 0 ? (sum / allReviews.length) : 5.0,
           distribution: dist
         };
@@ -1260,8 +1314,6 @@
           renderReviews();
         }
         
-        // Sync average rating back to the barber document if it significantly changed (optional but nice)
-        // For now just update local currentBarber reference for the KPI cards
         currentBarber.rating = reviewStats.avg.toFixed(1);
         const rEl = document.getElementById('stat-avg-rating-new');
         if (rEl) rEl.textContent = currentBarber.rating;
@@ -1269,7 +1321,10 @@
         if (sideREl) sideREl.textContent = currentBarber.rating;
         const sideCountEl = document.getElementById('side-pwa-count');
         if (sideCountEl) sideCountEl.textContent = `(${reviewStats.total})`;
-      });
+
+      } catch(err) {
+        console.error("fetchReviewsData error:", err);
+      }
     }
 
     function updateStatusUI(isOpen) {
@@ -1406,7 +1461,7 @@
     window.deleteSalonPhoto = async (index) => {
       if (!confirm('Delete this photo?')) return;
       salonPhotos.splice(index, 1);
-      await updateDoc(doc(db, "barbers", currentBarber.id), { salonPhotos: salonPhotos });
+      await updateBarberProfileBackend({ salonPhotos: salonPhotos });
       currentBarber.salonPhotos = salonPhotos;
       renderPhotos();
       showToast('Photo deleted', 'success');
@@ -1492,8 +1547,7 @@
           if (progFill) progFill.style.width = '80%';
           const uid = auth.currentUser ? auth.currentUser.uid : currentBarber.id;
           console.log(`[PERSISTENCE] Uploading Photo to ID: ${uid}`);
-          const docRef = doc(db, "barbers", uid);
-          await setDoc(docRef, { profilePic: base64, uid: uid }, { merge: true });
+          await updateBarberProfileBackend({ profilePic: base64 });
 
           currentBarber.profilePic = base64;
           if (progFill) progFill.style.width = '100%';
@@ -1521,8 +1575,7 @@
           const uid = auth.currentUser ? auth.currentUser.uid : currentBarber.id;
           const newPhotos = [...salonPhotos, base64];
           console.log(`[PERSISTENCE] Uploading Salon Photo to ID: ${uid}`);
-          const docRef = doc(db, "barbers", uid);
-          await setDoc(docRef, { salonPhotos: newPhotos, uid: uid }, { merge: true });
+          await updateBarberProfileBackend({ salonPhotos: newPhotos });
 
           salonPhotos = newPhotos;
           currentBarber.salonPhotos = newPhotos;
@@ -1583,10 +1636,11 @@
     let bookingsInterval = null;
 
     async function fetchBookings() {
-      if (!currentUser) return;
+      if (!auth.currentUser) return;
       try {
-        const token = await currentUser.getIdToken(true);
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+        const token = await auth.currentUser.getIdToken(true);
+        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const res = await fetch(`${API_URL}/bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -2094,7 +2148,8 @@
 
       try {
         const token = await auth.currentUser.getIdToken(true);
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings/${activeBookingId}/verify-pin`, {
+        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const res = await fetch(`${API_URL}/bookings/${activeBookingId}/verify-pin`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -2126,7 +2181,8 @@
       if (confirm(`Finish session for ${b.customerName}?`)) {
         try {
           const token = await auth.currentUser.getIdToken(true);
-          const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings/${id}/status`, {
+          const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+          const res = await fetch(`${API_URL}/bookings/${id}/status`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',

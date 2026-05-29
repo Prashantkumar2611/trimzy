@@ -322,25 +322,19 @@ window.verifyOTP = async (e) => {
     const cred = await confirmationResult.confirm(code);
     const user = cred.user;
     
-    // Check if user exists in Firestore
-    const snap = await getDoc(doc(db,'users',user.uid));
-    let profile = snap.exists() ? snap.data() : null;
-
-    if (!profile) {
-      // Create barebones profile for pure OTP logins
-      profile = {
-        name: user.displayName || 'Trimzy User',
-        email: user.email || '',
-        phone: user.phoneNumber || '',
-        area: '',
-        initials: 'TU',
-        role: 'customer'
-      };
-      await saveUserProfile(user.uid, profile);
-    }
+    // Sync profile with Backend
+    const syncRes = await syncUserProfile(user, {
+      name: user.displayName || 'Trimzy User',
+      email: user.email || '',
+      phone: user.phoneNumber || '',
+      area: '',
+      role: 'customer'
+    });
+    const profile = syncRes.user;
 
     sessionStorage.setItem('ss_user', JSON.stringify({
       uid:  user.uid,
+      mongoId: profile._id,
       name: profile.name,
       email:profile.email,
       phone:profile.phone,
