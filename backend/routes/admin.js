@@ -276,7 +276,12 @@ router.post('/applications/:id/approve', async (req, res) => {
 
     // 5. Generate Password Reset Link and Send Email
     try {
-      const resetLink = await admin.auth().generatePasswordResetLink(barberEmail);
+      const fbResetLink = await admin.auth().generatePasswordResetLink(barberEmail);
+      // Parse the oobCode to create a custom URL
+      const urlObj = new URL(fbResetLink);
+      const oobCode = urlObj.searchParams.get('oobCode');
+      const resetLink = `https://trimzy.co.in/barber-auth.html?mode=resetPassword&oobCode=${oobCode}`;
+      
       // Runs asynchronously so we don't block the request if SMTP provider is slow
       sendEmailViaBrevo(barberEmail, appDoc.name, resetLink);
     } catch (linkErr) {

@@ -1,7 +1,7 @@
     import { auth } from './firebase.js';
     import {
       createUserWithEmailAndPassword, signInWithEmailAndPassword,
-      onAuthStateChanged, sendPasswordResetEmail, updateProfile
+      onAuthStateChanged, sendPasswordResetEmail, updateProfile, confirmPasswordReset
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
     // ── Check if already logged in as barber ──
@@ -36,7 +36,20 @@
     });
 
     // ── Tab param ──
-    if (new URLSearchParams(location.search).get('tab') === 'login') switchTab('login');
+    const urlParams = new URLSearchParams(location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+
+    if (mode === 'resetPassword' && oobCode) {
+      // Show custom password reset UI
+      document.getElementById('signup-section').style.display = 'none';
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('forgot-section').style.display = 'none';
+      document.getElementById('main-tabs').style.display = 'none';
+      document.getElementById('reset-password-section').style.display = 'block';
+    } else if (urlParams.get('tab') === 'login') {
+      switchTab('login');
+    }
 
     // ══ TAB SWITCHING ══
     window.switchTab = (tab) => {
@@ -239,6 +252,28 @@
           'auth/too-many-requests': 'Too many attempts. Please try again later.'
         };
         showAlert('⚠️ ' + (msgs[err.code] || 'Could not send reset email. Please try again.'), 'error');
+      }
+    };
+
+    window.submitNewPassword = async (e) => {
+      e.preventDefault();
+      const newPassword = document.getElementById('reset-password').value;
+      if (newPassword.length < 8) {
+        showFE('reset-password', 'reset-pw-err'); return;
+      }
+      clearFE('reset-password', 'reset-pw-err');
+      setLoading('reset-btn', true);
+      try {
+        await confirmPasswordReset(auth, oobCode, newPassword);
+        showAlert('✅ Password has been successfully set! You can now log in.', 'success');
+        setTimeout(() => {
+          setLoading('reset-btn', false);
+          // Go to login page without query params
+          window.location.href = 'barber-auth.html?tab=login';
+        }, 2000);
+      } catch (err) {
+        setLoading('reset-btn', false);
+        showAlert('⚠️ Link expired or invalid. Please request a new one.', 'error');
       }
     };
 
