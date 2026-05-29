@@ -170,12 +170,16 @@
             <textarea id="wiz-address" rows="3" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="Plot No, Street, Landmark..."></textarea>
           </div>
           
-          <div class="space-y-2 p-5 bg-gold/5 border border-gold/20 rounded-xl">
-            <label class="text-sm font-semibold text-gold flex items-center gap-2">
-               <i data-lucide="badge-indian-rupee" class="w-4 h-4"></i> UPI ID for Earnings *
-            </label>
-            <input type="text" id="wiz-upi" class="w-full bg-bg border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors mt-2" placeholder="yourname@paytm">
-            <p class="text-xs text-gray mt-2">100% of your earnings go directly to this UPI ID.</p>
+          <div class="space-y-4 relative">
+            <div class="p-6 bg-navy rounded-2xl border border-border mt-4 group focus-within:border-gold transition-colors">
+              <div class="absolute -top-3 left-6 px-2 bg-[#0B0B18]">
+                <label class="text-xs font-bold text-gold flex items-center gap-2">
+                  <i data-lucide="indian-rupee" class="w-3 h-3"></i> UPI ID for Earnings *
+                </label>
+              </div>
+              <input type="text" id="wiz-upi" class="w-full bg-black/20 border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold" placeholder="8514806487@upi">
+              <p class="text-xs text-gray mt-3">100% of your earnings go directly to this UPI ID.</p>
+            </div>
           </div>
         </div>
 

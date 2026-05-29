@@ -2439,7 +2439,7 @@
               id: 'svc_' + Date.now(),
               name: document.getElementById('wiz-service-name').value.trim(),
               price: document.getElementById('wiz-service-price').value,
-              duration: "30 mins" // default
+              time: "30 mins" // default time required by backend
            }]
         };
 
