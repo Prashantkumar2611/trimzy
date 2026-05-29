@@ -165,9 +165,25 @@
         <p class="text-gray mb-8">Almost done! We need these to get you paid and booked.</p>
         
         <div class="space-y-6">
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-white/80">Full Shop Address *</label>
-            <textarea id="wiz-address" rows="3" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="Plot No, Street, Landmark..."></textarea>
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-white/80">Street / Area / Landmark *</label>
+              <input type="text" id="wiz-street" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="Plot No, Street, Landmark...">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-white/80">City *</label>
+                <input type="text" id="wiz-city" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Bhubaneswar">
+              </div>
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-white/80">State *</label>
+                <input type="text" id="wiz-state" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. Odisha">
+              </div>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-white/80">Pincode *</label>
+              <input type="text" id="wiz-pincode" class="w-full bg-navy border border-border rounded-xl p-4 text-white focus:outline-none focus:border-gold transition-colors" placeholder="e.g. 751024">
+            </div>
           </div>
           
           <div class="space-y-4 relative">
@@ -569,13 +585,27 @@
           <h3 class="text-2xl font-black text-navy mb-2">Location & Payment</h3>
           <p class="text-gray mb-6 text-sm">Final step to get your shop online.</p>
           
-          <div class="space-y-6">
+          <div class="space-y-4">
             <div>
-              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Shop Address <span class="text-red-500">*</span></label>
-              <textarea id="wiz-address" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all h-20 resize-none" placeholder="Full shop address..." oninput="updateWizardProgress()"></textarea>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Street / Area / Landmark <span class="text-red-500">*</span></label>
+              <input type="text" id="wiz-street" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="Plot No, Street, Landmark..." oninput="updateWizardProgress()">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">City <span class="text-red-500">*</span></label>
+                <input type="text" id="wiz-city" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="Bhubaneswar" oninput="updateWizardProgress()">
+              </div>
+              <div>
+                <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">State <span class="text-red-500">*</span></label>
+                <input type="text" id="wiz-state" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="Odisha" oninput="updateWizardProgress()">
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">PIN Code <span class="text-red-500">*</span></label>
+              <input type="text" id="wiz-pincode" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="751024" oninput="updateWizardProgress()">
             </div>
             
-            <div>
+            <div class="pt-4 border-t border-border">
               <label class="block text-[11px] font-black uppercase tracking-widest text-navy mb-2">Payment UPI ID <span class="text-red-500">*</span></label>
               <input type="text" id="wiz-upi" class="w-full bg-bg border border-border rounded-xl px-4 py-3 text-navy font-medium outline-none focus:border-gold transition-all" placeholder="e.g. 9876543210@ybl" oninput="updateWizardProgress()">
             </div>

@@ -144,7 +144,8 @@ router.put('/profile', verifyToken, async (req, res) => {
       latitude,
       longitude,
       homeVisit,
-      upiId
+      upiId,
+      address
     } = req.body;
 
     // Update simple fields if provided
@@ -160,6 +161,20 @@ router.put('/profile', verifyToken, async (req, res) => {
     if (isOpen !== undefined) barber.isOpen = !!isOpen;
     if (homeVisit !== undefined) barber.homeVisit = !!homeVisit;
     if (upiId !== undefined) barber.upiId = upiId.trim();
+
+    // Handle structured address
+    if (address !== undefined && typeof address === 'object') {
+      barber.address = {
+        street: address.street ? address.street.trim() : '',
+        city: address.city ? address.city.trim() : '',
+        state: address.state ? address.state.trim() : '',
+        pincode: address.pincode ? address.pincode.trim() : ''
+      };
+      // Also update the generic 'area' field used for customer filtering
+      if (barber.address.city) {
+        barber.area = barber.address.city;
+      }
+    }
 
     // Handle location coordinates update safely
     if (latitude !== undefined && longitude !== undefined) {

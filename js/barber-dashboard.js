@@ -942,9 +942,9 @@
           services: b.services || [],
           shopName: b.shopName || '',
           upiId: b.upiId || '',
-          latitude: 20.2961,
-          longitude: 85.8245,
-          area: 'Bhubaneswar'
+          address: b.address || undefined,
+          latitude: b.location?.coordinates?.[1] || undefined,
+          longitude: b.location?.coordinates?.[0] || undefined
         });
 
         showToast("Profile Saved Successfully!", "success");
@@ -2400,14 +2400,34 @@
       reader.readAsDataURL(file);
     };
 
+    async function geocodeAddress(city, state, pincode) {
+      const query = `${city}, ${state} ${pincode}, India`;
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data && data.length > 0) {
+        return {
+          latitude: parseFloat(data[0].lat),
+          longitude: parseFloat(data[0].lon)
+        };
+      } else {
+        throw new Error("Could not find exact location for the provided city/pincode. Please check your spelling and try again.");
+      }
+    }
+
     window.finishWizard = async () => {
       const btn = document.getElementById('btn-finish-wizard');
       const err = document.getElementById('wiz-error');
       
-      const address = document.getElementById('wiz-address').value.trim();
+      const street = document.getElementById('wiz-street').value.trim();
+      const city = document.getElementById('wiz-city').value.trim();
+      const state = document.getElementById('wiz-state').value.trim();
+      const pincode = document.getElementById('wiz-pincode').value.trim();
       const upi = document.getElementById('wiz-upi').value.trim();
       
-      if(!address || !upi) {
+      if(!street || !city || !state || !pincode || !upi) {
          err.textContent = "Please fill in all required fields.";
          err.style.display = 'block';
          return;
@@ -2418,13 +2438,19 @@
       err.style.display = 'none';
 
       try {
+        const coords = await geocodeAddress(city, state, pincode);
+
         const updates = {
            shopName: document.getElementById('wiz-shopname').value.trim(),
            about: document.getElementById('wiz-bio').value.trim(),
-           shopAddress: address,
-           latitude: 20.2961, // Default Bhubaneswar location
-           longitude: 85.8245,
-           area: "Bhubaneswar", // Default area
+           address: {
+             street: street,
+             city: city,
+             state: state,
+             pincode: pincode
+           },
+           latitude: coords.latitude,
+           longitude: coords.longitude,
            upiId: upi,
            workingHours: {
               open: document.getElementById('wiz-time-open').value,

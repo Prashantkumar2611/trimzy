@@ -147,13 +147,19 @@
       // Update Location
       const homeTag = document.getElementById('hero-home-tag'); if (homeTag) homeTag.style.display = b.homeVisit ? 'inline-flex' : 'none';
       const locDetail = document.getElementById('hero-loc-detail');
-      if (locDetail) locDetail.textContent = b.area || b.address || 'Bhubaneswar';
+      
+      let displayAddress = b.area || 'Bhubaneswar';
+      if (b.address && b.address.street) {
+        displayAddress = `${b.address.street}, ${b.address.city || ''}`.replace(/,\s*$/, "");
+      }
+
+      if (locDetail) locDetail.textContent = displayAddress;
       const locAddr = document.getElementById('loc-addr'); 
-      if (locAddr) locAddr.textContent = b.address || b.area || 'Bhubaneswar';
+      if (locAddr) locAddr.textContent = displayAddress;
 
       const mapIframe = document.getElementById('gmap-iframe');
       if (mapIframe) {
-        const query = encodeURIComponent((b.shopName || b.name || '') + " " + (b.address || b.area || 'Bhubaneswar'));
+        const query = encodeURIComponent((b.shopName || b.name || '') + " " + displayAddress);
         mapIframe.src = `https://maps.google.com/maps?q=${query}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
       }
 
@@ -471,7 +477,11 @@
     // ── Exported helpers ──
     window.openMaps = () => {
       const b = BARBER || {};
-      const query = encodeURIComponent((b.shopName || b.name || 'Barber') + " " + (b.address || b.area || 'Bhubaneswar'));
+      let displayAddress = b.area || 'Bhubaneswar';
+      if (b.address && b.address.street) {
+        displayAddress = `${b.address.street}, ${b.address.city || ''}`.replace(/,\s*$/, "");
+      }
+      const query = encodeURIComponent((b.shopName || b.name || 'Barber') + " " + displayAddress);
       window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
     };
 

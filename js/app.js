@@ -233,7 +233,10 @@
         grid.innerHTML = list.map(b => {
           try {
             const bName = b.shopName || b.name || 'Professional Barber';
-            const bArea = b.area || 'Bhubaneswar';
+            let bArea = b.area || 'Bhubaneswar';
+            if (b.address && b.address.street) {
+                bArea = `${b.address.street}, ${b.address.city || ''}`.replace(/,\s*$/, "");
+            }
             const initials = bName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const profilePic = b.profilePic || '';
             const gradient = b.gradient || GRADIENTS[0];

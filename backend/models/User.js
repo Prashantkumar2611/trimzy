@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
   rating: { type: Number, default: 0 },
   reviewCount: { type: Number, default: 0 },
   isOpen: { type: Boolean, default: false },
+  address: {
+    street: { type: String },
+    city: { type: String },
+    state: { type: String },
+    pincode: { type: String }
+  },
   location: {
     type: { type: String, enum: ['Point'], default: 'Point' },
     coordinates: { type: [Number], default: [0, 0] } // [longitude, latitude]
