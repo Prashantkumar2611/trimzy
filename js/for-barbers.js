@@ -33,7 +33,7 @@
         document.getElementById('success-overlay').classList.add('show');
         form.reset();
       } catch (err) {
-        alert('Something went wrong. Please check your connection and try again.');
+        alert(err.message || 'Something went wrong. Please check your connection and try again.');
         console.error(err);
       } finally {
         btn.textContent = 'Submit Application →';
