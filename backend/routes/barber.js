@@ -62,7 +62,8 @@ router.get('/', async (req, res) => {
       })
       .limit(parsedLimit)
       .skip(skip)
-      .select('-__v'); // Exclude mongoose internal fields
+      .select('-__v')
+      .lean(); // Exclude mongoose internal fields
 
       const total = await User.countDocuments(filter);
 
@@ -81,7 +82,8 @@ router.get('/', async (req, res) => {
       .sort({ rating: -1, reviewCount: -1 }) // Sort by rating/reviews as fallback
       .limit(parsedLimit)
       .skip(skip)
-      .select('-__v');
+      .select('-__v')
+      .lean();
 
     const total = await User.countDocuments(filter);
 
@@ -107,7 +109,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-    const barber = await User.findOne({ _id: req.params.id, role: 'barber' }).select('-__v');
+    const barber = await User.findOne({ _id: req.params.id, role: 'barber' }).select('-__v').lean();
     if (!barber) {
       return res.status(404).json({ success: false, error: 'Barber profile not found' });
     }

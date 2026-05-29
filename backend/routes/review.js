@@ -140,7 +140,8 @@ router.get('/barber/:barberId', async (req, res) => {
       .populate('customerId', 'name initials profilePic')
       .sort({ createdAt: -1 })
       .limit(parsedLimit)
-      .skip(skip);
+      .skip(skip)
+      .lean();
 
     const total = await Review.countDocuments({ barberId: req.params.barberId });
 

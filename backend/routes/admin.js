@@ -170,7 +170,8 @@ router.get('/applications', verifyAdmin, async (req, res) => {
     const applications = await Application.find(filter)
       .sort({ appliedAt: -1 })
       .limit(parsedLimit)
-      .skip(skip);
+      .skip(skip)
+      .lean();
 
     const total = await Application.countDocuments(filter);
 
@@ -397,7 +398,8 @@ router.get('/users', verifyAdmin, async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parsedLimit)
       .skip(skip)
-      .select('-__v');
+      .select('-__v')
+      .lean();
 
     const total = await User.countDocuments(filter);
 
@@ -439,7 +441,8 @@ router.get('/bookings', verifyAdmin, async (req, res) => {
       .limit(parsedLimit)
       .skip(skip)
       .populate('customerId', 'name email')
-      .populate('barberId', 'name shopName email');
+      .populate('barberId', 'name shopName email')
+      .lean();
 
     const total = await Booking.countDocuments(filter);
 

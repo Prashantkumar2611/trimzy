@@ -183,7 +183,8 @@ router.get('/', verifyToken, async (req, res) => {
       .sort({ scheduledAt: -1 })
       .limit(parsedLimit)
       .skip(skip)
-      .select(projection);
+      .select(projection)
+      .lean();
 
     const total = await Booking.countDocuments(filter);
 
