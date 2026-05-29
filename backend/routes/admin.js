@@ -212,7 +212,7 @@ router.post('/applications/:id/approve', async (req, res) => {
       console.error('❌ Firebase User Creation failed:', fbError.code, fbError.message);
       
       // Senior Recovery: If the user already exists in Firebase Auth, see if we can find them or proceed
-      if (fbError.code === 'auth/email-already-in-use') {
+      if (fbError.code === 'auth/email-already-in-use' || fbError.code === 'auth/email-already-exists') {
         try {
           const existingFbUser = await admin.auth().getUserByEmail(barberEmail);
           firebaseUid = existingFbUser.uid;
