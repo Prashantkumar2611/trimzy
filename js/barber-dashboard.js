@@ -2246,12 +2246,23 @@
 
         const uid = user.uid;
 
-        // 1. Delete Firestore Document
-        await deleteDoc(doc(db, "barbers", uid));
+        // Call backend API to delete from MongoDB and Firebase Auth Admin
+        const token = await user.getIdToken(true);
+        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const response = await fetch(`${API_URL}/barbers/profile`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
 
-        // 2. Delete Auth User
-        // Note: This often requires a "recent login". If it fails, we catch the specific error.
-        await user.delete();
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Failed to delete account on server');
+        }
+
+        // Even though admin SDK deleted the auth user, sign out locally
+        await auth.signOut();
 
         showToast("Account deleted successfully.", "success");
         
@@ -2265,11 +2276,6 @@
 
       } catch (err) {
         console.error("Account deletion failed:", err);
-        
-        if (err.code === 'auth/requires-recent-login') {
-          alert("⚠️ SECURITY CHECK: For your protection, you must have logged in RECENTLY to delete your account.\n\nPlease Log Out, log back in immediately, and then try deleting again.");
-        } else {
-          showToast("Deletion failed. Please contact support.", "error");
-        }
+        showToast("Error: " + err.message, "error");
       }
     };
