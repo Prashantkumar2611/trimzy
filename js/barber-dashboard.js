@@ -2380,14 +2380,19 @@
     };
 
     // Placeholder for image upload in wizard
-    let wizAvatarFile = null;
+    let wizAvatarBase64 = null;
     window.handleWizAvatarUpload = (e) => {
       const file = e.target.files[0];
       if(!file) return;
-      wizAvatarFile = file;
       const reader = new FileReader();
-      reader.onload = (e) => {
-        document.getElementById('wiz-avatar-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+      reader.onload = async (e) => {
+        // Compress image using existing helper if possible or just use base64 directly
+        let base64 = e.target.result;
+        if(typeof compressImage === 'function') {
+           try { base64 = await compressImage(base64, 800, 0.8); } catch(e){}
+        }
+        wizAvatarBase64 = base64;
+        document.getElementById('wiz-avatar-preview').innerHTML = `<img src="${wizAvatarBase64}" class="w-full h-full object-cover">`;
       };
       reader.readAsDataURL(file);
     };
@@ -2410,25 +2415,9 @@
       err.style.display = 'none';
 
       try {
-        let picUrl = currentBarber.profilePic || '';
-        
-        // Very basic mock upload logic if they chose a picture (Real app would use Firebase Storage like in settings)
-        // To keep this simple and functional without rewriting the whole storage logic here:
-        if (wizAvatarFile) {
-           // We will just upload it using the standard updateBarberProfileBackend which handles nothing for files directly unless we write the storage logic.
-           // Let's use the existing upload logic from settings if we can, but since it's hard to extract quickly, 
-           // we'll leave the image upload to the actual My Shop tab or implement it properly. 
-           // For the wizard, we'll skip actual file upload for brevity unless critical, or we implement the Firebase Storage upload right here.
-           // Wait, we DO have Firebase Storage in this file. Let's use it!
-           
-           // We can't easily import ref, uploadBytes, getDownloadURL since they are modularly scoped.
-           // I'll skip actual file upload in the wizard for now to ensure it doesn't break, the barber can set it in 'My Shop'.
-           // Or I can just alert them.
-        }
-
         const updates = {
            shopName: document.getElementById('wiz-shopname').value.trim(),
-           bio: document.getElementById('wiz-bio').value.trim(),
+           about: document.getElementById('wiz-bio').value.trim(),
            shopAddress: address,
            upiId: upi,
            workingHours: {
@@ -2442,6 +2431,10 @@
               time: "30 mins" // default time required by backend
            }]
         };
+
+        if (wizAvatarBase64) {
+           updates.profilePic = wizAvatarBase64;
+        }
 
         await updateBarberProfileBackend(updates);
         
