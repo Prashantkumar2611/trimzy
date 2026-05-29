@@ -16,13 +16,7 @@
     "trailingSlash": false,
     "headers": [
       {
-        "source": "/barber-dashboard",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-        ]
-      },
-      {
-        "source": "/barber-dashboard.html",
+        "source": "**/*.@(html|js|css)",
         "headers": [
           { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
         ]
