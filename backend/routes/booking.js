@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
@@ -53,7 +54,6 @@ router.post('/', verifyToken, async (req, res) => {
     }
 
     // 4. Secure Server-Side Price Lookup
-    // Find the requested service in the barber's services array (case-insensitive search)
     const barberService = barber.services.find(
       s => s.name.toLowerCase() === serviceName.toLowerCase()
     );
@@ -65,37 +65,64 @@ router.post('/', verifyToken, async (req, res) => {
       });
     }
 
-    // Use the official, validated price from our DB
     const servicePrice = barberService.price;
-
-    // 5. Generate a Secure Verification PIN (4 digit number)
     const securePin = Math.floor(1000 + Math.random() * 9000).toString();
 
-    // 6. Create the Booking Document
-    const booking = new Booking({
-      customerId: customer._id,
-      barberId: barber._id,
-      serviceName: barberService.name, // Keep original service casing
-      price: servicePrice,
-      mode,
-      scheduledAt: bookingDate,
-      customerName: customer.name,
-      customerPhone: customerPhone || customer.phone || '',
-      notes: notes || '',
-      address: mode === 'home' ? address.trim() : '',
-      pin: securePin,
-      status: 'upcoming',
-      isReviewed: false,
-      barberName: barber.shopName || barber.name,
-      barberProfilePic: barber.profilePic || ''
-    });
+    let createdBooking;
+    
+    // 5. Start MongoDB Transaction to prevent double booking
+    const session = await mongoose.startSession();
+    try {
+      session.startTransaction();
 
-    await booking.save();
+      // Check if slot is already booked for this barber at this exact time
+      const existingBooking = await Booking.findOne({
+        barberId: barber._id,
+        scheduledAt: bookingDate,
+        status: { $in: ['upcoming'] } // Only 'upcoming' blocks the slot. 'completed'/'cancelled' don't.
+      }).session(session);
+
+      if (existingBooking) {
+        throw new Error('SLOT_TAKEN');
+      }
+
+      // 6. Create the Booking Document within the transaction
+      const booking = new Booking({
+        customerId: customer._id,
+        barberId: barber._id,
+        serviceName: barberService.name,
+        price: servicePrice,
+        mode,
+        scheduledAt: bookingDate,
+        customerName: customer.name,
+        customerPhone: customerPhone || customer.phone || '',
+        notes: notes || '',
+        address: mode === 'home' ? address.trim() : '',
+        pin: securePin,
+        status: 'upcoming',
+        isReviewed: false,
+        barberName: barber.shopName || barber.name,
+        barberProfilePic: barber.profilePic || ''
+      });
+
+      await booking.save({ session });
+      createdBooking = booking;
+
+      await session.commitTransaction();
+    } catch (txError) {
+      await session.abortTransaction();
+      if (txError.message === 'SLOT_TAKEN') {
+        return res.status(409).json({ success: false, error: 'This slot was just booked by someone else. Please select another time.' });
+      }
+      throw txError;
+    } finally {
+      session.endSession();
+    }
 
     return res.status(201).json({
       success: true,
       message: 'Booking created successfully!',
-      booking
+      booking: createdBooking
     });
 
   } catch (error) {
