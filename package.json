@@ -22,13 +22,7 @@
   },
   "homepage": "https://github.com/Prashantkumar2611/trimzy#readme",
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.4.2",
-    "@tailwindcss/forms": "^0.5.11",
-    "@tailwindcss/typography": "^0.5.19",
     "@vitejs/plugin-react": "^6.0.2",
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8.5.15",
-    "tailwindcss": "^4.3.0",
     "vite": "^8.0.14"
   },
   "dependencies": {
