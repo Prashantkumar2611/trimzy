@@ -42,57 +42,7 @@ window.AUTH = AUTH;
 // NAV — Auth-aware CTA injection
 // ══════════════════════════════════════════════
 window.injectAuthNav = function() {
-  const user = AUTH.user;
-  const navCta = document.querySelector('.nav-cta');
-  if (navCta) {
-    if (user) {
-      const randomId = Math.floor(Math.random() * 5) + 1;
-      const avatarSrc = user.profilePic || user.photoURL || `https://images.shadcnspace.com/assets/profiles/user-${randomId}.jpg`;
-      
-      navCta.innerHTML = `
-        <div class="nav-user" id="nav-user">
-          <div style="position:relative; width:fit-content; margin:0 auto;">
-            <div class="nav-user-avatar" id="nav-avatar-btn" title="${user.name}" style="overflow:hidden; border:none; padding:0; background:none;">
-              <img src="${avatarSrc}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
-            </div>
-            <span style="position:absolute; right:-2px; bottom:-2px; display:flex; width:16px; height:16px; align-items:center; justify-content:center; border-radius:50%; background:white; pointer-events:none;">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:100%;height:100%;"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>
-            </span>
-          </div>
-          <div class="nav-user-menu" id="nav-user-menu">
-            <div class="num-header">
-              <div class="num-name">${user.name}</div>
-              <div class="num-detail">${user.phone || user.email || ''}</div>
-            </div>
-            <div class="num-divider"></div>
-            <a class="num-item" href="/app?view=bookings">My Bookings</a>
-            <a class="num-item" href="/app">Book a Barber</a>
-            <div class="num-divider"></div>
-            <button class="num-item num-logout" onclick="AUTH.logout()">Log Out</button>
-          </div>
-        </div>
-      `;
-    } else {
-      navCta.innerHTML = `
-        <button class="btn-outline" onclick="openAuthModal()">Log In</button>
-      `;
-    }
-  }
-
-  const mobileMenuBtns = document.querySelector('.mobile-menu-btns');
-  if (mobileMenuBtns) {
-    if (user) {
-      mobileMenuBtns.innerHTML = `
-        <div style="text-align:center;padding:8px 0;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${user.name}</div>
-        <button class="btn-gold" onclick="location.href='/app'">Book a Barber</button>
-        <button class="btn-outline" onclick="AUTH.logout()">Log Out</button>
-      `;
-    } else {
-      mobileMenuBtns.innerHTML = `
-        <button class="btn-outline" onclick="openAuthModal()">Log In</button>
-      `;
-    }
-  }
+  // Disabled: React Navbar.jsx now handles the auth CTA injection securely.
 };
 
 // Start initial injection
@@ -134,23 +84,7 @@ document.addEventListener('click', (e) => {
 // ══════════════════════════════════════════════
 // HAMBURGER / MOBILE MENU
 // ══════════════════════════════════════════════
-(function () {
-  const ham = document.getElementById('hamburger');
-  const menu = document.getElementById('mobile-menu');
-  if (!ham || !menu) return;
-  ham.addEventListener('click', () => {
-    ham.classList.toggle('open');
-    menu.classList.toggle('open');
-    document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
-  });
-  menu.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', () => {
-      ham.classList.remove('open');
-      menu.classList.remove('open');
-      document.body.style.overflow = '';
-    });
-  });
-})();
+// HAMBURGER / MOBILE MENU (Handled by React Navbar.jsx)
 
 // ── NAV — Scroll effects & SlideTabs ──
 (function () {
@@ -175,41 +109,7 @@ document.addEventListener('click', (e) => {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // 2. SlideTabs Highlighter Logic
-  const navLinks = document.querySelector('.nav-links');
-  const highlighter = document.querySelector('.nav-highlighter');
-  if (!navLinks || !highlighter) return;
-
-  const links = navLinks.querySelectorAll('a');
-  const activeLink = navLinks.querySelector('a.active');
-
-  function moveHighlighter(el) {
-    if (!el) {
-      highlighter.style.opacity = '0';
-      return;
-    }
-    const rect = el.getBoundingClientRect();
-    const parentRect = navLinks.getBoundingClientRect();
-
-    highlighter.style.width = `${rect.width}px`;
-    highlighter.style.height = `${rect.height}px`;
-    highlighter.style.left = `${rect.left - parentRect.left}px`;
-    highlighter.style.top = `${rect.top - parentRect.top}px`;
-    highlighter.style.opacity = '1';
-  }
-
-  // Initial position
-  setTimeout(() => moveHighlighter(activeLink), 100);
-
-  links.forEach(link => {
-    link.addEventListener('mouseenter', () => moveHighlighter(link));
-  });
-
-  navLinks.addEventListener('mouseleave', () => {
-    moveHighlighter(activeLink);
-  });
-
-  window.addEventListener('resize', () => moveHighlighter(activeLink));
+// 2. SlideTabs Highlighter Logic (Handled by React Navbar.jsx)
 })();
 
 // ══════════════════════════════════════════════
