@@ -7,5 +7,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        reviews: resolve(__dirname, 'reviews.html'),
+        404: resolve(__dirname, '404.html')
+      }
+    }
   }
 });

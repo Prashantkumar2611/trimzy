@@ -33,19 +33,19 @@ const BarberLogin = () => {
       <div className="login-title">Barber Login ✂️</div>
       <div className="login-sub">Enter the email and password given to you by Trimzy after your approval.</div>
       <div className="auth-alert" id="auth-alert"></div>
-      <form onsubmit="doLogin(event)" novalidate>
+      <form onSubmit={(e) => window.doLogin(e)} noValidate>
         <div className="form-group">
           <label className="form-label">Email Address</label>
-          <input className="form-input" id="email" type="email" placeholder="your@email.com" autocomplete="email"/>
+          <input className="form-input" id="email" type="email" placeholder="your@email.com" autoComplete="email"/>
         </div>
         <div className="form-group">
           <label className="form-label">Password</label>
           <div className="input-wrap">
-            <input className="form-input" id="password" type="password" placeholder="Your password" autocomplete="current-password"/>
-            <button type="button" className="pw-toggle" onClick={(e) => { togglePw() }}>👁</button>
+            <input className="form-input" id="password" type="password" placeholder="Your password" autoComplete="current-password"/>
+            <button type="button" className="pw-toggle" onClick={(e) => { window.togglePw('password', e.currentTarget) }}>👁</button>
           </div>
         </div>
-        <span className="forgot-link"><a href="#" onClick={(e) => { showForgot();return false }}>Forgot password?</a></span>
+        <span className="forgot-link"><a href="#" onClick={(e) => { e.preventDefault(); window.showForgot(); }}>Forgot password?</a></span>
         <button type="submit" className="btn-login" id="login-btn">
           <span className="btn-text">Log In to Dashboard</span>
           <div className="btn-loader"></div>

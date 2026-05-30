@@ -7,7 +7,7 @@ const BarberProfile = () => {
 
   useEffect(() => {
     const loader = document.getElementById('global-loader');
-    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 600); }
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.style.display = 'none', 600); }
     import('../../js/shared.js').catch(err => console.error(err));
     import('../../js/barber-profile.js').catch(err => console.error(err));
   }, []);
@@ -43,31 +43,31 @@ const BarberProfile = () => {
     <span className="breadcrumb-sep">›</span>
     <Link to="/app">Browse Barbers</Link>
     <span className="breadcrumb-sep">›</span>
-    <span id="bc-barber-name">...</span>
+    <span id="bc-barber-name"></span>
   </div>
 
   {/*  HERO  */}
   <div className="bp-hero fade-up">
     <div className="bp-hero-banner" id="hero-banner">
-      <img id="hero-banner-img" className="bp-hero-banner-img" src="" alt="Background" />
+      <img id="hero-banner-img" className="bp-hero-banner-img" alt="Background" />
       <div className="bp-hero-banner-fade"></div>
       <div className="bp-hero-banner-glow"></div>
     </div>
     <div className="bp-hero-inner">
-      <div id="hero-avatar" className="bp-hero-avatar">...</div>
+      <div id="hero-avatar" className="bp-hero-avatar"></div>
       <div className="bp-hero-info">
-        <h1 id="hero-name" className="bp-hero-name">...</h1>
+        <h1 id="hero-name" className="bp-hero-name"></h1>
         <div id="hero-loc" className="bp-hero-loc">
-          <span>📍</span> <span id="hero-loc-detail">Loading location...</span>
+          <span>📍</span> <span id="hero-loc-detail"></span>
         </div>
       </div>
       <div className="bp-hero-stats">
         <div className="bp-hero-stat">
-          <div id="hero-rating" className="bp-stat-val bp-stat-rating">... ★</div>
+          <div id="hero-rating" className="bp-stat-val bp-stat-rating"></div>
           <div className="bp-stat-lbl">Rating</div>
         </div>
         <div className="bp-hero-stat">
-          <div id="hero-experience" className="bp-stat-val">...</div>
+          <div id="hero-experience" className="bp-stat-val"></div>
           <div className="bp-stat-lbl">Experience</div>
         </div>
       </div>
@@ -87,25 +87,7 @@ const BarberProfile = () => {
 
           Photos
         </div>
-        <div className="gallery" id="barber-gallery">
-          <div className="gallery-item" style={{gridColumn: 'span 2', gridRow: 'span 2'}}>
-            <div className="gallery-placeholder gp1" style={{height: '100%', fontSize: '48px'}}>✂</div>
-          </div>
-          <div className="gallery-item">
-            <div className="gallery-placeholder gp2" style={{fontSize: '32px'}}>💈</div>
-          </div>
-          <div className="gallery-item">
-            <div className="gallery-placeholder gp3" style={{fontSize: '32px'}}>🧔</div>
-          </div>
-          <div className="gallery-item" style={{position: 'relative'}}>
-            <div className="gallery-placeholder gp4" style={{fontSize: '32px'}}>👶</div>
-          </div>
-          <div className="gallery-item" style={{position: 'relative'}}>
-            <div className="gallery-placeholder" style={{fontSize: '32px', background: 'linear-gradient(135deg,#2D2D4E,#1A1A2E)'}}>
-              🪒</div>
-            <div className="gallery-more">+8 more</div>
-          </div>
-        </div>
+        <div className="gallery" id="barber-gallery"></div>
       </div>
 
       {/*  RATINGS & REVIEWS  */}
@@ -113,10 +95,10 @@ const BarberProfile = () => {
         <div className="bp-reviews-header">
           <div className="bp-reviews-title">Ratings & Reviews</div>
           <div className="bp-reviews-score">
-            <span id="review-avg" className="bp-reviews-avg">0</span>
+            <span id="review-avg" className="bp-reviews-avg"></span>
             <div className="bp-reviews-score-meta">
               <span className="bp-reviews-stars">★★★★★</span>
-              <span className="bp-reviews-count">(<span id="review-count">0</span> Reviews)</span>
+              <span className="bp-reviews-count">(<span id="review-count"></span> Reviews)</span>
             </div>
           </div>
         </div>
@@ -126,9 +108,7 @@ const BarberProfile = () => {
         </div>
 
         {/*  Reviews Container  */}
-        <div id="reviews-container" className="reviews-masonry">
-          <div className="bp-reviews-loading">Loading reviews...</div>
-        </div>
+        <div id="reviews-container" className="reviews-masonry"></div>
 
         {/*  See All Button  */}
         <div id="see-all-container" className="see-all-container">
@@ -160,11 +140,11 @@ const BarberProfile = () => {
         </div>
         <div className="bp-location-card">
           <div className="bp-map-container">
-            <iframe id="gmap-iframe" width="100%" height="100%" frameborder="0" style={{border: '0'}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Bhubaneswar&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+            <iframe id="gmap-iframe" width="100%" height="100%" frameBorder="0" style={{border: '0'}} allowFullScreen={true} loading="lazy" referrerPolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Bhubaneswar&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
           </div>
           <div className="bp-location-info">
-            <div className="bp-location-name" id="loc-name">The Barber's Hub</div>
-            <div className="bp-location-addr" id="loc-addr">Loading address...</div>
+            <div className="bp-location-name" id="loc-name"></div>
+            <div className="bp-location-addr" id="loc-addr"></div>
             <button className="bp-directions-btn" onClick={(e) => { openMaps() }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
               Get Directions
@@ -179,7 +159,7 @@ const BarberProfile = () => {
     <div className="sticky-book fade-up-2">
       <div className="book-card">
         <div className="bp-book-header">
-          <div className="bp-book-title" id="book-card-title">Book Appointment</div>
+          <div className="bp-book-title" id="book-card-title"></div>
         </div>
         <div className="book-card-body">
 
@@ -279,7 +259,7 @@ const BarberProfile = () => {
           <div id="step-payment" style={{display: 'none'}}>
 
             <div style={{fontFamily: "'Inter', sans-serif'", fontSize: '28px', fontWeight: '800', color: '#000', marginBottom: '20px', borderTop: '1px solid var(--border)', paddingTop: '20px'}}>
-              Total: <span id="pay-total-display">₹500</span>
+              Total: <span id="pay-total-display"></span>
             </div>
 
             <div className="payment-options">
@@ -337,7 +317,7 @@ const BarberProfile = () => {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           </div>
           <div>
-            <div className="bp-quick-stat-val" id="bp-hours-val">9:00 AM – 8:00 PM</div>
+            <div className="bp-quick-stat-val" id="bp-hours-val"></div>
             <div className="bp-quick-stat-lbl" id="bp-hours-lbl">Open Today</div>
           </div>
         </div>
@@ -349,8 +329,8 @@ const BarberProfile = () => {
   {/*  MOBILE BOTTOM FOOTER  */}
   <div className="mobile-book-footer">
     <div className="mf-info">
-      <div className="mf-label" id="footer-min-label">Starting from</div>
-      <div className="mf-amount" id="footer-min-amount">₹80</div>
+      <div className="mf-label" id="footer-min-label"></div>
+      <div className="mf-amount" id="footer-min-amount"></div>
     </div>
     <button className="mf-btn" onClick={(e) => { scrollToBook() }}>Book Slot →</button>
   </div>
@@ -380,7 +360,7 @@ const BarberProfile = () => {
       <button className="lightbox-nav lightbox-prev" onClick={(e) => { lightboxPrev() }}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <img id="lightbox-img" className="lightbox-img" src="" alt="Gallery Image" />
+      <img id="lightbox-img" className="lightbox-img" alt="Gallery Image" />
       <div id="lightbox-caption" className="lightbox-caption"></div>
       <button className="lightbox-nav lightbox-next" onClick={(e) => { lightboxNext() }}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>

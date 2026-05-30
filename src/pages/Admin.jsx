@@ -154,11 +154,7 @@ const Admin = () => {
                     Refresh
                   </button>
                 </div>
-                <div className="apps-grid">
-                  <div className="admin-loading">
-                    <div className="spin"></div>Loading applications...
-                  </div>
-                </div>
+                <div className="apps-grid" id="apps-grid"></div>
               </div>
             )}
 

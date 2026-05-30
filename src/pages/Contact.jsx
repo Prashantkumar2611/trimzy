@@ -31,7 +31,7 @@ const Contact = () => {
     setLoading(true);
 
     const DESTINATION_EMAIL = 'trimzy.co.in@gmail.com';
-    const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+    const API_URL = import.meta.env.VITE_API_URL;
 
     try {
       const response = await fetch(`${API_URL}/auth/contact`, {

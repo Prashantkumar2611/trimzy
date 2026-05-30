@@ -25,7 +25,7 @@ onAuthStateChanged(auth, user => {
 });
 
 // ── Tab param ──
-if (new URLSearchParams(location.search).get('tab') === 'signup') switchTab('signup');
+if (new URLSearchParams(location.search).get('tab') === 'signup') { setTimeout(() => window.switchTab('signup'), 100); }
 
 // ══ HELPERS ══
 window.switchTab = (tab) => {
@@ -87,7 +87,7 @@ window.checkPwStrength = (val) => {
 // ── Synchronize User Profile with backend ──
 async function syncUserProfile(user, additionalData = {}) {
   const token = await user.getIdToken(true);
-  const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/sync`, {
+  const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/sync`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -133,9 +133,10 @@ window.submitLogin = async (e) => {
     }));
     showAlert('Login successful! Redirecting...','success');
     setTimeout(()=>{
-      location.href = new URLSearchParams(location.search).get('redirect')||'app.html';
+      location.href = new URLSearchParams(location.search).get('redirect')||'/app';
     }, 800);
   } catch(err) {
+    console.error("Email Login Error Details:", err);
     setLoading('login-btn', false);
     const msgs = {
       'auth/user-not-found': 'No account found with this email. Please sign up.',
@@ -170,8 +171,9 @@ window.googleLogin = async () => {
       area: profile.area || '',
       initials:profile.initials
     }));
-    location.href = new URLSearchParams(location.search).get('redirect')||'app.html';
+    location.href = new URLSearchParams(location.search).get('redirect')||'/app';
   } catch(err) {
+    console.error("Google Sign-In Error Details:", err);
     const msgs = {
       'auth/popup-closed-by-user': 'Sign-in window was closed.',
       'auth/cancelled-popup-request': 'Sign-in cancelled.'
@@ -237,7 +239,7 @@ window.suFinish = async (e) => {
     }));
     showAlert('Account created! Welcome to Trimzy 🎉','success');
     setTimeout(()=>{
-      location.href = new URLSearchParams(location.search).get('redirect')||'app.html';
+      location.href = new URLSearchParams(location.search).get('redirect')||'/app';
     }, 900);
   } catch(err) {
     setLoading('su-btn-2', false);
@@ -344,7 +346,7 @@ window.verifyOTP = async (e) => {
     
     showAlert('Login successful! Redirecting...', 'success');
     setTimeout(()=>{
-      location.href = new URLSearchParams(location.search).get('redirect')||'app.html';
+      location.href = new URLSearchParams(location.search).get('redirect')||'/app';
     }, 800);
   } catch (error) {
     setLoading('otp-btn', false);

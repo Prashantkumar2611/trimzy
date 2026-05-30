@@ -20,9 +20,9 @@
          sessionStorage.setItem('trimzy_fresh_session', '1');
       }
       
-      if (!user) { location.href = 'barber-auth.html'; return; }
+      if (!user) { location.href = '/barber-auth'; return; }
       try {
-        console.log("DEBUG [Clean]: Loading session for UID:", user.uid);
+        void("DEBUG [Clean]: Loading session for UID:", user.uid);
 
         // Fetch profile from backend
         const token = await user.getIdToken(true);
@@ -56,7 +56,7 @@
                 <h1 style="color:#0B0B18; font-weight:900; font-size:24px; margin-bottom:12px; text-transform:uppercase; letter-spacing:-0.5px;">Restricted Access</h1>
                 <p style="color:#7B7B8E; font-size:14px; line-height:1.6; margin-bottom:32px; font-weight:500;">This portal is reserved for Trimzy Partner Barbers only. Your account (${user.email}) does not have barber permissions.</p>
                 <div style="display:flex; flex-direction:column; gap:12px;">
-                   <a href="index.html" style="background:#0B0B18; color:white; padding:16px; border-radius:16px; font-weight:800; text-decoration:none; font-size:14px; transition:all 0.2s;">Go to Customer App</a>
+                   <a href="/" style="background:#0B0B18; color:white; padding:16px; border-radius:16px; font-weight:800; text-decoration:none; font-size:14px; transition:all 0.2s;">Go to Customer App</a>
                    <button onclick="window.firebaseLogout()" style="background:#F6F5F2; color:#7B7B8E; padding:14px; border-radius:16px; font-weight:700; border:none; cursor:pointer; font-size:13px;">Log Out & Switch Account</button>
                 </div>
               </div>
@@ -86,7 +86,7 @@
     if (logoutSide) {
       logoutSide.addEventListener('click', async () => {
         await signOut(auth);
-        location.href = 'barber-auth.html';
+        location.href = '/barber-auth';
       });
     }
 
@@ -94,7 +94,7 @@
     window.previewShop = () => {
       const uid = auth.currentUser ? auth.currentUser.uid : (currentBarber ? currentBarber.id : null);
       if (uid) {
-        window.open(`barber-profile.html?id=${uid}&mode=preview`, '_blank');
+        window.open(`/barber-profile?id=${uid}&mode=preview`, '_blank');
       } else {
         showToast("Session not found. Please refresh.", "error");
       }
@@ -1156,7 +1156,7 @@
       initCharts();
       updateStats();
       updateStatusUI(currentBarber.isOpen);
-      console.log("[PERSISTENCE] UI Initialized with status:", currentBarber.isOpen);
+      void("[PERSISTENCE] UI Initialized with status:", currentBarber.isOpen);
     }
 
     function initDashboard() {
@@ -1168,9 +1168,12 @@
       if (nameSide) nameSide.textContent = b.shopName || b.name;
 
       // Populate Side PWA Card
-      document.getElementById('side-pwa-name').textContent = b.name || b.shopName || 'Barber';
-      document.getElementById('side-pwa-shop').textContent = b.shopName || 'No Shop Name';
-      document.getElementById('side-pwa-rating').textContent = b.rating || '4.9';
+      const pwaName = document.getElementById('side-pwa-name');
+      if (pwaName) pwaName.textContent = b.name || b.shopName || 'Barber';
+      const pwaShop = document.getElementById('side-pwa-shop');
+      if (pwaShop) pwaShop.textContent = b.shopName || 'No Shop Name';
+      const pwaRating = document.getElementById('side-pwa-rating');
+      if (pwaRating) pwaRating.textContent = b.rating || '4.9';
       const rElTop = document.getElementById('stat-avg-rating-new');
       if (rElTop) rElTop.textContent = b.rating || '4.9';
       const avatarSidePwa = document.getElementById('side-pwa-avatar');
@@ -1245,7 +1248,7 @@
           return;
         }
       }
-      console.log(`[PERSISTENCE] Saving with UID LOCKDOWN: ${newStatus ? 'OPEN' : 'CLOSED'} to path: barbers/${uid}`);
+      void(`[PERSISTENCE] Saving with UID LOCKDOWN: ${newStatus ? 'OPEN' : 'CLOSED'} to path: barbers/${uid}`);
 
       try {
         await updateBarberProfileBackend({ isOpen: newStatus });
@@ -1255,7 +1258,7 @@
         
         updateStatusUI(newStatus);
         showToast(`Shop is now ${newStatus ? 'OPEN' : 'CLOSED'}`, 'success');
-        console.log("[PERSISTENCE] Save Successful to UID:", uid);
+        void("[PERSISTENCE] Save Successful to UID:", uid);
       } catch (err) {
         console.error("[PERSISTENCE] Save Failed:", err);
         showToast('Status sync failed.', 'error');
@@ -1572,12 +1575,12 @@
         if (progBar && progFill) { progBar.style.display = 'block'; progFill.style.width = '20%'; }
 
         try {
-          console.log("DEBUG [V5.0]: Using High-Quality Base64 for profile...");
+          void("DEBUG [V5.0]: Using High-Quality Base64 for profile...");
           const base64 = await compressImage(file, 800, 0.8); // High quality
 
           if (progFill) progFill.style.width = '80%';
           const uid = auth.currentUser ? auth.currentUser.uid : currentBarber.id;
-          console.log(`[PERSISTENCE] Uploading Photo to ID: ${uid}`);
+          void(`[PERSISTENCE] Uploading Photo to ID: ${uid}`);
           await updateBarberProfileBackend({ profilePic: base64 });
 
           currentBarber.profilePic = base64;
@@ -1599,13 +1602,13 @@
         if (progBar && progFill) { progBar.style.display = 'block'; progFill.style.width = '20%'; }
 
         try {
-          console.log("DEBUG [V5.0]: Using High-Quality Base64 for gallery...");
+          void("DEBUG [V5.0]: Using High-Quality Base64 for gallery...");
           const base64 = await compressImage(file, 800, 0.8); // High quality
 
           if (progFill) progFill.style.width = '80%';
           const uid = auth.currentUser ? auth.currentUser.uid : currentBarber.id;
           const newPhotos = [...salonPhotos, base64];
-          console.log(`[PERSISTENCE] Uploading Salon Photo to ID: ${uid}`);
+          void(`[PERSISTENCE] Uploading Salon Photo to ID: ${uid}`);
           await updateBarberProfileBackend({ salonPhotos: newPhotos });
 
           salonPhotos = newPhotos;
@@ -2261,7 +2264,7 @@
          }
       }
 
-      console.log("Saving full profile for ID:", currentBarber.id);
+      void("Saving full profile for ID:", currentBarber.id);
       try {
         await updateBarberProfileBackend(data);
         showToast("Profile saved!", "success");
@@ -2320,7 +2323,7 @@
         localStorage.clear();
         
         setTimeout(() => {
-          location.href = 'index.html';
+          location.href = '/';
         }, 2000);
 
       } catch (err) {

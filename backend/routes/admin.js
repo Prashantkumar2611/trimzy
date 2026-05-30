@@ -72,6 +72,12 @@ const sendEmailViaBrevo = async (toEmail, toName, resetLink) => {
  */
 router.post('/login', authLimiter, (req, res) => {
   const { password } = req.body;
+  
+  if (process.env.NODE_ENV === 'production' && !process.env.ADMIN_PASSWORD) {
+    console.error('CRITICAL: ADMIN_PASSWORD is not set in production!');
+    return res.status(500).json({ success: false, error: 'Server misconfiguration. Admin access locked.' });
+  }
+
   const serverAdminPassword = process.env.ADMIN_PASSWORD || '@Myadminslot1';
   if (password === serverAdminPassword) {
     return res.json({ success: true, message: 'Admin authenticated' });

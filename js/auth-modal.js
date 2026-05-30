@@ -21,11 +21,11 @@ window.firebaseLogout = async () => {
     try {
         await signOut(auth);
         sessionStorage.removeItem('ss_user');
-        window.location.href = 'index.html';
+        window.location.href = '/';
     } catch (e) {
         console.error("Logout Error:", e);
         sessionStorage.removeItem('ss_user');
-        window.location.href = 'index.html';
+        window.location.href = '/';
     }
 };
 
@@ -251,7 +251,7 @@ const modalTemplate = `
 
 async function syncUserProfile(user, additionalData = {}) {
     const token = await user.getIdToken(true);
-    const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/sync`, {
+    const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/sync`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(additionalData)
@@ -262,7 +262,7 @@ async function syncUserProfile(user, additionalData = {}) {
 
 async function fetchUserProfile(user) {
     const token = await user.getIdToken(true);
-    const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+    const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!response.ok) throw new Error('Profile not found');

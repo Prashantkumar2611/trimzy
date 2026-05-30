@@ -1,6 +1,6 @@
     import { auth } from './firebase.js';
     import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    console.log('DEBUG: Custom Backend and Firebase Auth imported');
+    void('DEBUG: Custom Backend and Firebase Auth imported');
 
     // ══ GRADIENT POOL ══
     const GRADIENTS = [
@@ -30,19 +30,20 @@
         const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 
         const ug = document.getElementById('user-greeting'); if (ug) ug.textContent = `· Hi, ${name.split(' ')[0]}!`;
-        document.getElementById('pd-name').textContent = name;
-        document.getElementById('pd-email').textContent = email;
+        const pdn = document.getElementById('pd-name'); if (pdn) pdn.textContent = name;
+        const pde = document.getElementById('pd-email'); if (pde) pde.textContent = email;
 
-        if (stored.profilePic) {
-          profileBtn.innerHTML = `<img src="${stored.profilePic}" alt="Profile"/>`;
-        } else {
-          // Instead of initials, use a random Shadcn profile avatar
-          const randomId = Math.floor(Math.random() * 5) + 1;
-          const randomAvatar = `https://images.shadcnspace.com/assets/profiles/user-${randomId}.jpg`;
-          profileBtn.innerHTML = `<img src="${randomAvatar}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>`;
+        if (profileBtn) {
+          if (stored.profilePic) {
+            profileBtn.innerHTML = `<img src="${stored.profilePic}" alt="Profile"/>`;
+          } else {
+            const randomId = Math.floor(Math.random() * 5) + 1;
+            const randomAvatar = `https://images.shadcnspace.com/assets/profiles/user-${randomId}.jpg`;
+            profileBtn.innerHTML = `<img src="${randomAvatar}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;"/>`;
+          }
         }
-        profileCorner.className = 'profile-corner active';
-        loginCornerBtn.className = 'login-corner-btn';
+        if (profileCorner) profileCorner.className = 'profile-corner active';
+        if (loginCornerBtn) loginCornerBtn.className = 'login-corner-btn';
 
         // ── AUTO-VIEW ROUTER (Trigger after auth established) ──
         const urlParams = new URLSearchParams(window.location.search);
@@ -130,7 +131,7 @@
     };
 
     async function loadApprovedBarbers() {
-      console.log('DEBUG: loadApprovedBarbers started');
+      void('DEBUG: loadApprovedBarbers started');
       const grid = document.getElementById('barber-grid');
       if (grid) grid.innerHTML = `<div class="loading-state"><div class="spinner"></div><p>Searching for nearby barbers...</p></div>`;
 
@@ -208,7 +209,7 @@
       else if (sort === 'price-high') list.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
       else if (sort === 'distance') list.sort((a, b) => (a._dist || 999) - (b._dist || 999));
 
-      console.log(`DEBUG [Search]: Query "${q}" found ${list.length} results.`);
+      void(`DEBUG [Search]: Query "${q}" found ${list.length} results.`);
       renderBarbers(list);
     };
 
@@ -923,7 +924,7 @@
 
     // Non-blocking initialization
     (async () => {
-      console.log('DEBUG: App init starting...');
+      void('DEBUG: App init starting...');
       const grid = document.getElementById('barber-grid');
       if (grid) {
         grid.innerHTML = `
@@ -935,14 +936,14 @@
 
       // Load data in background
       loadApprovedBarbers().then(() => {
-        console.log('DEBUG: Barbers loaded successfully');
+        void('DEBUG: Barbers loaded successfully');
       }).catch(err => {
         console.error('DEBUG: Critical failure loading barbers:', err);
       });
 
       // Start other UI features immediately
       initLocationFlow();
-      console.log('DEBUG: App init sequence complete (loading in background)');
+      void('DEBUG: App init sequence complete (loading in background)');
     })();
     // ── Hamburger menu ──
     (function () {

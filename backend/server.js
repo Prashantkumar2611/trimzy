@@ -1,6 +1,19 @@
 require('dotenv').config();
 
 // Validate crucial environment variables on boot
+const requiredEnvVars = [
+  'MONGODB_URI',
+  'FIREBASE_PROJECT_ID',
+  'FIREBASE_PRIVATE_KEY'
+];
+
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error(`🔥 CRITICAL ERROR: Missing required environment variables: ${missingEnvVars.join(', ')}`);
+  process.exit(1);
+}
+
 if (process.env.NODE_ENV === 'production') {
   if (!process.env.ADMIN_PASSWORD) {
     console.error('🔥 CRITICAL PRODUCTION ERROR: ADMIN_PASSWORD is not defined in the environment!');
@@ -28,6 +41,8 @@ process.on('unhandledRejection', (reason, promise) => {
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
+const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,7 +52,29 @@ app.set('trust proxy', 1);
 
 // Middleware
 const { globalLimiter } = require('./middleware/rateLimiter');
-app.use(cors());
+// CORS Configuration (Production Security)
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (process.env.NODE_ENV !== 'production') {
+      // Allow all in development
+      return callback(null, true);
+    }
+    
+    // In production, restrict to FRONTEND_URL or allow requests with no origin (like Postman or mobile apps if needed)
+    // NOTE: You must set FRONTEND_URL in your Render environment variables (e.g., https://trimzy.vercel.app)
+    const allowedOrigins = [process.env.FRONTEND_URL];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`[CORS Blocked]: Request from unauthorized origin: ${origin}`);
+      callback(new Error('CORS Policy Violation: Not allowed by Access-Control-Allow-Origin'));
+    }
+  },
+  credentials: true
+};
+app.use(helmet());
+app.use(compression());
+app.use(cors(corsOptions));
 app.use(globalLimiter);
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ limit: '2mb', extended: true }));
@@ -45,7 +82,9 @@ app.use(express.urlencoded({ limit: '2mb', extended: true }));
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000
 })
 .then(() => console.log('✅ Connected to MongoDB'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
@@ -74,7 +113,33 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Global Error Handling Middleware
+app.use((err, req, res, next) => {
+  console.error('🔥 Global Error Caught:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    error: err.message || 'Internal Server Error'
+  });
+});
+
 // Start Server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// Graceful Shutdown Hook
+process.on('SIGTERM', () => {
+  console.log('🛑 SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('✅ HTTP server closed.');
+    // Check if mongoose connection is ready before trying to close it
+    if (mongoose.connection.readyState === 1) {
+      mongoose.connection.close(false).then(() => {
+        console.log('✅ MongoDB connection closed.');
+        process.exit(0);
+      });
+    } else {
+      process.exit(0);
+    }
+  });
 });

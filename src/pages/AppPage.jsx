@@ -8,7 +8,7 @@ const AppPage = () => {
 
   useEffect(() => {
     const loader = document.getElementById('global-loader');
-    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 600); }
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.style.display = 'none', 600); }
     // Dynamically import the app.js script so it runs after the component mounts
     import('../../js/app.js').then((module) => {
       setScriptReady(true);
@@ -41,7 +41,7 @@ const AppPage = () => {
       <div className="pm-search-container" style={{position: 'relative'}}>
         <div className="pm-input-row">
           <input className="pm-input" id="pincode-input" type="text" placeholder="e.g. Bhopal, 751001"
-            onInput={(e) => { safeCall('onPincodeInput') }} onKeyDown={(e) => { if(e.key==='Enter') safeCall('lookupPincode') }} autocomplete="off" />
+            onInput={(e) => { safeCall('onPincodeInput') }} onKeyDown={(e) => { if(e.key==='Enter') safeCall('lookupPincode') }} autoComplete="off" />
           <button className="pm-find-btn" id="pincode-find-btn" onClick={(e) => { safeCall('lookupPincode') }} disabled>Find</button>
         </div>
         <div className="pm-autocomplete" id="pm-autocomplete"></div>
@@ -86,16 +86,16 @@ const AppPage = () => {
       <div className="city-btn-wrap">
         <button className="city-btn" id="city-btn" onClick={(e) => { safeCall('openPincodeModal') }}>
           <div className="city-icon" id="loc-dot">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+              strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
               <circle cx="12" cy="10" r="3"></circle>
             </svg>
           </div>
           <span className="city-name" id="loc-label">Detecting...</span>
           <div className="city-chevron">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"
+              strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
@@ -109,7 +109,7 @@ const AppPage = () => {
               <span
                 style={{position: 'absolute', right: '-2px', bottom: '-2px', display: 'flex', width: '16px', height: '16px', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', background: 'white', pointerEvents: 'none'}}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3b82f6" stroke="white"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style={{width: '100%', height: '100%'}}>
+                  strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{width: '100%', height: '100%'}}>
                   <path
                     d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
                   <path d="m9 12 2 2 4-4" />
@@ -166,7 +166,7 @@ const AppPage = () => {
       <div className="app-search-row" id="search-bar">
         <div className="app-search-wrap">
           <input className="app-search" id="search-input" type="text" placeholder="Search barber or area..."
-            onInput={(e) => { safeCall('filterBarbers') }} autocomplete="off" />
+            onInput={(e) => { safeCall('filterBarbers') }} autoComplete="off" />
         </div>
         <select className="app-filter-select" id="sort-select" onChange={(e) => { safeCall('filterBarbers') }}>
           <option value="rating">Top Rated</option>

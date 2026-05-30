@@ -4,25 +4,19 @@ const router = express.Router();
 const Booking = require('../models/Booking');
 const User = require('../models/User');
 const { verifyToken } = require('../middleware/authMiddleware');
+const { validate } = require('../middleware/validationMiddleware');
+const { createBookingSchema } = require('../schemas/bookingSchemas');
 
 /**
  * @route   POST /api/bookings
  * @desc    Create a new booking (securely validates barber services, price, and generates a server-side PIN)
  * @access  Private (Firebase JWT)
  */
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, validate(createBookingSchema), async (req, res) => {
   try {
     const { barberId, serviceName, mode, scheduledAt, customerPhone, notes, address } = req.body;
 
-    // 1. Basic Inputs Validation
-    if (!barberId || !serviceName || !mode || !scheduledAt) {
-      return res.status(400).json({ success: false, error: 'Missing required booking fields' });
-    }
-
-    if (!['shop', 'home'].includes(mode)) {
-      return res.status(400).json({ success: false, error: 'Invalid mode. Must be shop or home' });
-    }
-
+    // 1. Business Logic Validation
     if (mode === 'home' && (!address || address.trim() === '')) {
       return res.status(400).json({ success: false, error: 'Address is required for home visits' });
     }

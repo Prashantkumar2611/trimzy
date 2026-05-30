@@ -18,7 +18,7 @@
         }
 
         const token = await user.getIdToken(true);
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -158,7 +158,7 @@
           about: about
         };
         
-        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/admin/applications`, {
+        const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/applications`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -199,7 +199,7 @@
         
         // Fetch profile from backend
         const token = await cred.user.getIdToken(true);
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/auth/profile`, {
+        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -214,7 +214,7 @@
           
           if (barber.role === 'barber' && (barber.status === 'approved' || isMaster)) {
             showAlert('Login successful! Redirecting to dashboard...', 'success');
-            setTimeout(() => location.href = 'barber-dashboard.html', 800);
+            setTimeout(() => location.href = '/barber-dashboard', 800);
           } else {
             showPending(barber);
             showAlert('Your application is still under review. We\'ll notify you soon!', 'info');
@@ -276,7 +276,7 @@
         setTimeout(() => {
           setLoading('reset-btn', false);
           // Go to login page without query params
-          window.location.href = 'barber-auth.html?tab=login';
+          window.location.href = '/barber-auth?tab=login';
         }, 2000);
       } catch (err) {
         setLoading('reset-btn', false);
@@ -305,7 +305,7 @@
       document.getElementById('pending-screen').classList.remove('show');
       document.getElementById('approved-screen').classList.add('show');
       // Auto redirect to dashboard after 2s
-      setTimeout(() => location.href = 'barber-dashboard.html', 2000);
+      setTimeout(() => location.href = '/barber-dashboard', 2000);
     }
 
     // ══ HELPERS ══

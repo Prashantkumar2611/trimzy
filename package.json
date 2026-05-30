@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && mkdir -p dist/js && cp config.js dist/ && cp js/auth-modal.js dist/js/ && cp js/firebase.js dist/js/ && cp js/auth.js dist/js/ && cp js/barber-auth.js dist/js/ && cp js/barber-login.js dist/js/",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

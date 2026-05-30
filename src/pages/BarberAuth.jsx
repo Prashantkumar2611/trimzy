@@ -7,8 +7,9 @@ const BarberAuth = () => {
 
   useEffect(() => {
     const loader = document.getElementById('global-loader');
-    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 600); }
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.style.display = 'none', 600); }
     import('../../js/barber-auth.js').catch(err => console.error(err));
+  import('../../js/barber-login.js').catch(err => console.error(err));
   }, []);
 
   return (
@@ -68,8 +69,8 @@ const BarberAuth = () => {
 
         {/*  TABS  */}
         <div className="auth-tabs" id="main-tabs">
-          <button className="auth-tab active" id="tab-signup" onClick={(e) => { switchTab('signup') }}>Create Account</button>
-          <button className="auth-tab" id="tab-login" onClick={(e) => { switchTab('login') }}>Log In</button>
+          <button className="auth-tab active" id="tab-signup" onClick={(e) => { window.switchTab('signup') }}>Create Account</button>
+          <button className="auth-tab" id="tab-login" onClick={(e) => { window.switchTab('login') }}>Log In</button>
         </div>
 
         {/*  ALERT  */}
@@ -87,7 +88,7 @@ const BarberAuth = () => {
           <div className="auth-step active" id="su-step-1">
             <div className="auth-title">Create your account</div>
             <div className="auth-subtitle">Step 1 of 3 — Basic details</div>
-            <form onsubmit="suStep1(event)" novalidate>
+            <form onSubmit={(e) => window.suStep1(e)} noValidate>
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Full Name *</label>
@@ -98,7 +99,7 @@ const BarberAuth = () => {
                   <label className="form-label">Phone *</label>
                   <div className="phone-wrap">
                     <div className="phone-prefix">🇮🇳 +91</div>
-                    <input className="form-input" id="su-phone" type="tel" placeholder="98765 43210" maxlength="10" />
+                    <input className="form-input" id="su-phone" type="tel" placeholder="98765 43210" maxLength={10} />
                   </div>
                   <div className="form-error" id="su-phone-err">Enter valid 10-digit number</div>
                 </div>
@@ -112,8 +113,8 @@ const BarberAuth = () => {
                 <label className="form-label">Create Password *</label>
                 <div className="input-wrap">
                   <input className="form-input" id="su-password" type="password" placeholder="At least 8 characters"
-                    onInput={(e) => { checkPwStrength(this.value) }} />
-                  <button type="button" className="pw-toggle" onClick={(e) => { togglePw('su-password',this) }}>👁</button>
+                    onInput={(e) => { window.checkPwStrength(e.target.value) }} />
+                  <button type="button" className="pw-toggle" onClick={(e) => { window.togglePw('su-password', e.currentTarget) }}>👁</button>
                 </div>
                 <div className="pw-strength">
                   <div className="pw-strength-bar">
@@ -128,7 +129,7 @@ const BarberAuth = () => {
                 <div className="btn-loader"></div>
               </button>
             </form>
-            <div className="auth-footer-text">Already have an account? <button onClick={(e) => { switchTab('login') }}>Log in</button>
+            <div className="auth-footer-text">Already have an account? <button onClick={(e) => { window.switchTab('login') }}>Log in</button>
             </div>
           </div>
 
@@ -136,7 +137,7 @@ const BarberAuth = () => {
           <div className="auth-step" id="su-step-2">
             <div className="auth-title">Your shop details</div>
             <div className="auth-subtitle">Step 2 of 3 — Tell us about your work</div>
-            <form onsubmit="suStep2(event)" novalidate>
+            <form onSubmit={(e) => window.suStep2(e)} noValidate>
               <div className="form-group">
                 <label className="form-label">Shop Name *</label>
                 <input className="form-input" id="su-shop" type="text" placeholder="Rajan's Cuts (or 'Home Visit Only')" />
@@ -193,7 +194,7 @@ const BarberAuth = () => {
                 </select>
               </div>
               <div style={{display: 'flex', gap: '10px'}}>
-                <button type="button" className="btn-secondary" style={{marginTop: '4px'}} onClick={(e) => { suGoTo(1) }}>← Back</button>
+                <button type="button" className="btn-secondary" style={{marginTop: '4px'}} onClick={(e) => { window.suGoTo(1) }}>← Back</button>
                 <button type="submit" className="btn-primary" id="su-btn-2">
                   <span className="btn-text">Continue →</span>
                   <div className="btn-loader"></div>
@@ -215,13 +216,13 @@ const BarberAuth = () => {
             </div>
             <div className="form-check">
               <input type="checkbox" id="su-terms" />
-              <label for="su-terms">I agree to Trimzy's <a href="#">Terms of Service</a> and <a href="#">Privacy
+              <label htmlFor="su-terms">I agree to Trimzy's <a href="#">Terms of Service</a> and <a href="#">Privacy
                   Policy</a></label>
             </div>
             <div className="form-error" id="su-terms-err">Please accept the terms to continue</div>
             <div style={{display: 'flex', gap: '10px'}}>
-              <button type="button" className="btn-secondary" style={{marginTop: '4px'}} onClick={(e) => { suGoTo(2) }}>← Back</button>
-              <button type="button" className="btn-primary" id="su-btn-3" onClick={(e) => { suFinish() }}>
+              <button type="button" className="btn-secondary" style={{marginTop: '4px'}} onClick={(e) => { window.suGoTo(2) }}>← Back</button>
+              <button type="button" className="btn-primary" id="su-btn-3" onClick={(e) => { window.suFinish() }}>
                 <span className="btn-text">Submit Application →</span>
                 <div className="btn-loader"></div>
               </button>
@@ -256,29 +257,29 @@ const BarberAuth = () => {
         <div id="login-section" style={{display: 'none'}}>
           <div className="auth-title">Welcome back</div>
           <div className="auth-subtitle">Log in to your barber dashboard</div>
-          <form onsubmit="doLogin(event)" novalidate>
+          <form onSubmit={(e) => window.doLogin(e)} noValidate>
             <div className="form-group">
               <label className="form-label">Email Address</label>
               <input className="form-input" id="login-email" type="email" placeholder="your@email.com"
-                autocomplete="email" />
+                autoComplete="email" />
               <div className="form-error" id="login-email-err">Enter a valid email</div>
             </div>
             <div className="form-group">
               <label className="form-label">Password</label>
               <div className="input-wrap">
                 <input className="form-input" id="login-password" type="password" placeholder="Your password"
-                  autocomplete="current-password" />
-                <button type="button" className="pw-toggle" onClick={(e) => { togglePw('login-password',this) }}>👁</button>
+                  autoComplete="current-password" />
+                <button type="button" className="pw-toggle" onClick={(e) => { window.togglePw('login-password', e.currentTarget) }}>👁</button>
               </div>
               <div className="form-error" id="login-pw-err">Enter your password</div>
             </div>
-            <span className="forgot-link"><a href="#" onClick={(e) => { showForgot();return false }}>Forgot password?</a></span>
+            <span className="forgot-link"><a href="#" onClick={(e) => { e.preventDefault(); window.showForgot(); }}>Forgot password?</a></span>
             <button type="submit" className="btn-primary" id="login-btn">
               <span className="btn-text">Log In to Dashboard</span>
               <div className="btn-loader"></div>
             </button>
           </form>
-          <div className="auth-footer-text">New barber? <button onClick={(e) => { switchTab('signup') }}>Create account →</button>
+          <div className="auth-footer-text">New barber? <button onClick={(e) => { window.switchTab('signup') }}>Create account →</button>
           </div>
           <div className="auth-footer-text" style={{marginTop: '8px'}}><Link to="/">← Back to main site</Link></div>
         </div>
@@ -287,7 +288,7 @@ const BarberAuth = () => {
         <div id="forgot-section" style={{display: 'none'}}>
           <div className="auth-title">Reset password</div>
           <div className="auth-subtitle">Enter your email and we'll send a reset link.</div>
-          <form onsubmit="submitForgot(event)" novalidate>
+          <form onSubmit={(e) => window.submitForgot(e)} noValidate>
             <div className="form-group">
               <label className="form-label">Email Address</label>
               <input className="form-input" id="forgot-email" type="email" placeholder="you@example.com" />
@@ -298,20 +299,20 @@ const BarberAuth = () => {
               <div className="btn-loader"></div>
             </button>
           </form>
-          <div className="auth-footer-text" style={{marginTop: '20px'}}><button onClick={(e) => { showLogin() }}>← Back to login</button></div>
+          <div className="auth-footer-text" style={{marginTop: '20px'}}><button onClick={(e) => { window.showLogin() }}>← Back to login</button></div>
         </div>
 
         {/*  ══ SET NEW PASSWORD (FROM EMAIL LINK) ══  */}
         <div id="reset-password-section" style={{display: 'none'}}>
           <div className="auth-title">Set New Password</div>
           <div className="auth-subtitle">Secure your Trimzy barber account</div>
-          <form onsubmit="submitNewPassword(event)" novalidate>
+          <form onSubmit={(e) => window.submitNewPassword(e)} noValidate>
             <div className="form-group">
               <label className="form-label">New Password</label>
               <div className="input-wrap">
                 <input className="form-input" id="reset-password" type="password" placeholder="At least 8 characters"
-                  onInput={(e) => { checkPwStrength(this.value) }} />
-                <button type="button" className="pw-toggle" onClick={(e) => { togglePw('reset-password',this) }}>👁</button>
+                  onInput={(e) => { window.checkPwStrength(e.target.value) }} />
+                <button type="button" className="pw-toggle" onClick={(e) => { window.togglePw('reset-password', e.currentTarget) }}>👁</button>
               </div>
               <div className="pw-strength">
                 <div className="pw-strength-bar">

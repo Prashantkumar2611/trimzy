@@ -71,10 +71,10 @@
       }
 
       const barberId = urlParams.get('id');
-      if (!barberId) { window.location.href = 'app.html'; return; }
+      if (!barberId) { window.location.href = '/app'; return; }
       
       try {
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/barbers/${barberId}`);
+        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/barbers/${barberId}`);
         if (!res.ok) throw new Error('Barber profile not found in backend');
         const data = await res.json();
 
@@ -124,7 +124,7 @@
                 <div style="font-size:48px;margin-bottom:16px;">✂️</div>
                 <h1 style="color:var(--gold);margin-bottom:8px;">Profile Not Found</h1>
                 <p style="color:var(--gray);margin-bottom:24px;">This barber profile does not exist or has been removed.</p>
-                <button onclick="window.location.href='app.html'" class="btn-gold" style="padding:12px 24px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Browse Barbers</button>
+                <button onclick="window.location.href='/app'" class="btn-gold" style="padding:12px 24px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">Browse Barbers</button>
               </div>
             </div>
           `;
@@ -138,9 +138,12 @@
     onAuthStateChanged(auth, user => {
       currentUser = user;
       if (user) {
-        document.getElementById('inp-name').value = user.displayName || '';
-        document.getElementById('inp-phone').value = user.phoneNumber || '';
-        document.getElementById('inp-email').value = user.email || '';
+        const inpName = document.getElementById('inp-name');
+        if (inpName) inpName.value = user.displayName || '';
+        const inpPhone = document.getElementById('inp-phone');
+        if (inpPhone) inpPhone.value = user.phoneNumber || '';
+        const inpEmail = document.getElementById('inp-email');
+        if (inpEmail) inpEmail.value = user.email || '';
       }
     });
 
@@ -252,7 +255,7 @@
       
       // Universal Photo Sync: Handle multiple possible field names
       const _photos = Array.isArray(b.salonPhotos) ? b.salonPhotos : (Array.isArray(b.photos) ? b.photos : (Array.isArray(b.gallery) ? b.gallery : []));
-      console.log(`[DEBUG] Photo detection: salonPhotos(${Array.isArray(b.salonPhotos) ? b.salonPhotos.length : 0}), photos(${Array.isArray(b.photos) ? b.photos.length : 0}), gallery(${Array.isArray(b.gallery) ? b.gallery.length : 0})`);
+      void(`[DEBUG] Photo detection: salonPhotos(${Array.isArray(b.salonPhotos) ? b.salonPhotos.length : 0}), photos(${Array.isArray(b.photos) ? b.photos.length : 0}), gallery(${Array.isArray(b.gallery) ? b.gallery.length : 0})`);
       buildGallery(_photos);
     }
 
@@ -303,7 +306,7 @@
       
       const photoArray = Array.isArray(photos) ? photos : [];
       currentGalleryPhotos = photoArray;
-      console.log(`[DEBUG] Rendering gallery with ${photoArray.length} photos.`);
+      void(`[DEBUG] Rendering gallery with ${photoArray.length} photos.`);
       
       if (photoArray.length === 0) return; // Keep demo if truly empty
 
@@ -383,7 +386,7 @@
 
       try {
         const token = await currentUser.getIdToken(true);
-        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+        const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/bookings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -422,15 +425,15 @@
     }
 
     async function loadRealReviews(barberId) {
-      console.log('[REVIEWS] Querying reviews for barberId from backend:', barberId);
+      void('[REVIEWS] Querying reviews for barberId from backend:', barberId);
 
       try {
-        const res = await fetch(`${window.TRIMZY_CONFIG.API_URL}/reviews/barber/${barberId}`);
+        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/reviews/barber/${barberId}`);
         if (!res.ok) throw new Error('Failed to load reviews from backend');
         const data = await res.json();
         const allReviews = data.reviews || [];
 
-        console.log('[REVIEWS] Total unique reviews found:', allReviews.length);
+        void('[REVIEWS] Total unique reviews found:', allReviews.length);
 
         const container = document.getElementById('reviews-container');
         const seeAllWrap = document.getElementById('see-all-container');
@@ -509,7 +512,7 @@
           if (seeAllWrap) seeAllWrap.style.display = 'block';
           if (seeAllBtn) {
             seeAllBtn.onclick = () => {
-              window.location.href = `reviews.html?id=${barberId}`;
+              window.location.href = `/reviews?id=${barberId}`;
             };
           }
         } else {

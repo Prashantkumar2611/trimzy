@@ -1,7 +1,7 @@
-typeof window.openAuthModal!=`function`&&(window.openAuthModal=function(){console.log(`Trimzy Auth: Loading modal...`);let e=setInterval(()=>{window.openAuthModal&&window.openAuthModal.isReal&&(clearInterval(e),window.openAuthModal())},100)});var e={get user(){try{return JSON.parse(sessionStorage.getItem(`ss_user`))}catch{return null}},set user(e){e?sessionStorage.setItem(`ss_user`,JSON.stringify(e)):sessionStorage.removeItem(`ss_user`)},logout(){typeof window.firebaseLogout==`function`?window.firebaseLogout():(sessionStorage.removeItem(`ss_user`),location.href=`index.html`)}};window.injectAuthNav=function(){let t=e.user,n=document.querySelector(`.nav-cta`);if(n)if(t){let e=Math.floor(Math.random()*5)+1,r=t.profilePic||t.photoURL||`https://images.shadcnspace.com/assets/profiles/user-${e}.jpg`;n.innerHTML=`
+import{t as e}from"./main-Dr_DvxRt.js";var t=e({});typeof window.openAuthModal!=`function`&&(window.openAuthModal=function(){console.log(`Trimzy Auth: Loading modal...`);let e=setInterval(()=>{window.openAuthModal&&window.openAuthModal.isReal&&(clearInterval(e),window.openAuthModal())},100)});var n={get user(){try{return JSON.parse(sessionStorage.getItem(`ss_user`))}catch{return null}},set user(e){e?sessionStorage.setItem(`ss_user`,JSON.stringify(e)):sessionStorage.removeItem(`ss_user`)},logout(){typeof window.firebaseLogout==`function`?window.firebaseLogout():(sessionStorage.removeItem(`ss_user`),location.href=`index.html`)}};window.injectAuthNav=function(){let e=n.user,t=document.querySelector(`.nav-cta`);if(t)if(e){let n=Math.floor(Math.random()*5)+1,r=e.profilePic||e.photoURL||`https://images.shadcnspace.com/assets/profiles/user-${n}.jpg`;t.innerHTML=`
         <div class="nav-user" id="nav-user">
           <div style="position:relative; width:fit-content; margin:0 auto;">
-            <div class="nav-user-avatar" id="nav-avatar-btn" title="${t.name}" style="overflow:hidden; border:none; padding:0; background:none;">
+            <div class="nav-user-avatar" id="nav-avatar-btn" title="${e.name}" style="overflow:hidden; border:none; padding:0; background:none;">
               <img src="${r}" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
             </div>
             <span style="position:absolute; right:-2px; bottom:-2px; display:flex; width:16px; height:16px; align-items:center; justify-content:center; border-radius:50%; background:white; pointer-events:none;">
@@ -10,8 +10,8 @@ typeof window.openAuthModal!=`function`&&(window.openAuthModal=function(){consol
           </div>
           <div class="nav-user-menu" id="nav-user-menu">
             <div class="num-header">
-              <div class="num-name">${t.name}</div>
-              <div class="num-detail">${t.phone||t.email||``}</div>
+              <div class="num-name">${e.name}</div>
+              <div class="num-detail">${e.phone||e.email||``}</div>
             </div>
             <div class="num-divider"></div>
             <a class="num-item" href="app.html?view=bookings">My Bookings</a>
@@ -20,10 +20,10 @@ typeof window.openAuthModal!=`function`&&(window.openAuthModal=function(){consol
             <button class="num-item num-logout" onclick="AUTH.logout()">Log Out</button>
           </div>
         </div>
-      `}else n.innerHTML=`
+      `}else t.innerHTML=`
         <button class="btn-outline" onclick="openAuthModal()">Log In</button>
-      `;let r=document.querySelector(`.mobile-menu-btns`);r&&(t?r.innerHTML=`
-        <div style="text-align:center;padding:8px 0;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${t.name}</div>
+      `;let r=document.querySelector(`.mobile-menu-btns`);r&&(e?r.innerHTML=`
+        <div style="text-align:center;padding:8px 0;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${e.name}</div>
         <button class="btn-gold" onclick="location.href='app.html'">Book a Barber</button>
         <button class="btn-outline" onclick="AUTH.logout()">Log Out</button>
       `:r.innerHTML=`
@@ -35,4 +35,4 @@ typeof window.openAuthModal!=`function`&&(window.openAuthModal=function(){consol
     transform: translate(-50%, -50%);
     transition: opacity .3s;
     opacity: 0;
-  `,document.body.appendChild(e);let t=0,n=0,r=0,i=0;document.addEventListener(`mousemove`,r=>{t=r.clientX,n=r.clientY,e.style.opacity=`1`}),document.addEventListener(`mouseleave`,()=>{e.style.opacity=`0`});function a(){r+=(t-r)*.1,i+=(n-i)*.1,e.style.left=r+`px`,e.style.top=i+`px`,requestAnimationFrame(a)}a()}),window.hideGlobalLoader=function(){let e=document.getElementById(`global-loader`);e&&(e.classList.add(`hidden`),setTimeout(()=>{e.parentNode&&e.parentNode.removeChild(e)},600))},window.addEventListener(`load`,()=>{setTimeout(window.hideGlobalLoader,150)});
+  `,document.body.appendChild(e);let t=0,n=0,r=0,i=0;document.addEventListener(`mousemove`,r=>{t=r.clientX,n=r.clientY,e.style.opacity=`1`}),document.addEventListener(`mouseleave`,()=>{e.style.opacity=`0`});function a(){r+=(t-r)*.1,i+=(n-i)*.1,e.style.left=r+`px`,e.style.top=i+`px`,requestAnimationFrame(a)}a()}),window.hideGlobalLoader=function(){let e=document.getElementById(`global-loader`);e&&(e.classList.add(`hidden`),setTimeout(()=>{e.parentNode&&e.parentNode.removeChild(e)},600))},window.addEventListener(`load`,()=>{setTimeout(window.hideGlobalLoader,150)});export{t};

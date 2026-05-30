@@ -29,7 +29,7 @@ onAuthStateChanged(auth, async user => {
     try {
       const userData = await fetchUserProfile(user);
       if (userData && userData.role === 'barber') {
-        location.href = 'barber-dashboard.html';
+        location.href = '/barber-dashboard';
       }
     } catch(e) {
       // Ignore if not found
@@ -72,7 +72,7 @@ window.doLogin = async (e) => {
     }
     
     showAlert('Login successful! Redirecting...', 'success');
-    setTimeout(() => location.href = 'barber-dashboard.html', 800);
+    setTimeout(() => location.href = '/barber-dashboard', 800);
   } catch(err) {
     console.error("Login failed:", err);
     setLoading(false);

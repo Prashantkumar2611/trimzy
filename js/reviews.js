@@ -6,12 +6,12 @@
       const barberId = urlParams.get('id');
 
       if (!barberId) {
-        window.location.href = 'index.html';
+        window.location.href = '/';
         return;
       }
 
       // Update back button
-      document.getElementById('back-profile').href = `barber-profile.html?id=${barberId}`;
+      document.getElementById('back-profile').href = `/barber-profile?id=${barberId}`;
 
       try {
         // 1. Collect ALL possible IDs for review lookup
@@ -21,7 +21,7 @@
         const uidParam = urlParams.get('uid');
         if (uidParam) {
           possibleIds.add(uidParam);
-          console.log('[REVIEWS] uid from URL param:', uidParam);
+          void('[REVIEWS] uid from URL param:', uidParam);
         }
 
         // 2. Try to fetch barber doc for the name + any extra uid
@@ -31,8 +31,8 @@
           if (bSnap.exists()) {
             const bData = bSnap.data();
             barberName = bData.shopName || bData.name || 'this shop';
-            console.log('[REVIEWS] Barber doc found. Fields:', Object.keys(bData).join(', '));
-            console.log('[REVIEWS] bData.uid =', bData.uid);
+            void('[REVIEWS] Barber doc found. Fields:', Object.keys(bData).join(', '));
+            void('[REVIEWS] bData.uid =', bData.uid);
             if (bData.uid) possibleIds.add(bData.uid);
           } else {
             console.warn('[REVIEWS] Barber doc NOT found for:', barberId);
@@ -44,7 +44,7 @@
 
         document.getElementById('barber-name-sub').innerText = `What people are saying about ${barberName}`;
 
-        console.log('[REVIEWS] Querying reviews for IDs:', [...possibleIds]);
+        void('[REVIEWS] Querying reviews for IDs:', [...possibleIds]);
 
         // 3. Fetch Reviews using ALL possible barber IDs
         const reviewMap = new Map();
@@ -52,7 +52,7 @@
           try {
             const q = query(collection(db, "reviews"), where("barberId", "==", id));
             const snap = await getDocs(q);
-            console.log(`[REVIEWS] ID "${id}" → ${snap.docs.length} results`);
+            void(`[REVIEWS] ID "${id}" → ${snap.docs.length} results`);
             snap.docs.forEach(d => {
               if (!reviewMap.has(d.id)) reviewMap.set(d.id, { id: d.id, ...d.data() });
             });
@@ -61,7 +61,7 @@
           }
         }
 
-        console.log('[REVIEWS] Total unique reviews:', reviewMap.size);
+        void('[REVIEWS] Total unique reviews:', reviewMap.size);
 
         const grid = document.getElementById('reviews-grid');
 
@@ -122,14 +122,14 @@
     }
 
     onAuthStateChanged(auth, (user) => {
-      console.log('[REVIEWS] Auth:', user ? user.email : 'anonymous');
+      void('[REVIEWS] Auth:', user ? user.email : 'anonymous');
       go();
     });
 
     // Fallback if auth never resolves
     setTimeout(() => {
       if (!started) {
-        console.log('[REVIEWS] Timeout — starting without auth');
+        void('[REVIEWS] Timeout — starting without auth');
         go();
       }
     }, 2000);

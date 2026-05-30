@@ -9,7 +9,7 @@ const BarberDashboard = () => {
     const loader = document.getElementById('global-loader');
     if (loader) {
       loader.classList.add('hidden');
-      setTimeout(() => loader.remove(), 600);
+      setTimeout(() => loader.style.display = 'none', 600);
     }
     import('../../js/barber-dashboard.js').catch(err => console.error(err));
   }, []);
@@ -436,7 +436,7 @@ const BarberDashboard = () => {
       <div className="w-full space-y-6">
         <input type="text" id="pin-input"
           className="w-full bg-bg border-2 border-border focus:border-gold rounded-2xl py-4 text-center text-2xl font-black tracking-[1em] text-navy outline-none transition-all placeholder:text-gray/20"
-          maxlength="4" placeholder="••••" autocomplete="off" pattern="[0-9]*" inputmode="numeric" />
+          maxLength="4" placeholder="••••" autoComplete="off" pattern="[0-9]*" inputMode="numeric" />
 
         <div id="pin-error" className="text-red-500 text-[10px] font-black uppercase tracking-widest min-h-[14px]"></div>
 

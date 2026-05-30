@@ -1,0 +1,18 @@
+import"./shared-BKSQ3Ylu.js";import"./shared-D5qLn0vg.js";import{a as e,c as t,i as n,n as r,o as i,r as a,s as o,t as s}from"./firebase-DgK922vf.js";import{onAuthStateChanged as c}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";async function l(){let s=new URLSearchParams(window.location.search),c=s.get(`id`);if(!c){window.location.href=`index.html`;return}document.getElementById(`back-profile`).href=`barber-profile.html?id=${c}`;try{let l=new Set([c]),u=s.get(`uid`);u&&(l.add(u),console.log(`[REVIEWS] uid from URL param:`,u));let d=`this shop`;try{let t=await e(n(a,`barbers`,c));if(t.exists()){let e=t.data();d=e.shopName||e.name||`this shop`,console.log(`[REVIEWS] Barber doc found. Fields:`,Object.keys(e).join(`, `)),console.log(`[REVIEWS] bData.uid =`,e.uid),e.uid&&l.add(e.uid)}else console.warn(`[REVIEWS] Barber doc NOT found for:`,c)}catch(e){console.warn(`[REVIEWS] Could not read barber doc (may need auth):`,e.message||e)}document.getElementById(`barber-name-sub`).innerText=`What people are saying about ${d}`,console.log(`[REVIEWS] Querying reviews for IDs:`,[...l]);let f=new Map;for(let e of l)try{let n=await i(o(r(a,`reviews`),t(`barberId`,`==`,e)));console.log(`[REVIEWS] ID "${e}" → ${n.docs.length} results`),n.docs.forEach(e=>{f.has(e.id)||f.set(e.id,{id:e.id,...e.data()})})}catch(t){console.error(`[REVIEWS] Query error for "${e}":`,t.message||t)}console.log(`[REVIEWS] Total unique reviews:`,f.size);let p=document.getElementById(`reviews-grid`);if(f.size===0){p.innerHTML=`
+            <div class="empty-state">
+              <p style="font-size: 24px; margin-bottom: 8px;">No reviews yet</p>
+              <p>Be the first to share your experience after your appointment!</p>
+              <p style="font-size: 11px; opacity: 0.5; margin-top: 20px;">(Searched: ${[...l].join(`, `)})</p>
+            </div>`;return}p.innerHTML=[...f.values()].sort((e,t)=>{let n=e.createdAt?.toMillis?e.createdAt.toMillis():e.createdAt?.seconds?e.createdAt.seconds*1e3:0;return(t.createdAt?.toMillis?t.createdAt.toMillis():t.createdAt?.seconds?t.createdAt.seconds*1e3:0)-n}).map(e=>{let t=e.customerName&&e.customerName!==`Customer`?e.customerName:`Verified Guest`,n=t.split(` `).map(e=>e[0]).join(``).toUpperCase().substring(0,2),r=`Recently`;return e.createdAt&&(r=(e.createdAt.toDate?e.createdAt.toDate():new Date(e.createdAt.seconds*1e3)).toLocaleDateString(`en-IN`,{day:`numeric`,month:`short`,year:`numeric`})),`
+            <div class="review-card">
+              <div class="rc-header">
+                <div class="rc-avatar">${n}</div>
+                <div class="rc-details">
+                  <div class="rc-name">${t}</div>
+                  <div class="rc-meta">Verified Customer</div>
+                  <div class="rc-stars">${`★`.repeat(Math.min(5,Math.max(1,e.rating||5)))}</div>
+                </div>
+              </div>
+              <div class="rc-text">${e.comment||`Outstanding service, highly recommended!`}</div>
+              <div class="rc-date">${r}</div>
+            </div>`}).join(``)}catch(e){console.error(`[REVIEWS] Fatal error:`,e),document.getElementById(`reviews-grid`).innerHTML=`<p class="loading-state">Failed to load reviews. Please try again later.</p>`}}var u=!1;function d(){u||(u=!0,l())}c(s,e=>{console.log(`[REVIEWS] Auth:`,e?e.email:`anonymous`),d()}),setTimeout(()=>{u||(console.log(`[REVIEWS] Timeout — starting without auth`),d())},2e3);

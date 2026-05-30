@@ -3,7 +3,7 @@
 // Global Placeholder for Auth Modal (Prevent race conditions)
 if (typeof window.openAuthModal !== 'function') {
   window.openAuthModal = function() {
-    console.log('Trimzy Auth: Loading modal...');
+    void('Trimzy Auth: Loading modal...');
     // The real function in auth-modal.js will overwrite this when loaded.
     // If user clicks before load, we can either wait or show a simple alert.
     const checkInterval = setInterval(() => {
@@ -32,10 +32,11 @@ const AUTH = {
       window.firebaseLogout();
     } else {
       sessionStorage.removeItem('ss_user');
-      location.href = 'index.html';
+      location.href = '/';
     }
   }
 };
+window.AUTH = AUTH;
 
 // ══════════════════════════════════════════════
 // NAV — Auth-aware CTA injection
@@ -64,8 +65,8 @@ window.injectAuthNav = function() {
               <div class="num-detail">${user.phone || user.email || ''}</div>
             </div>
             <div class="num-divider"></div>
-            <a class="num-item" href="app.html?view=bookings">My Bookings</a>
-            <a class="num-item" href="app.html">Book a Barber</a>
+            <a class="num-item" href="/app?view=bookings">My Bookings</a>
+            <a class="num-item" href="/app">Book a Barber</a>
             <div class="num-divider"></div>
             <button class="num-item num-logout" onclick="AUTH.logout()">Log Out</button>
           </div>
@@ -83,7 +84,7 @@ window.injectAuthNav = function() {
     if (user) {
       mobileMenuBtns.innerHTML = `
         <div style="text-align:center;padding:8px 0;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;color:var(--gold)">${user.name}</div>
-        <button class="btn-gold" onclick="location.href='app.html'">Book a Barber</button>
+        <button class="btn-gold" onclick="location.href='/app'">Book a Barber</button>
         <button class="btn-outline" onclick="AUTH.logout()">Log Out</button>
       `;
     } else {
@@ -354,8 +355,8 @@ window.hideGlobalLoader = function() {
     loader.classList.add('hidden');
     // Remove from DOM after transition
     setTimeout(() => {
-      if (loader.parentNode) {
-        loader.parentNode.removeChild(loader);
+      if (loader) {
+        loader.style.display = 'none';
       }
     }, 600);
   }

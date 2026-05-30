@@ -10,7 +10,7 @@ const ForBarbers = () => {
   useEffect(() => {
     // Hide global loader since window.load doesn't re-fire on SPA nav
     const loader = document.getElementById('global-loader');
-    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.remove(), 600); }
+    if (loader) { loader.classList.add('hidden'); setTimeout(() => loader.style.display = 'none', 600); }
     import('../../js/shared.js').catch(err => console.error(err));
     import('../../js/for-barbers.js').catch(err => console.error(err));
   }, []);
