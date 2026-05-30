@@ -24,4 +24,10 @@ const bookingSchema = new mongoose.Schema({
   barberProfilePic: { type: String }
 }, { timestamps: true });
 
+// Compound index for booking slot verification and active bookings retrieval
+bookingSchema.index({ barberId: 1, scheduledAt: 1, status: 1 });
+
+// Index for quick queries on customer booking history
+bookingSchema.index({ customerId: 1 });
+
 module.exports = mongoose.model('Booking', bookingSchema);

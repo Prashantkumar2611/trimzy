@@ -13,6 +13,25 @@
     let currentStep = 1;
     let selectedPayment = 'upi';
 
+    // ── Checkout Recovery State ──
+    const recoveryDataStr = sessionStorage.getItem('pending_booking_recovery');
+    let hasRecovery = false;
+    let recoveryData = null;
+    if (recoveryDataStr) {
+      try {
+        recoveryData = JSON.parse(recoveryDataStr);
+        if (recoveryData && recoveryData.selectedService) {
+          hasRecovery = true;
+          selectedService = recoveryData.selectedService;
+          selectedDate = recoveryData.selectedDate;
+          selectedSlot = recoveryData.selectedSlot;
+          mode = recoveryData.mode || 'shop';
+        }
+      } catch (e) {
+        console.error("Failed to parse booking recovery:", e);
+      }
+    }
+
     // ── Load barber ──
     async function loadBarber() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -65,6 +84,39 @@
           window.generateDates();
           window.renderSlots();
           loadRealReviews(BARBER.id);
+
+          // Restore checkout steps if recovery cache is active
+          if (hasRecovery && recoveryData) {
+            sessionStorage.removeItem('pending_booking_recovery');
+            
+            // Restore date button active status
+            setTimeout(() => {
+              const dateBtns = document.querySelectorAll('.date-btn');
+              dateBtns.forEach(btn => {
+                if (btn.dataset.date === selectedDate) {
+                  window.selectDate(btn);
+                }
+              });
+
+              // Restore time slot button active status
+              setTimeout(() => {
+                const slotBtns = document.querySelectorAll('.slot-btn');
+                slotBtns.forEach(btn => {
+                  if (btn.textContent.trim() === selectedSlot) {
+                    window.selectSlot(btn, selectedSlot);
+                  }
+                });
+
+                // Auto-transition to checkout details step (Step 3)
+                window.goToStep(3);
+                
+                // Show restored toast if toast system exists
+                if (typeof showToast === 'function') {
+                  showToast("Restored your booking selections!", "success");
+                }
+              }, 150);
+            }, 100);
+          }
         } else {
           document.body.innerHTML = `
             <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);color:white;font-family:sans-serif;text-align:center;padding:20px;">
@@ -540,6 +592,13 @@
       const user = auth.currentUser;
       if (!user) {
         if (typeof window.openAuthModal === 'function') {
+          // Save checkout variables in sessionStorage before launching auth modal
+          sessionStorage.setItem('pending_booking_recovery', JSON.stringify({
+            selectedService,
+            selectedDate,
+            selectedSlot,
+            mode
+          }));
           window.openAuthModal();
           showToast("Please login to continue booking", "info");
         } else {
@@ -604,6 +663,13 @@
       const user = auth.currentUser;
       if (!user) {
         if (typeof window.openAuthModal === 'function') {
+          // Save checkout variables in sessionStorage before launching auth modal
+          sessionStorage.setItem('pending_booking_recovery', JSON.stringify({
+            selectedService,
+            selectedDate,
+            selectedSlot,
+            mode
+          }));
           window.openAuthModal();
           showToast("Please login to book a barber", "info");
         } else {

@@ -16,23 +16,16 @@
       const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
 
       try {
-        const response = await fetch(`${API_URL}/auth/send-email`, {
+        const response = await fetch(`${API_URL}/auth/contact`, {
           method: "POST",
           headers: { 
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            toEmail: DESTINATION_EMAIL, 
-            toName: "Prasant Kumar",
-            subject: `New Trimzy Message: ${subject}`,
-            htmlContent: `
-              <h2>New message from Trimzy Website!</h2>
-              <p><strong>Name:</strong> ${name}</p>
-              <p><strong>Contact Info:</strong> ${contact}</p>
-              <p><strong>Subject:</strong> ${subject}</p>
-              <p><strong>Message:</strong></p>
-              <p style="padding:15px;background:#f4f4f4;border-left:4px solid #e8a44a;">${message}</p>
-            `
+            name,
+            contact,
+            subject,
+            message
           })
         });
 

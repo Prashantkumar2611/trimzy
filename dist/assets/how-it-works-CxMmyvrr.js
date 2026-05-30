@@ -1,0 +1,1 @@
+import{t as e}from"./index-diwo1yAY.js";var t=e((()=>{document.querySelectorAll(`.faq-q`).forEach(e=>{e.addEventListener(`click`,()=>{let t=e.parentElement,n=t.classList.contains(`open`);document.querySelectorAll(`.faq-item`).forEach(e=>e.classList.remove(`open`)),n||t.classList.add(`open`)})})}));export default t();

@@ -69,24 +69,86 @@ router.post('/', verifyToken, async (req, res) => {
     const securePin = Math.floor(1000 + Math.random() * 9000).toString();
 
     let createdBooking;
+    let transactionSupported = true;
     
-    // 5. Start MongoDB Transaction to prevent double booking
-    const session = await mongoose.startSession();
+    // 5. Manage DB Concurrency with robust Local Single-Node Fallback
+    let session;
     try {
-      session.startTransaction();
+      session = await mongoose.startSession();
+    } catch (err) {
+      console.warn('⚠️ MongoDB Transactions not supported in this environment (likely a local single-node instance). Falling back to non-transactional path.');
+      transactionSupported = false;
+    }
 
-      // Check if slot is already booked for this barber at this exact time
+    if (transactionSupported && session) {
+      try {
+        session.startTransaction();
+
+        // Check if slot is already booked for this barber at this exact time
+        const existingBooking = await Booking.findOne({
+          barberId: barber._id,
+          scheduledAt: bookingDate,
+          status: { $in: ['upcoming'] } // Only 'upcoming' blocks the slot. 'completed'/'cancelled' don't.
+        }).session(session);
+
+        if (existingBooking) {
+          throw new Error('SLOT_TAKEN');
+        }
+
+        // 6. Create the Booking Document within the transaction
+        const booking = new Booking({
+          customerId: customer._id,
+          barberId: barber._id,
+          serviceName: barberService.name,
+          price: servicePrice,
+          mode,
+          scheduledAt: bookingDate,
+          customerName: customer.name,
+          customerPhone: customerPhone || customer.phone || '',
+          notes: notes || '',
+          address: mode === 'home' ? address.trim() : '',
+          pin: securePin,
+          status: 'upcoming',
+          isReviewed: false,
+          barberName: barber.shopName || barber.name,
+          barberProfilePic: barber.profilePic || ''
+        });
+
+        await booking.save({ session });
+        createdBooking = booking;
+
+        await session.commitTransaction();
+      } catch (txError) {
+        await session.abortTransaction();
+        if (txError.message === 'SLOT_TAKEN') {
+          return res.status(409).json({ success: false, error: 'This slot was just booked by someone else. Please select another time.' });
+        }
+        
+        // Handle runtime exceptions where MongoDB starts session but fails transaction execution (e.g., mongod standalone)
+        if (txError.message.includes('replica set') || txError.message.includes('Transaction')) {
+          console.warn('⚠️ Transaction execution failed due to environment bounds. Retrying with local dev fallback.');
+          transactionSupported = false;
+        } else {
+          throw txError;
+        }
+      } finally {
+        session.endSession();
+      }
+    }
+
+    // 7. Non-transactional fallback path (executed if transactions are unsupported)
+    if (!transactionSupported) {
+      // Check if slot is already booked
       const existingBooking = await Booking.findOne({
         barberId: barber._id,
         scheduledAt: bookingDate,
-        status: { $in: ['upcoming'] } // Only 'upcoming' blocks the slot. 'completed'/'cancelled' don't.
-      }).session(session);
+        status: { $in: ['upcoming'] }
+      });
 
       if (existingBooking) {
-        throw new Error('SLOT_TAKEN');
+        return res.status(409).json({ success: false, error: 'This slot was just booked by someone else. Please select another time.' });
       }
 
-      // 6. Create the Booking Document within the transaction
       const booking = new Booking({
         customerId: customer._id,
         barberId: barber._id,
@@ -105,18 +167,8 @@ router.post('/', verifyToken, async (req, res) => {
         barberProfilePic: barber.profilePic || ''
       });
 
-      await booking.save({ session });
+      await booking.save();
       createdBooking = booking;
-
-      await session.commitTransaction();
-    } catch (txError) {
-      await session.abortTransaction();
-      if (txError.message === 'SLOT_TAKEN') {
-        return res.status(409).json({ success: false, error: 'This slot was just booked by someone else. Please select another time.' });
-      }
-      throw txError;
-    } finally {
-      session.endSession();
     }
 
     return res.status(201).json({

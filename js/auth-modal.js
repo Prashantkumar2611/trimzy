@@ -270,100 +270,6 @@ async function fetchUserProfile(user) {
     return data.user;
 }
 
-async function sendWelcomeEmail(email, name) {
-    if (!email) return;
-    const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
-
-    try {
-        await fetch(`${API_URL}/auth/send-email`, {
-            method: "POST",
-            headers: { 
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                toEmail: email, 
-                toName: name || "Customer",
-                subject: "Welcome to Trimzy! ✂️",
-                htmlContent: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1A1A2E; line-height: 1.6;">
-                        <h2 style="color: #1A1A2E; margin-bottom: 20px;">Dear ${name || "Customer"},</h2>
-                        <p style="font-size: 15px;">You've just joined something that's changing the way India gets its haircut.</p>
-                        <p style="font-size: 15px;">At Trimzy, we believe your time is too valuable to spend standing in a queue. So we built something better.</p>
-                        
-                        <h3 style="color: #E8A44A; margin-top: 30px; margin-bottom: 15px; font-size: 18px;">Here's what you now have access to:</h3>
-                        
-                        <ul style="list-style-type: none; padding: 0; margin: 0;">
-                            <li style="margin-bottom: 15px;">
-                                <strong style="font-size: 15px; color: #1A1A2E;">⏱️ Real Time Queue Tracking</strong><br>
-                                <span style="font-size: 14px; color: #555;">No more sitting and waiting. See exactly when your turn is up, from home.</span>
-                            </li>
-                            <li style="margin-bottom: 15px;">
-                                <strong style="font-size: 15px; color: #1A1A2E;">✂️ Top Barbers In Your Area</strong><br>
-                                <span style="font-size: 14px; color: #555;">We've handpicked the best professionals. View their ratings and past work.</span>
-                            </li>
-                            <li style="margin-bottom: 15px;">
-                                <strong style="font-size: 15px; color: #1A1A2E;">🏠 Home Appointments (Beta)</strong><br>
-                                <span style="font-size: 14px; color: #555;">Select barbers now offer premium home visits right to your doorstep.</span>
-                            </li>
-                        </ul>
-
-                        <div style="margin: 35px 0;">
-                            <a href="https://trimzy.co.in/app.html" style="background: #E8A44A; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Book Your First Appointment →</a>
-                        </div>
-
-                        <p style="margin-top: 30px; color: #555; font-size: 14px;">
-                            We're excited to have you with us.<br>
-                            <strong style="color: #1A1A2E;">Prasant Kumar</strong><br>
-                            Founder, Trimzy
-                        </p>
-                    </div>
-                `
-            })
-        });
-        console.log("Welcome email sent to " + email);
-    } catch (e) {
-        console.error("Failed to send welcome email:", e);
-    }
-}
-
-async function sendWelcomeBackEmail(email, name) {
-    if (!email) return;
-    const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
-
-    try {
-        await fetch(`${API_URL}/auth/send-email`, {
-            method: "POST",
-            headers: { 
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                toEmail: email, 
-                toName: name || "Customer",
-                subject: "Welcome Back to Trimzy! ✂️",
-                htmlContent: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1A1A2E; line-height: 1.6;">
-                        <h2 style="color: #1A1A2E; margin-bottom: 20px;">Welcome back, ${name || "Customer"}!</h2>
-                        <p style="font-size: 15px;">We noticed you just logged into your Trimzy account.</p>
-                        <p style="font-size: 15px;">Ready for your next fresh cut? Your favorite barbers are just a few clicks away. Skip the queue and book a premium slot directly from the app.</p>
-                        
-                        <div style="margin: 35px 0;">
-                            <a href="https://trimzy.co.in/app.html" style="background: #E8A44A; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Book Your Next Appointment →</a>
-                        </div>
-
-                        <p style="margin-top: 30px; color: #555; font-size: 14px;">
-                            Warm regards,<br>
-                            <strong style="color: #1A1A2E;">Team Trimzy</strong>
-                        </p>
-                    </div>
-                `
-            })
-        });
-        console.log("Welcome back email sent to " + email);
-    } catch (e) {
-        console.error("Failed to send welcome back email:", e);
-    }
-}
-
 async function googleLogin() {
     try {
         const provider = new GoogleAuthProvider();
@@ -380,13 +286,6 @@ async function googleLogin() {
 
         const syncResult = await syncUserProfile(user, profileData);
         const profile = syncResult.user;
-        const isNewUser = syncResult.isNew;
-        
-        if (isNewUser && user.email) {
-            await sendWelcomeEmail(user.email, profile.name);
-        } else if (!isNewUser && user.email) {
-            await sendWelcomeBackEmail(user.email, profile.name);
-        }
 
         sessionStorage.setItem('ss_user', JSON.stringify({ 
             uid: user.uid,
@@ -529,10 +428,6 @@ async function submitSignupFinish() {
             role: 'customer'
         });
         const profile = syncRes.user;
-        
-        if (signupData.email) {
-            await sendWelcomeEmail(signupData.email, signupData.name);
-        }
         
         sessionStorage.setItem('ss_user', JSON.stringify({
             uid: cred.user.uid,

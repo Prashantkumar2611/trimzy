@@ -42,4 +42,10 @@ const userSchema = new mongoose.Schema({
 // Index for geospatial queries
 userSchema.index({ location: '2dsphere' });
 
+// Unique search index on email lookup
+userSchema.index({ email: 1 });
+
+// Compound index for approved barber searches and directory listings
+userSchema.index({ role: 1, status: 1 });
+
 module.exports = mongoose.model('User', userSchema);

@@ -34,14 +34,14 @@ const verifyToken = async (req, res, next) => {
 };
 
 const verifyAdmin = async (req, res, next) => {
-  // 1. Support direct administrative password authentication for simple dashboard UI clients
+  // 1. Support direct administrative password authentication if strictly configured
   const adminPassword = req.headers['x-admin-password'];
-  const serverAdminPassword = process.env.ADMIN_PASSWORD || '@Myadminslot1';
-  if (adminPassword && adminPassword === serverAdminPassword) {
+  const serverAdminPassword = process.env.ADMIN_PASSWORD;
+  if (serverAdminPassword && adminPassword && adminPassword === serverAdminPassword) {
     return next();
   }
 
-  // 2. Fallback to Firebase JWT verification
+  // 2. Enforce secure Firebase JWT verification with database role checks
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Unauthorized: Admin authorization required' });
@@ -49,16 +49,15 @@ const verifyAdmin = async (req, res, next) => {
 
   await verifyToken(req, res, async () => {
     try {
-      const email = req.user.email;
       const uid = req.user.uid;
+      const isEmailVerified = req.user.email_verified;
 
-      // Check if email is in the master admin list
-      const masterAdmins = ['aalimhakim@gmail.com', 'singhkrsanjay0911@gmail.com'];
-      if (email && masterAdmins.includes(email.toLowerCase())) {
-        return next();
+      // Restrict access to verified email accounts only
+      if (!isEmailVerified) {
+        return res.status(403).json({ error: 'Forbidden: Admin email must be verified' });
       }
 
-      // Check user role in MongoDB database
+      // Check user role strictly in MongoDB database
       const dbUser = await User.findOne({ firebaseUid: uid });
       if (dbUser && dbUser.role === 'admin') {
         return next();
