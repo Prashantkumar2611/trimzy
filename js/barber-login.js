@@ -2,7 +2,7 @@ import { auth } from './firebase.js';
 import { signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 async function syncUserProfile(user, additionalData = {}) {
   const token = await user.getIdToken(true);
-  const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+  const API_URL = import.meta.env.VITE_API_URL;
   const response = await fetch(`${API_URL}/auth/sync`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -14,7 +14,7 @@ async function syncUserProfile(user, additionalData = {}) {
 
 async function fetchUserProfile(user) {
   const token = await user.getIdToken(true);
-  const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+  const API_URL = import.meta.env.VITE_API_URL;
   const response = await fetch(`${API_URL}/auth/profile`, {
       headers: { 'Authorization': `Bearer ${token}` }
   });

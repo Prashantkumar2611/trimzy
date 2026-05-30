@@ -18,7 +18,7 @@
         }
 
         const token = await user.getIdToken(true);
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/profile`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -158,7 +158,7 @@
           about: about
         };
         
-        const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/applications`, {
+        const response = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/applications`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -199,7 +199,7 @@
         
         // Fetch profile from backend
         const token = await cred.user.getIdToken(true);
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/profile`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

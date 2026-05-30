@@ -74,7 +74,7 @@
       if (!barberId) { window.location.href = '/app'; return; }
       
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/barbers/${barberId}`);
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/barbers/${barberId}`);
         if (!res.ok) throw new Error('Barber profile not found in backend');
         const data = await res.json();
 
@@ -386,7 +386,7 @@
 
       try {
         const token = await currentUser.getIdToken(true);
-        const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/bookings`, {
+        const response = await fetch(`${(import.meta.env.VITE_API_URL)}/bookings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -428,7 +428,7 @@
       void('[REVIEWS] Querying reviews for barberId from backend:', barberId);
 
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/reviews/barber/${barberId}`);
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/reviews/barber/${barberId}`);
         if (!res.ok) throw new Error('Failed to load reviews from backend');
         const data = await res.json();
         const allReviews = data.reviews || [];

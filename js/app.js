@@ -137,7 +137,7 @@
 
       try {
         // Construct backend query URL (incorporates geospatial lat/lng and home visit filter if active)
-        let url = `${window.TRIMZY_CONFIG.API_URL}/barbers?limit=50`;
+        let url = `${import.meta.env.VITE_API_URL}/barbers?limit=50`;
         if (userLat !== null && userLng !== null) {
           url += `&lat=${userLat}&lng=${userLng}`;
         }
@@ -332,7 +332,7 @@
         if (!currentUser) throw new Error('User session not logged in.');
 
         const token = await currentUser.getIdToken(true);
-        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/bookings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -393,7 +393,7 @@
       body.innerHTML = '<div class="bookings-loading">Loading your history...</div>';
       try {
         const token = await currentUser.getIdToken(true);
-        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/bookings`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -568,7 +568,7 @@
       try {
         // Backend handles atomic reviews, ratings recalculations and updating booking status atomically!
         const token = await currentUser.getIdToken(true);
-        const response = await fetch(`${window.TRIMZY_CONFIG.API_URL}/reviews`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/reviews`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

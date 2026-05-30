@@ -7,7 +7,7 @@ import { auth } from './firebase.js';
     window.checkAdminPw = async () => {
       const val = document.getElementById('admin-pw-input').value;
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/login`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password: val })
@@ -45,7 +45,7 @@ import { auth } from './firebase.js';
 
     window.loadApplications = async function () {
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/applications`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/applications`, {
           headers: {
             'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
@@ -64,7 +64,7 @@ import { auth } from './firebase.js';
 
     window.loadBookings = async function () {
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/bookings`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/bookings`, {
           headers: {
             'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
@@ -82,7 +82,7 @@ import { auth } from './firebase.js';
 
     window.loadUsers = async function () {
       try {
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/users`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/users`, {
           headers: {
             'X-Admin-Password': sessionStorage.getItem('ss_admin')
           }
@@ -129,7 +129,7 @@ import { auth } from './firebase.js';
 
       try {
         // Backend handles Firebase Auth user creation, barber profile syncing, and Brevo SMTP email dispatch natively!
-        const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/applications/${selectedApp.id}/approve`, {
+        const response = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/applications/${selectedApp.id}/approve`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ import { auth } from './firebase.js';
 
       try {
         // Backend handles Application status rejection, cascading booking purges, Mongoose profile deletes and Auth purges natively!
-        const res = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/admin/applications/${id}/reject`, {
+        const res = await fetch(`${(import.meta.env.VITE_API_URL)}/admin/applications/${id}/reject`, {
           method: 'POST',
           headers: {
             'X-Admin-Password': sessionStorage.getItem('ss_admin')

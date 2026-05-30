@@ -87,7 +87,7 @@ window.checkPwStrength = (val) => {
 // ── Synchronize User Profile with backend ──
 async function syncUserProfile(user, additionalData = {}) {
   const token = await user.getIdToken(true);
-  const response = await fetch(`${(window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api')}/auth/sync`, {
+  const response = await fetch(`${(import.meta.env.VITE_API_URL)}/auth/sync`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

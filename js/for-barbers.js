@@ -10,7 +10,7 @@
       const inputs = form.querySelectorAll('input, select, textarea');
 
       try {
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const payload = {
           name: inputs[0].value.trim(),
           phone: inputs[1].value.trim(),

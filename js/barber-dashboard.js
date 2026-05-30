@@ -26,7 +26,7 @@
 
         // Fetch profile from backend
         const token = await user.getIdToken(true);
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const res = await fetch(`${API_URL}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -898,7 +898,7 @@
     async function updateBarberProfileBackend(profileData) {
       if (!auth.currentUser) throw new Error('User not logged in');
       const token = await auth.currentUser.getIdToken(true);
-      const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+      const API_URL = import.meta.env.VITE_API_URL;
       const response = await fetch(`${API_URL}/barbers/profile`, {
         method: 'PUT',
         headers: {
@@ -1319,7 +1319,7 @@
     async function fetchReviewsData() {
       if (!currentBarber || !currentBarber.id) return;
       try {
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const res = await fetch(`${API_URL}/reviews/barber/${currentBarber.id}`);
         if (!res.ok) throw new Error('Failed to fetch reviews');
         const data = await res.json();
@@ -1673,7 +1673,7 @@
       if (!auth.currentUser) return;
       try {
         const token = await auth.currentUser.getIdToken(true);
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const res = await fetch(`${API_URL}/bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -2182,7 +2182,7 @@
 
       try {
         const token = await auth.currentUser.getIdToken(true);
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const res = await fetch(`${API_URL}/bookings/${activeBookingId}/verify-pin`, {
           method: 'POST',
           headers: {
@@ -2215,7 +2215,7 @@
       if (confirm(`Finish session for ${b.customerName}?`)) {
         try {
           const token = await auth.currentUser.getIdToken(true);
-          const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+          const API_URL = import.meta.env.VITE_API_URL;
           const res = await fetch(`${API_URL}/bookings/${id}/status`, {
             method: 'PUT',
             headers: {
@@ -2300,7 +2300,7 @@
 
         // Call backend API to delete from MongoDB and Firebase Auth Admin
         const token = await user.getIdToken(true);
-        const API_URL = window.TRIMZY_CONFIG?.API_URL || 'https://trimzy-backend.onrender.com/api';
+        const API_URL = import.meta.env.VITE_API_URL;
         const response = await fetch(`${API_URL}/barbers/profile`, {
           method: 'DELETE',
           headers: {
