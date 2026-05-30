@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -6,15 +6,6 @@ import Footer from '../components/Footer';
 import '../../css/about.css';
 
 const About = () => {
-  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('message') === 'sent') {
-      setShowSuccessOverlay(true);
-    }
-  }, []);
-
   return (
     <>
       <Navbar />
@@ -263,25 +254,6 @@ const About = () => {
       </section>
 
       <Footer />
-
-      {/* SUCCESS OVERLAY */}
-      {showSuccessOverlay && (
-        <div className="success-overlay show" id="success-overlay">
-          <div className="success-box">
-            <div className="success-icon-big">📩</div>
-            <div className="success-title">Message Sent!</div>
-            <div className="success-desc">
-              Thanks for reaching out! We'll get back to you within 24 hours. You're awesome!
-            </div>
-            <button 
-              className="success-btn"
-              onClick={() => setShowSuccessOverlay(false)}
-            >
-              Done
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 };
