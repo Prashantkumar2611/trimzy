@@ -303,7 +303,7 @@ router.post('/applications/:id/approve', verifyAdmin, async (req, res) => {
       // Parse the oobCode to create a custom URL
       const urlObj = new URL(fbResetLink);
       const oobCode = urlObj.searchParams.get('oobCode');
-      const resetLink = `https://trimzy.co.in/barber-auth.html?mode=resetPassword&oobCode=${oobCode}`;
+      const resetLink = `https://trimzy.co.in/barber-auth?mode=resetPassword&oobCode=${oobCode}`;
       
       // Runs asynchronously so we don't block the request if SMTP provider is slow
       sendEmailViaBrevo(barberEmail, appDoc.name, resetLink);

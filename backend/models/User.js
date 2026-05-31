@@ -19,8 +19,10 @@ const userSchema = new mongoose.Schema({
   shopName: { type: String },
   about: { type: String },
   profilePic: { type: String },
+  coverImage: { type: String },
   salonPhotos: [{ type: String }],
   services: [serviceSchema],
+  experience: { type: String },
   rating: { type: Number, default: 0 },
   reviewCount: { type: Number, default: 0 },
   isOpen: { type: Boolean, default: false },
@@ -36,7 +38,15 @@ const userSchema = new mongoose.Schema({
   },
   homeVisit: { type: Boolean, default: false },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'approved' },
-  upiId: { type: String }
+  upiId: { type: String },
+  upiQrCode: { type: String },
+  bankDetails: {
+    accountName: { type: String },
+    bankName: { type: String },
+    accountNumber: { type: String },
+    ifscCode: { type: String }
+  },
+  onboardingCompleted: { type: Boolean, default: false }
 }, { timestamps: true });
 
 // Index for geospatial queries

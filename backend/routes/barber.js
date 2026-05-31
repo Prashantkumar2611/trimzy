@@ -147,7 +147,12 @@ router.put('/profile', verifyToken, async (req, res) => {
       longitude,
       homeVisit,
       upiId,
-      address
+      upiQrCode,
+      address,
+      coverImage,
+      bankDetails,
+      experience,
+      onboardingCompleted
     } = req.body;
 
     // Update simple fields if provided
@@ -163,6 +168,20 @@ router.put('/profile', verifyToken, async (req, res) => {
     if (isOpen !== undefined) barber.isOpen = !!isOpen;
     if (homeVisit !== undefined) barber.homeVisit = !!homeVisit;
     if (upiId !== undefined) barber.upiId = upiId.trim();
+    if (upiQrCode !== undefined) barber.upiQrCode = upiQrCode;
+    if (coverImage !== undefined) barber.coverImage = coverImage;
+    if (experience !== undefined) barber.experience = experience;
+    if (onboardingCompleted !== undefined) barber.onboardingCompleted = !!onboardingCompleted;
+
+    // Handle bank details safely
+    if (bankDetails !== undefined && typeof bankDetails === 'object') {
+      barber.bankDetails = {
+        accountName: bankDetails.accountName ? bankDetails.accountName.trim() : '',
+        bankName: bankDetails.bankName ? bankDetails.bankName.trim() : '',
+        accountNumber: bankDetails.accountNumber ? bankDetails.accountNumber.trim() : '',
+        ifscCode: bankDetails.ifscCode ? bankDetails.ifscCode.trim() : ''
+      };
+    }
 
     // Handle structured address
     if (address !== undefined && typeof address === 'object') {
